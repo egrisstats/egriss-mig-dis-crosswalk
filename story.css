@@ -150,3 +150,32 @@ body.story{padding:0}
   .send a.sbtn{align-self:stretch;text-align:center}
 }
 @media (prefers-reduced-motion:reduce){.scard,.scase{transition:none}.sstep.on .scard{transform:none}}
+
+
+/* full-page stage: the graph fills the screen height, cards float over it, see-through */
+.sgrid{grid-template-columns:minmax(0,1fr);gap:0;padding:0}
+.stagewrap{grid-row:1;grid-column:1;align-self:start;height:100vh;padding:48px 24px 16px;padding-right:calc(24px + 300px)}
+.sghead{position:absolute;top:16px;left:24px;z-index:1}
+#steps{grid-row:1;grid-column:1;justify-self:end;width:min(420px,100%);padding-right:24px;position:relative;z-index:5;pointer-events:none}
+.scard{pointer-events:auto;background:color-mix(in srgb,var(--surface) 60%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:.6}
+.sstep.on .scard{opacity:1;background:color-mix(in srgb,var(--surface) 76%,transparent)}
+.callout{background:color-mix(in srgb,var(--surface) 90%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.sexamples .tlab{display:block;margin-bottom:2px}
+.sexamples .scase b{font-size:.84rem;font-weight:600}
+.sexamples .tex{margin:2px 0 0;font-size:.9rem}
+/* tablet and narrow windows: graph full screen, cards in a narrow column on the right */
+@media (max-width:900px){
+  .sgrid{padding:0}
+  .stagewrap{height:100svh;padding:44px 12px 12px;background:var(--bg);border:0;box-shadow:none}
+  .sghead{top:14px;left:12px}
+  #steps{justify-self:end;width:min(380px,100%);padding:40vh 12px 40vh}
+  .sstep{min-height:95vh;align-items:center}
+  .sstep.on .scard{background:color-mix(in srgb,var(--surface) 68%,transparent)}
+}
+/* phone: cards full width, sitting low so the top of the graph stays clear */
+@media (max-width:600px){
+  #steps{justify-self:stretch;width:100%;padding:60vh 10px 30vh}
+  .sstep{align-items:flex-end}
+  .scard{-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+  .sstep.on .scard{background:color-mix(in srgb,var(--surface) 70%,transparent)}
+}
