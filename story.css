@@ -154,7 +154,7 @@ body.story{padding:0}
 
 /* full-page stage: the graph fills the screen height, cards float over it, see-through */
 .sgrid{grid-template-columns:minmax(0,1fr);gap:0;padding:0}
-.stagewrap{grid-row:1;grid-column:1;align-self:start;height:100vh;padding:48px 24px 16px;padding-right:calc(24px + 300px)}
+.stagewrap{grid-row:1;grid-column:1;align-self:start;height:100vh;padding:48px 24px 16px}
 .sghead{position:absolute;top:16px;left:24px;z-index:1}
 #steps{grid-row:1;grid-column:1;justify-self:end;width:min(420px,100%);padding-right:24px;position:relative;z-index:5;pointer-events:none}
 .scard{pointer-events:auto;background:color-mix(in srgb,var(--surface) 60%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:.6}
@@ -178,4 +178,10 @@ body.story{padding:0}
   .sstep{align-items:flex-end}
   .scard{-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
   .sstep.on .scard{background:color-mix(in srgb,var(--surface) 70%,transparent)}
+}
+
+/* wide screens: graph spans the page and pans with the steps (story.js pan) */
+@media (min-width:901px){
+  #stage{overflow:hidden}
+  #stage>svg{transition:transform .6s var(--ease);will-change:transform}
 }

@@ -125,7 +125,15 @@ function focus(g,tg){
   cancelAnimationFrame(sp.__raf);
   const tick=now=>{const k=D?Math.min(1,(now-t0)/D):1, e=ease(k); paint(from.map((v,i)=>v+(to[i]-v)*e)); if(k<1) sp.__raf=requestAnimationFrame(tick);};
   sp.__raf=requestAnimationFrame(tick);
-  return {y:y0};}
+  return {y:y0,y1};}
+// on wide screens the graph runs the full page width, taller than the window, and pans to the part each step is about
+const wide=()=>innerWidth>900;
+function pan(g,fb){ const sv=g.svg; if(!wide()){sv.style.transform="";sv.style.height="100%";return;}
+  const vb=sv.viewBox.baseVal, H=stage.clientHeight, W=stage.clientWidth;
+  // zoom is capped at 1.3 times the window height, so a step still shows where people come from and where they land
+  const h=Math.min(W*vb.height/vb.width,H*1.3), k=Math.min(W/vb.width,h/vb.height); sv.style.height=h+"px";
+  let ty=0; if(fb){const top=(fb.y-vb.y)*k, bot=(fb.y1-vb.y)*k; ty=bot-top>H-32?16-top:H/2-(top+bot)/2;}
+  sv.style.transform=`translateY(${Math.round(Math.min(0,Math.max(H-h,ty)))}px)`;}
 function routesFor(g,id){
   const rows=[]; g.LK.forEach((l,li)=>{ if(l.el.style.display==="none") return;
     if(g.main){l.rs.filter(r=>r.case===id).forEach(r=>{const cat=CATS.find(c=>c.id===l.k);rows.push({li,path:`${l.k} ${cat?cat.l:""} → ${(MIDLAB[l.m]||[l.m])[0]} → ${CELLS.find(c=>c.id===l.c).l}`,ex:r.ex,rule:r.t,cite:r.ref,lk:r.lk,rare:l.rare});});}
@@ -178,8 +186,8 @@ const SV={irrs:$("#flow"),A:$("#flowA"),B:$("#flowB")};
 document.getElementById("temporary").hidden=false;
 Object.entries(SV).forEach(([k,s])=>{s.style.minWidth="0";s.style.width="100%";s.style.height="100%";s.dataset.g=k;stage.insertBefore(s,co);});
 document.querySelector(".wrap").hidden=true;
-// graph sits at the top; between phone and laptop widths it hugs the left so the cards cover less of it
-const fit=()=>Object.values(SV).forEach(sv=>sv.setAttribute("preserveAspectRatio",innerWidth>600&&innerWidth<=900?"xMinYMin meet":"xMidYMin meet"));
+// from tablet width up the graph hugs the left so the cards cover less of it
+const fit=()=>Object.values(SV).forEach(sv=>{sv.setAttribute("preserveAspectRatio",innerWidth>600?"xMinYMin meet":"xMidYMin meet");if(!wide()) sv.style.height="100%";});
 fit(); addEventListener("resize",fit);
 // steps
 stepsEl.innerHTML=S.map((s,i)=>{
@@ -196,7 +204,7 @@ function applyS(i){ if(i===cur) return; cur=i; const s=S[i];
   stepsEl.querySelectorAll(".sstep").forEach(el=>el.classList.toggle("on",+el.dataset.i===i));
   if(gk!==s.g){ if(g){build(g,null);hide(g,[]);focus(g,[]);show(g,[]);}
     Object.entries(SV).forEach(([k,sv])=>{sv.style.display=k===s.g?"":"none";}); gk=s.g; g=G[s.g](); stage.dataset.g=s.g; }
-  build(g,s.build||null); hide(g,s.hide||[]); show(g,stepIds(s)); focus(g,s.focus); examples(i,s);
+  build(g,s.build||null); hide(g,s.hide||[]); show(g,stepIds(s)); pan(g,focus(g,s.focus)); examples(i,s);
   document.querySelector(".sghead").innerHTML={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&amp;R Rev. 4)"}[s.g];
   clearTimeout(applyS.t); co.innerHTML=""; applyS.t=setTimeout(()=>callouts(s),RM?0:650);
 }
@@ -246,6 +254,6 @@ function callouts(s){
 stepsEl.querySelectorAll(".scase").forEach(el=>{el.addEventListener("mouseenter",()=>{if(g) show(g,[el.dataset.id]);});el.addEventListener("mouseleave",()=>{if(g&&cur>=0) show(g,stepIds(S[cur]));});});
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) applyS(+e.target.dataset.i);}),{rootMargin:"-45% 0px -45% 0px"});
 stepsEl.querySelectorAll(".sstep").forEach(el=>io.observe(el));
-addEventListener("resize",()=>{if(cur>=0) callouts(S[cur]);});
+addEventListener("resize",()=>{if(cur>=0){pan(g,focus(g,S[cur].focus)); callouts(S[cur]);}});
 requestAnimationFrame(()=>applyS(0));
 })();
