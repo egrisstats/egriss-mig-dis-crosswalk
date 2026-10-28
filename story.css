@@ -159,7 +159,7 @@ body.story{padding:0}
 #steps{grid-row:1;grid-column:1;justify-self:end;width:min(420px,100%);padding-right:24px;position:relative;z-index:5;pointer-events:none}
 .scard{pointer-events:auto;background:color-mix(in srgb,var(--surface) 60%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:.6}
 .sstep.on .scard{opacity:1;background:color-mix(in srgb,var(--surface) 76%,transparent)}
-.callout{background:color-mix(in srgb,var(--surface) 90%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.callout{background:color-mix(in srgb,var(--surface) 70%,transparent);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 .sexamples .tlab{display:block;margin-bottom:2px}
 .sexamples .scase b{font-size:.84rem;font-weight:600}
 .sexamples .tex{margin:2px 0 0;font-size:.9rem}
