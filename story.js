@@ -130,8 +130,7 @@ function focus(g,tg){
 const wide=()=>innerWidth>900;
 function pan(g,fb){ const sv=g.svg; if(!wide()){sv.style.transform="";sv.style.height="100%";return;}
   const vb=sv.viewBox.baseVal, H=stage.clientHeight, W=stage.clientWidth;
-  // zoom is capped at 1.3 times the window height, so a step still shows where people come from and where they land
-  const h=Math.min(W*vb.height/vb.width,H*1.3), k=Math.min(W/vb.width,h/vb.height); sv.style.height=h+"px";
+  const h=W*vb.height/vb.width, k=W/vb.width; sv.style.height=h+"px";
   let ty=0; if(fb){const top=(fb.y-vb.y)*k, bot=(fb.y1-vb.y)*k; ty=bot-top>H-32?16-top:H/2-(top+bot)/2;}
   sv.style.transform=`translateY(${Math.round(Math.min(0,Math.max(H-h,ty)))}px)`;}
 function routesFor(g,id){
