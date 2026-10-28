@@ -3,7 +3,7 @@
 .tourbtn{align-self:flex-start;display:inline-flex;gap:10px;align-items:baseline;font:inherit;font-weight:600;font-size:1rem;color:var(--surface,#fff);background:var(--ink);border:0;border-radius:999px;padding:10px 18px;cursor:pointer;margin-top:4px}
 .tourbtn span{font-weight:400;font-size:.82rem;opacity:.75}
 .tourbtn:focus-visible{outline:3px solid var(--focus,#2c6bd6);outline-offset:2px}
-.tour{position:fixed;z-index:50;top:16px;right:16px;bottom:16px;width:400px;display:flex;flex-direction:column;background:var(--surface,#fff);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.18);overflow:hidden}
+.tour{position:fixed;z-index:50;top:16px;right:16px;bottom:16px;width:400px;display:flex;flex-direction:column;background:var(--surface,#fff);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden}
 body.touring{padding-right:432px}
 body.touring #flow,body.touring #flowA,body.touring #flowB{min-width:0!important}
 @media (max-width:1100px){
@@ -24,11 +24,11 @@ body.touring #flow,body.touring #flowA,body.touring #flowB{min-width:0!important
 .tour .tkeys{font-size:.85rem;color:var(--muted)}
 .tour .tcap{display:flex;flex-wrap:wrap;gap:6px}
 .tbadge{display:inline-block;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:3px;color:#fff;background:var(--tc,var(--ink));white-space:nowrap;vertical-align:1px}
-.tt-e{--tc:#3d8b5a} .tt-1{--tc:var(--v-never)} .tt-2{--tc:var(--v-temp)} .tt-3{--tc:var(--v-other)} .tt-4{--tc:var(--v-ret)} .tt-5{--tc:var(--ink)} .tt-add{--tc:var(--ink)}
+.tt-e{--tc:var(--v-prot)} .tt-1{--tc:var(--v-never)} .tt-2{--tc:var(--v-temp)} .tt-3{--tc:var(--v-other)} .tt-4{--tc:var(--v-ret)} .tt-5{--tc:var(--strong)} .tt-add{--tc:var(--ink)}
 .tbadge.tfw{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.tfw-irrs{border-color:var(--irrs,#e08600)!important} .tfw-iris{border-color:#d4541f!important} .tfw-imtm{border-color:#3566c4!important} .tfw-pr{border-color:#6a4c93!important}
-.tbadge.ttop{background:#f5d84a;color:#1d1d1d} .tbadge.tlk{background:transparent;border:1px solid var(--line);color:var(--muted)}
-.tlab{font-family:var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-right:4px} .tlab-p{color:#3566c4}
+.tfw-irrs{border-color:var(--irrs)!important} .tfw-iris{border-color:var(--iris)!important} .tfw-imtm{border-color:var(--imtm)!important} .tfw-pr{border-color:var(--pr)!important}
+.tbadge.ttop{background:var(--hl);color:var(--ink)} .tbadge.tlk{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.tlab{font-family:var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-right:4px} .tlab-p{color:var(--imtm)}
 .tour .tlist{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 .tcase{border-left:4px solid var(--tc);padding:4px 0 4px 10px;display:flex;flex-direction:column;gap:4px;border-radius:2px}
 .tcase:hover{background:color-mix(in srgb,var(--tc) 8%,transparent)}
@@ -42,7 +42,7 @@ body.touring #flow,body.touring #flowA,body.touring #flowB{min-width:0!important
 .troute:hover,.troute.hov,.troute:focus-visible{border-color:var(--ink);outline:none;background:var(--surface,#fff)}
 .tpath{font-family:var(--f-mono);font-size:.68rem;color:var(--muted)}
 .trex{font-size:.88rem} .trule{font-size:.8rem;color:var(--muted)}
-.taligned{font-size:.85rem;color:var(--muted);border-left:3px solid #3d8b5a;padding-left:8px}
+.taligned{font-size:.85rem;color:var(--muted);border-left:3px solid var(--v-prot);padding-left:8px}
 .tour .tnav{display:flex;justify-content:space-between;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
 .tour .tnav button{font:inherit;font-weight:600;border-radius:999px;padding:8px 16px;cursor:pointer;border:1px solid var(--line);background:none;color:var(--ink)}
 .tour .tnav .tnext{background:var(--ink);color:var(--surface,#fff);border-color:var(--ink)}
@@ -73,7 +73,7 @@ body.story{padding:0}
 #callouts .colines path{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:300;stroke-dashoffset:300;animation:codraw .6s ease forwards}
 #callouts .colines circle{fill:var(--ink)}
 @keyframes codraw{to{stroke-dashoffset:0}}
-.callout{position:absolute;pointer-events:auto;background:var(--surface,#fff);border:1px solid var(--line);border-left:4px solid var(--tc);border-radius:8px;padding:8px 10px;box-shadow:0 6px 20px rgba(0,0,0,.12);font-size:.82rem;line-height:1.35;animation:coin .45s ease both}
+.callout{position:absolute;pointer-events:auto;background:var(--surface,#fff);border:1px solid var(--line);border-left:4px solid var(--tc);border-radius:8px;padding:8px 10px;box-shadow:var(--shadow-md);font-size:.82rem;line-height:1.35;animation:coin .45s ease both}
 @keyframes coin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .callout .cohead{display:flex;gap:8px;align-items:center;margin-bottom:4px}
 .callout .cohead b{font-size:.86rem;line-height:1.2}
@@ -82,7 +82,7 @@ body.story{padding:0}
 #steps{padding:30vh 0 50vh;display:flex;flex-direction:column;gap:0}
 .sstep{min-height:90vh;display:flex;align-items:center}
 .scard{background:var(--surface,#fff);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px;opacity:.45;transition:opacity .4s ease, border-color .4s ease, box-shadow .4s ease}
-.sstep.on .scard{opacity:1;border-color:var(--ink);box-shadow:0 8px 28px rgba(0,0,0,.1)}
+.sstep.on .scard{opacity:1;border-color:var(--ink);box-shadow:var(--shadow-md)}
 .scard .ttext{display:flex;flex-direction:column;gap:8px}
 .scard .ttext ul{margin:0;padding-left:18px}
 .scard h2{font-size:1.35rem;line-height:1.2}
@@ -98,3 +98,55 @@ body.story{padding:0}
   .stagewrap{height:52vh;z-index:3;background:var(--bg);border-bottom:1px solid var(--line)}
   #steps{padding:4vh 0 30vh} .sstep{min-height:70vh}
 }
+
+
+/* polish: story cards, pinned notes and buttons */
+.shero{gap:20px;padding-top:14vh}
+.shero h1{font-weight:700;letter-spacing:-.025em;line-height:1.05}
+.shero h1::after{content:"";display:block;width:88px;height:4px;margin-top:22px;border-radius:2px;background:linear-gradient(90deg,var(--teal),transparent)}
+.shero p{font-size:1.14rem;line-height:1.65}
+.shero .sgo{display:inline-flex;align-items:center;gap:8px;color:var(--strong)}
+.sghead{font-weight:500;color:var(--strong)}
+.sgrid{gap:40px}
+.scard{border-radius:14px;padding:24px 24px 20px;gap:12px;opacity:.5;box-shadow:none;transition:opacity .4s var(--ease),border-color .4s var(--ease),box-shadow .4s var(--ease),transform .4s var(--ease)}
+.sstep.on .scard{opacity:1;border-color:var(--line-strong);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.scard h2{font-size:1.4rem;line-height:1.2}
+.scard .ttext{line-height:1.6}
+.schap{font-weight:500;color:var(--imtm)}
+.scases{gap:4px;padding-top:12px}
+.scase{padding:8px;border-radius:8px;transition:background .15s var(--ease),border-color .15s var(--ease)}
+.scase:hover{background:color-mix(in srgb,var(--tc) 7%,transparent)}
+.tex{font-family:var(--f-body);font-style:italic;font-size:.96rem;line-height:1.5}
+
+/* pinned notes on the graph */
+.callout{border-radius:10px;padding:10px 12px;border-color:var(--line-strong);border-left-width:4px;font-size:.82rem;line-height:1.4}
+.callout .cohead b{font-family:var(--f-display);font-weight:600;color:var(--strong)}
+.callout p{font-family:var(--f-body);font-style:italic;font-size:.86rem;line-height:1.45}
+.callout .cot{margin-top:6px;letter-spacing:.06em}
+#callouts .colines path{stroke:var(--strong);stroke-width:1.3}
+#callouts .colines circle{fill:var(--strong)}
+
+/* tour panel and buttons */
+.tour{border-radius:14px;border-color:var(--line-strong)}
+.tourbtn,.tour .tnav .tnext{background:var(--strong);border-color:var(--strong);color:#fff}
+.tour .tnav button{min-height:40px;padding:8px 18px;transition:background .15s var(--ease),border-color .15s var(--ease)}
+.tour .tnav button:not(.tnext):not(:disabled):hover{border-color:var(--imtm);background:var(--sunk)}
+.tour .tnav .tnext:not(:disabled):hover,.tourbtn:hover{background:#22377a}
+.tour .tdot2{width:10px;height:10px}
+.tour .tdot2.on{background:var(--strong);border-color:var(--strong)}
+.troute{border-radius:8px}
+.troute:hover,.troute.hov,.troute:focus-visible{border-color:var(--imtm)}
+
+@media (max-width:900px){
+  .shero{padding:9vh 16px 6vh}
+  .shero p{font-size:1.04rem}
+  .sgrid{gap:0;padding:0 12px}
+  .stagewrap{height:50vh;box-shadow:0 6px 14px -10px rgba(20,35,76,.35)}
+  .scard{padding:18px;border-radius:12px;opacity:.6}
+  .sstep.on .scard{transform:none}
+  .callout{font-size:.76rem;padding:7px 9px;max-width:62vw}
+  .callout p{font-size:.78rem}
+  .send{padding:8vh 16px 14vh}
+  .send a.sbtn{align-self:stretch;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){.scard,.scase{transition:none}.sstep.on .scard{transform:none}}
