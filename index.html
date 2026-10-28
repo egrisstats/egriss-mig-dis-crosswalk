@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Refugee Migrant Crosswalk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="crosswalk.css">
+</head><body>
+
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">EGRISS Migration-Displacement task team · working draft <span class="draft">for discussion</span></span>
+  <h1>Is every refugee an international migrant?</h1>
+  <a class="storybtn" id="storylink" href="story.html">▶ New here? Scroll through the introduction <span>about 5 minutes</span></a>
+  <p class="headline" id="hl"></p>
+  <div class="scenfilter" role="group" aria-label="Scenarios shown"><span class="hint">Scenarios:</span><button type="button" class="chip active" data-sc="cp" aria-pressed="true">Common and plausible</button><button type="button" class="chip" data-sc="all" aria-pressed="false">All, incl. rare edge cases</button></div>
+  <p class="lede">Each IRRS category is traced through the IMTM recommendations: did the person change country of residence (an international migrant), or join the resident population another way, by birth, a status change in place or a short stay abroad? Numbered pills mark the non-nested (outlier) cases; hover a route or a paragraph number for detail.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" id="tab-residents" aria-selected="true" aria-controls="residents">1 · Refugees and international migration</button>
+  <button class="tab" role="tab" id="tab-temporary" aria-selected="false" aria-controls="temporary">2 · IDPs: IRIS against IMTM and the census</button>
+</div>
+
+
+<!-- VIEW 1 -->
+<section class="panel" id="residents" role="tabpanel" aria-labelledby="tab-residents">
+  <details class="card howto">
+    <summary>How to read this graph: the IMTM structure and temporary stays <span class="srcb srcb-imtm">IMTM 2025 · Fig. 1, 2, 6</span></summary>
+    <h2>The IMTM structure as the base <span class="srcb srcb-imtm">IMTM 2025 · Fig. 1, 6</span></h2>
+    <p class="hint">IMTM separates two things. <b>International migrants</b> are people who changed their country of residence into the country (the immigration flow, Fig. 1 and para 25 to 27). The <b>resident population</b> is everyone who lives there 12 months or more, split into four groups by birthplace and citizenship (Fig. 6). People can join the resident population through migration, but also through birth, and they can move between groups through naturalisation.</p>
+    <div class="base">
+      <div class="bcol">
+        <div class="bbox mig"><b>International arrivals</b><span>to stay 12+ months</span></div>
+        <div class="barrow">→</div>
+        <div class="bbox mig strong"><b>International migrants</b><span>Immigrants · Returned migrants</span></div>
+      </div>
+      <div class="barrow big">→</div>
+      <div class="bgrid">
+        <div class="bbox cit"><b>Native-born citizens</b><span>NB-C</span></div>
+        <div class="bbox cit stock"><b>Foreign-born citizens</b><span>FB-C</span></div>
+        <div class="bbox fc stock"><b>Native-born foreign citizens</b><span>NB-FC</span></div>
+        <div class="bbox fc stock"><b>Foreign-born foreign citizens</b><span>FB-FC</span></div>
+        <div class="bcap">Resident population · dashed = IMTM immigrant stock (born abroad or not a citizen)</div>
+      </div>
+      <div class="bside">
+        <div class="bbox non"><b>Births</b><span>join directly, no migration</span></div>
+        <div class="bbox non"><b>Naturalisation</b><span>moves between groups</span></div>
+        <div class="bbox non dashed"><b>Protection status change</b><span>IRRS event, invisible to IMTM</span></div>
+      </div>
+    </div>
+    <div class="fig2">
+      <h3>Temporary stays: IMTM Figure 2, with IRRS cases added <span class="srcb srcb-imtm">IMTM 2025 · Fig. 2, 3</span> <span class="srcb srcb-irrs">IRRS cases</span></h3>
+      <div class="scroll"><svg viewBox="0 0 1090 290" role="img" aria-label="Recreation of IMTM Figure 2: international arrivals split by duration of stay into new residents or temporary mobility" style="min-width:780px;width:100%">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>
+        <rect class="f2b" x="10" y="70" width="120" height="170" rx="6"/><text x="70" y="150" text-anchor="middle" class="f2t b">International</text><text x="70" y="166" text-anchor="middle" class="f2t b">arrivals</text>
+        <rect class="f2b" x="170" y="70" width="140" height="58" rx="6"/><text x="240" y="94" text-anchor="middle" class="f2t">Minimum residence</text><text x="240" y="110" text-anchor="middle" class="f2s">requirement, 12 months</text>
+        <rect class="f2b" x="170" y="182" width="140" height="58" rx="6"/><text x="240" y="206" text-anchor="middle" class="f2t">Less than minimum</text><text x="240" y="222" text-anchor="middle" class="f2s">incl. daily border crossing</text>
+        <rect class="f2b" x="350" y="8" width="180" height="44" rx="6"/><text x="440" y="26" text-anchor="middle" class="f2s">Residents returning from</text><text x="440" y="41" text-anchor="middle" class="f2s">temporary stay abroad</text>
+        <rect class="f2m" x="350" y="70" width="180" height="58" rx="6"/><text x="440" y="94" text-anchor="middle" class="f2t b">New residents (immigrants)</text><text x="440" y="110" text-anchor="middle" class="f2s">= international migrants</text>
+        <rect class="f2tp" x="350" y="182" width="180" height="58" rx="6"/><text x="440" y="206" text-anchor="middle" class="f2t b">Temporary (non-resident)</text><text x="440" y="222" text-anchor="middle" class="f2t b">mobility</text>
+        <rect class="f2r" x="580" y="30" width="160" height="98" rx="6"/><text x="660" y="76" text-anchor="middle" class="f2t b">Resident</text><text x="660" y="92" text-anchor="middle" class="f2t b">population</text>
+        <rect class="f2tp" x="580" y="182" width="160" height="58" rx="6"/><text x="660" y="206" text-anchor="middle" class="f2t b">Temporary</text><text x="660" y="222" text-anchor="middle" class="f2t b">population</text>
+        <path class="f2a" d="M130,130 L170,100"/><path class="f2a" d="M130,180 L170,210"/>
+        <path class="f2a" d="M310,99 L350,99"/><path class="f2a" d="M310,211 L350,211"/>
+        <path class="f2a" d="M530,30 L580,55"/><path class="f2a" d="M530,99 L580,99"/><path class="f2a" d="M530,211 L580,211"/>
+        <path class="f2d" d="M440,182 L440,130"/><text x="448" y="160" class="f2s">if the stay passes the</text><text x="448" y="174" class="f2s">minimum duration (para 33)</text>
+        <text x="770" y="78" class="f2t b" style="fill:var(--v-prot)">Refugees who stay or intend</text><text x="770" y="94" class="f2t b" style="fill:var(--v-prot)">to stay 12+ months</text><text x="770" y="110" class="f2s">case E, and cases 9, 10 once they pass 12 months</text>
+        <text x="770" y="196" class="f2t b" style="fill:var(--v-temp)">Not yet international migrants</text>
+        <text x="770" y="214" class="f2s">9 · recent asylum seekers (a1, a2)</text>
+        <text x="770" y="230" class="f2s">10 · new prima facie, temporary protection,</text><text x="784" y="245" class="f2s">short refugee-like stays (a3i, a3iii, a4)</text>
+        <text x="770" y="268" class="f2s">Transit asylum seekers: IMTM only (IRRS para 85)</text>
+      </svg></div>
+      <p class="hint">Recreated from IMTM Figure 2 (intersection between duration of stay and international mobility) and Figure 3 (asylum seekers under temporary mobility). In the crosswalk below, the same split appears as the grey "Temporary mobility" box.</p>
+    </div>
+  </details>
+
+  <div class="card">
+    <div class="selbar"><b><span class="srcb srcb-irrs">IRRS 2018</span> category → International migrant? → <span class="srcb srcb-imtm">IMTM 2025</span> resident population group</b><span class="hint" id="selinfo"></span><button class="chip" id="clear" hidden>Show all</button></div>
+    <div class="legend" id="legendL"></div>
+    <div class="casejump" id="casejump"></div>
+    <div class="gwrap"><div class="scroll gmain"><svg id="flow" role="img" aria-label="Flow diagram from IRRS categories through IMTM international migration to the IMTM resident population groups"></svg></div>
+    <aside class="casebox" id="casedetail" aria-live="polite"></aside></div>
+    <p class="hint">Groups (a) and (b) are seen from the country of asylum, group (c) from the country of return. Group (b) is a first draft. Line thickness = number of distinct routes. Numbered pills mark the non-nested (outlier) cases; the expected case (E) is shown by green lines only.</p>
+  </div>
+
+  
+  <details class="card" id="routesbox">
+    <summary><span id="tabletitle">All routes</span> · table view</summary>
+    <div class="scroll"><table><thead><tr><th>Case</th><th>IRRS category</th><th>How</th><th>International migrant?</th><th>Resident group</th><th>Route</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </details>
+<details class="card overview" id="nest"><summary>Overview diagram: all cases on one picture <span class="srcb srcb-irrs">IRRS</span> <span class="srcb srcb-imtm">IMTM</span> <span class="srcb srcb-iris">IRIS</span></summary>
+<div class="panel">
+  <div class="card">
+    <h2>NEST cases: Non-Equivalent Statistical Treatment <span class="srcb srcb-irrs">IRRS 2018</span> <span class="srcb srcb-imtm">IMTM 2025</span> <span class="srcb srcb-iris">IRIS 2020 · cases 16, 17</span></h2>
+    <p class="hint">The misconception: every refugee is an international migrant. In fact IRRS and IMTM are consistent with each other (IRRS paras 77, 80; IMTM paras 34, 53), but one population does not nest inside the other. Each pin is one NEST case with a worked example. All five types are non-nested (outlier) cases; only type 5 is a real misalignment between recommendations.</p>
+    <div class="types" id="types"></div>
+  </div>
+  <div class="nestgrid">
+    <div class="card venncard">
+      <div class="scroll"><svg id="venn" viewBox="0 0 1100 640" role="img" aria-label="Overlap of IRRS population, IMTM international migrants and IMTM immigrant stock, with numbered NEST cases" style="min-width:760px;width:100%"></svg></div>
+      <p class="hint">Inside the frame: the resident population (12+ months, IMTM paras 16-17). "International migrants" = ever changed country of residence into this country. Group (c) cases are seen from the country of return. Grey labels are non-refugee groups, shown for context.</p>
+    </div>
+    <aside class="card detailcard" id="nestdetail" aria-live="polite"></aside>
+  </div>
+  <div class="card">
+    <div class="selbar"><h3>All NEST cases</h3><span class="hint">Filter by type:</span><span id="typefilter" class="tf"></span></div>
+    <div class="nestcards" id="nestcards"></div>
+  </div>
+</div></details>
+</section>
+
+
+<!-- VIEW 2 -->
+<section class="panel" id="temporary" role="tabpanel" aria-labelledby="tab-temporary" hidden>
+  <header class="subhead">
+    <span class="eyebrow">IDPs · two comparisons on one page</span>
+    <h2>IDPs: two comparisons <span class="srcb srcb-iris">IRIS 2020</span></h2>
+    <p class="hint"><b>1. Crossing an international border.</b> Where IDPs leave the country, IRIS meets IMTM (and IRRS), and misalignments can happen. <b>2. Inside the country.</b> All IRIS categories against what the census Principles and Recommendations (P&amp;R Rev. 4) count as internal migration.</p>
+  </header>
+
+  <div class="card">
+    <h3 class="secnum">1 · IDPs crossing an international border: IRIS against IMTM</h3>
+    <div class="selbar"><b><span class="srcb srcb-iris">IRIS 2020</span> category → International migration? → <span class="srcb srcb-imtm">IMTM 2025</span> population</b></div>
+    <p class="headline" id="hlA"></p>
+    <div class="legend" id="legendA"></div>
+    <div class="casejump" id="jumpA"></div>
+    <div class="scroll"><svg id="flowA" role="img" aria-label="Flow from IRIS categories through IMTM international migration to IMTM population groups"></svg></div>
+    <p class="hint">Seen from the country of displacement. Only cross-border situations are shown. Not shown here: IDPs who are foreign citizens or stateless (IRIS para 102) can also sit in the IMTM immigrant stock without crossing a border during displacement.</p>
+  </div>
+
+  <div class="card">
+    <h3 class="secnum">2 · IRIS categories against the census on internal migration</h3>
+    <div class="selbar"><b><span class="srcb srcb-iris">IRIS 2020</span> category → What move happened? → <span class="srcb srcb-pr">P&amp;R Rev. 4</span> internal migration status</b></div>
+    <p class="headline" id="hlB"></p>
+    <div class="legend" id="legendB"></div>
+    <div class="casejump" id="jumpB"></div>
+    <div class="scroll"><svg id="flowB" role="img" aria-label="Flow from IRIS categories through the type of move to the P&R census internal migration classification"></svg></div>
+    <p class="hint">P&amp;R defines internal migrants as people usually resident in a civil division who previously lived outside it; moves within a division are not migration (draft Rev. 4, para 5.64). Results depend on the geography used (major or smaller civil divisions, paras 5.69-5.70) and the measure: place of birth, previous residence and duration, or residence one or five years ago.</p>
+  </div>
+  <aside class="casebox floatcase" id="irisdetail" hidden aria-live="polite"></aside>
+
+  <details class="card">
+    <summary>Worked timelines: an IDP crosses a border <span class="srcb srcb-iris">IRIS</span> <span class="srcb srcb-irrs">IRRS</span> <span class="srcb srcb-imtm">IMTM</span></summary>
+    <p class="hint">IRIS keeps a person in the IDP stock if they cross a border and come back within 12 months without setting up a new usual residence abroad (para 117). Each scenario follows one person over 24 months.</p>
+    <div class="scens" id="scens"></div>
+    <h3 id="scentitle"></h3>
+    <div class="scroll"><svg id="timeline" viewBox="0 0 1000 300" role="img" aria-label="Timeline of the selected scenario across two countries" style="min-width:760px;width:100%"></svg></div>
+    <div class="scroll"><table class="status"><thead><tr><th>Recommendation</th><th>Country of origin (X)</th><th>Neighbouring country (Y)</th></tr></thead><tbody id="status"></tbody></table></div>
+    <div id="scennote"></div>
+  </details>
+</section>
+
+<p class="src">Sources: IRRS 2018 (Fig. 3.1, 3.2; paras 77-97, 105); IRIS 2020 (Fig. 3.1-3.3; paras 75, 78, 82-89, 94-99, 117); IMTM 2025 (Fig. 1-3, 5, 6; paras 16-17, 25-27, 30, 33-34, 52-61). Stateless persons are counted with foreign citizens (IMTM fn. 34). Citizenship at birth depends on national law (IMTM para 57).</p>
+</div>
+
+<script src="crosswalk.js"></script>
+
+</body></html>
