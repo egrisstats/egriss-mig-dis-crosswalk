@@ -115,7 +115,7 @@ function focus(g,tg){
   if(x0>x1){ if(sp){sp.style.opacity="0"; const s=sp; setTimeout(()=>{if(s.style.opacity==="0") s.remove();},500);} return null; }
   x0-=10;y0-=10;x1+=10;y1+=10; const to=[x0,y0,x1,y1];
   if(!sp){ sp=document.createElementNS(NS,"g"); sp.id="spot"; sp.setAttribute("pointer-events","none"); sp.style.transition="opacity .5s ease"; sp.style.opacity="0";
-    const pa=document.createElementNS(NS,"path"); pa.setAttribute("fill-rule","evenodd"); pa.setAttribute("style","fill:var(--bg);opacity:.8"); sp.appendChild(pa);
+    const pa=document.createElementNS(NS,"path"); pa.setAttribute("fill-rule","evenodd"); pa.setAttribute("style","fill:var(--bg);opacity:.6"); sp.appendChild(pa);
     const r=document.createElementNS(NS,"rect"); r.setAttribute("rx",12); r.setAttribute("style","fill:none;stroke:var(--ink);stroke-width:2.5"); sp.appendChild(r);
     sp.__box=[vb.x,vb.y,vb.x+vb.width,vb.y+vb.height]; }
   g.svg.appendChild(sp); requestAnimationFrame(()=>sp.style.opacity="1");
@@ -125,7 +125,14 @@ function focus(g,tg){
   cancelAnimationFrame(sp.__raf);
   const tick=now=>{const k=D?Math.min(1,(now-t0)/D):1, e=ease(k); paint(from.map((v,i)=>v+(to[i]-v)*e)); if(k<1) sp.__raf=requestAnimationFrame(tick);};
   sp.__raf=requestAnimationFrame(tick);
-  return {y:y0};}
+  return {y:y0,y1};}
+// on wide screens the graph runs the full page width, taller than the window, and pans to the part each step is about
+const wide=()=>innerWidth>900;
+function pan(g,fb){ const sv=g.svg; if(!wide()){sv.style.transform="";sv.style.height="100%";return;}
+  const vb=sv.viewBox.baseVal, H=stage.clientHeight, W=stage.clientWidth;
+  const h=W*vb.height/vb.width, k=W/vb.width; sv.style.height=h+"px";
+  let ty=0; if(fb){const top=(fb.y-vb.y)*k, bot=(fb.y1-vb.y)*k; ty=bot-top>H-32?16-top:H/2-(top+bot)/2;}
+  sv.style.transform=`translateY(${Math.round(Math.min(0,Math.max(H-h,ty)))}px)`;}
 function routesFor(g,id){
   const rows=[]; g.LK.forEach((l,li)=>{ if(l.el.style.display==="none") return;
     if(g.main){l.rs.filter(r=>r.case===id).forEach(r=>{const cat=CATS.find(c=>c.id===l.k);rows.push({li,path:`${l.k} ${cat?cat.l:""} → ${(MIDLAB[l.m]||[l.m])[0]} → ${CELLS.find(c=>c.id===l.c).l}`,ex:r.ex,rule:r.t,cite:r.ref,lk:r.lk,rare:l.rare});});}
@@ -178,6 +185,9 @@ const SV={irrs:$("#flow"),A:$("#flowA"),B:$("#flowB")};
 document.getElementById("temporary").hidden=false;
 Object.entries(SV).forEach(([k,s])=>{s.style.minWidth="0";s.style.width="100%";s.style.height="100%";s.dataset.g=k;stage.insertBefore(s,co);});
 document.querySelector(".wrap").hidden=true;
+// from tablet width up the graph hugs the left so the cards cover less of it
+const fit=()=>Object.values(SV).forEach(sv=>{sv.setAttribute("preserveAspectRatio",innerWidth>600?"xMinYMin meet":"xMidYMin meet");if(!wide()) sv.style.height="100%";});
+fit(); addEventListener("resize",fit);
 // steps
 stepsEl.innerHTML=S.map((s,i)=>{
   const cases=(s.cases||[]).filter(c=>!c.exp);
@@ -185,6 +195,7 @@ stepsEl.innerHTML=S.map((s,i)=>{
    ${i===0||S[i-1].ch!==s.ch?`<span class="schap">${s.ch}</span>`:""}
    <div class="tcap">${s.cap||""}</div><h2>${s.h}</h2><div class="ttext">${/^\s*</.test(s.body)?s.body:`<p>${s.body}</p>`}</div>
    ${cases.length?`<div class="scases">${cases.map(c=>`<div class="scase tt-${c.t}" data-id="${ALIAS[c.n]||c.n}"><span class="tnum">${c.n}</span><div><b>${c.h}</b>${c.top?` ${tb("ttop","Most impactful")}`:""}${c.lk?` ${tb("tlk",({c:"Common",p:"Plausible",r:"Rare"})[c.lk])}`:""}<p class="tcite">${c.cite||""}</p></div></div>`).join("")}</div>`:""}
+   ${(s.cases||[]).some(c=>c.exp)?`<div class="scases sexamples"></div>`:""}
    ${s.aligned?`<p class="taligned">${s.aligned}</p>`:""}${s.cite?`<p class="tcite">${s.cite}</p>`:""}
   </div></section>`;}).join("");
 let cur=-1,gk=null,g=null;
@@ -192,10 +203,18 @@ function applyS(i){ if(i===cur) return; cur=i; const s=S[i];
   stepsEl.querySelectorAll(".sstep").forEach(el=>el.classList.toggle("on",+el.dataset.i===i));
   if(gk!==s.g){ if(g){build(g,null);hide(g,[]);focus(g,[]);show(g,[]);}
     Object.entries(SV).forEach(([k,sv])=>{sv.style.display=k===s.g?"":"none";}); gk=s.g; g=G[s.g](); stage.dataset.g=s.g; }
-  build(g,s.build||null); hide(g,s.hide||[]); show(g,stepIds(s)); focus(g,s.focus);
+  build(g,s.build||null); hide(g,s.hide||[]); show(g,stepIds(s)); pan(g,focus(g,s.focus)); examples(i,s);
   document.querySelector(".sghead").innerHTML={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&amp;R Rev. 4)"}[s.g];
   clearTimeout(applyS.t); co.innerHTML=""; applyS.t=setTimeout(()=>callouts(s),RM?0:650);
 }
+// expected-route steps: list the worked examples already in the data
+function examples(i,s){
+  const box=stepsEl.querySelector(`.sstep[data-i="${i}"] .sexamples`); if(!box||box.dataset.done) return;
+  const id=ALIAS[s.cases[0].n]||s.cases[0].n; let rows=[];
+  if(g.main){const seen=new Set(); routesFor(g,id).forEach(r=>{if(r.rare||!r.ex||seen.has(r.ex)) return; seen.add(r.ex); rows.push({h:r.path.split(" → ")[0],ex:r.ex,cite:r.cite});});}
+  else Object.entries(g.F.cases).forEach(([k,c])=>{if(c.t==="E"&&(!g.F.caseIds||g.F.caseIds.includes(k))) rows.push({h:c.h,ex:c.ex,cite:c.refs});});
+  box.innerHTML=`<span class="tlab">Examples</span>`+rows.slice(0,innerWidth<900?2:3).map(r=>`<div class="scase tt-e"><span class="tnum">E</span><div><b>${r.h}</b><p class="tex">${r.ex}</p>${r.cite?`<p class="tcite">${r.cite}</p>`:""}</div></div>`).join("");
+  box.dataset.done=1;}
 const stepIds=s=>(s.cases||[]).map(c=>ALIAS[c.n]||c.n);
 // notes pinned on the graph: the short description you get on hover
 function callouts(s){
@@ -234,6 +253,6 @@ function callouts(s){
 stepsEl.querySelectorAll(".scase").forEach(el=>{el.addEventListener("mouseenter",()=>{if(g) show(g,[el.dataset.id]);});el.addEventListener("mouseleave",()=>{if(g&&cur>=0) show(g,stepIds(S[cur]));});});
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) applyS(+e.target.dataset.i);}),{rootMargin:"-45% 0px -45% 0px"});
 stepsEl.querySelectorAll(".sstep").forEach(el=>io.observe(el));
-addEventListener("resize",()=>{if(cur>=0) callouts(S[cur]);});
+addEventListener("resize",()=>{if(cur>=0){pan(g,focus(g,S[cur].focus)); callouts(S[cur]);}});
 requestAnimationFrame(()=>applyS(0));
 })();
