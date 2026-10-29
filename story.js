@@ -120,21 +120,37 @@ function caseInfo(id){
 // ---------- page elements ----------
 const stage=$("#stage"), colsEl=$("#cols"), gatesEl=$("#gates"), svg=$("#routes"), pillsEl=$("#pills"), notesEl=$("#notes"), hov=$("#hov"), tip=$("#tip");
 const stepsEl=$("#steps");
-stepsEl.innerHTML=STEPS.map((s,i)=>`<section class="sstep" data-i="${i}" aria-label="Step ${i+1}"><div class="sr"><h3>${s.h}</h3>${s.body.map(p=>`<p>${p}</p>`).join("")}</div></section>`).join("");
+const CHAP={1:["irrs","Is every refugee an international migrant? From the route everyone expects to the refugees who never crossed a border."],
+ 2:["iris","What happens when an IDP crosses a border? The IDP graph, set against IMTM."],
+ 3:["pr","Is every IDP an internal migrant? IRIS set against the census."]};
+const chapAt=i=>{const k=CH.findIndex(c=>c.start===i); return k>0&&CHAP[k]?k:-1;};
+stepsEl.innerHTML=STEPS.map((s,i)=>(chapAt(i)>0?`<section class="sstep schap" data-chap="${chapAt(i)}" aria-label="Chapter ${chapAt(i)+1}"></section>`:"")+`<section class="sstep" data-i="${i}" aria-label="Step ${i+1}"><div class="sr"><h3>${s.h}</h3>${s.body.map(p=>`<p>${p}</p>`).join("")}</div></section>`).join("");
 const steps=STEPS.map((s,i)=>{const cases=s.exp?[{n:s.exp,id:s.exp,t:"e",h:"Expected route",ex:"",exp:true}]:(s.cases||[]).map(([n,id,t,h,ex,cite])=>({n,id,t,h,ex,cite}));
   const sp=v=>v?v.split(","):null;
-  return {...s,i,el:stepsEl.children[i],build:sp(s.build),hide:sp(s.hide)||[],focus:sp(s.focus)||[],cases,ids:cases.map(c=>c.id)};});
+  return {...s,i,el:stepsEl.querySelector(`[data-i="${i}"]`),build:sp(s.build),hide:sp(s.hide)||[],focus:sp(s.focus)||[],cases,ids:cases.map(c=>c.id)};});
 const chOf=i=>CH.findIndex(c=>i>=c.start&&i<c.start+c.count);
 $("#heroCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}"><span class="k"><span>0${k+1}</span><span>${c.count} steps</span></span><span class="t">${c.label}</span><span class="d">${c.sub}</span></button>`).join("");
 $("#navCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}" title="${c.label}" style="flex:${c.count} 1 auto"><span class="l">0${k+1} · ${c.label}</span><span class="bar"><i></i></span></button>`).join("");
-document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
-$("#prev").addEventListener("click",()=>go(cur-1));
-$("#next").addEventListener("click",()=>go(cur+1));
+const secs=[...stepsEl.children];
+const secOfStep=i=>{const k=chapAt(i); return secs.indexOf(k>0?stepsEl.querySelector(`[data-chap="${k}"]`):steps[i].el);};
+document.querySelectorAll("#heroCh [data-go],#navCh [data-go]").forEach(b=>b.addEventListener("click",()=>goSec(secOfStep(+b.dataset.go))));
+$("#prev").addEventListener("click",()=>goSec(curSec-1));
+$("#next").addEventListener("click",()=>goSec(curSec+1));
 function navUpdate(){
   [...$("#navCh").children].forEach((b,k)=>{const c=CH[k],done=cur>=c.start+c.count,on=cur>=c.start&&!done;
     b.classList.toggle("on",on); b.querySelector("i").style.width=(cur<c.start?0:done?100:(cur-c.start+1)/c.count*100)+"%";});
   $("#counter").textContent=String(cur+1).padStart(2,"0")+" / "+steps.length;
+  [...$("#navCh").children].forEach((b,k)=>b.querySelector("i").style.background=["var(--teal)","var(--irrs)","var(--iris)","var(--pr)"][k]);
 }
+// chapter card: a full-pane divider shown while its section is on screen; the graph behind is already the new one
+let curSec=-1;
+function showChap(k){
+  const c=CH[k], [cov,txt]=CHAP[k], el=$("#chap");
+  el.innerHTML=`<div class="chap-in"><div class="chap-t"><span class="chap-n">0${k+1}</span><span class="chap-k">Chapter ${k+1} of ${CH.length} · ${c.count} steps</span><h2>${c.label}</h2><span class="chap-s">${c.sub}</span><p>${txt}</p><span class="chap-go">Scroll or press ↓ to begin</span></div>
+    <figure class="chap-c"><img src="covers/${cov}.jpg" alt=""></figure></div>`;
+  el.classList.add("on");
+}
+const hideChap=()=>$("#chap").classList.remove("on");
 
 // ---------- the stage: three columns of cards ----------
 let MS=null, gk=null, compact=false, built={L:false,M:false,R:false}, cur=-1, pending=null, LK=null, R=null, gX=null, sqOn=true, tourT=[], coT=0;
@@ -322,18 +338,20 @@ function show(ids,anim){
   paintLinks(lit,any,lit.some(l=>l.rare),anim);
   LK.forEach(l=>{l.pills.forEach(p=>{p.style.opacity=any&&!ids.includes(p.dataset.case)?".14":"1";}); if(l.pillLink) l.pillLink.style.opacity=any&&!l.pillIds.some(c=>ids.includes(c))?".14":"1";});
 }
+let litPrev=new Set();
 function paintLinks(lit,any,showRare,anim){
+  const was=litPrev; if(anim) litPrev=new Set(lit);
   const set=new Set(lit), touched=new Set(); lit.forEach(l=>[l.k,l.m,l.c].forEach(n=>touched.add(n)));
   LK.forEach(l=>{const on=set.has(l), vis=!l.hidden&&(!l.rare||showRare);
     l.el.style.display=vis?"":"none"; l.hit.style.display=vis?"":"none"; l.pills.forEach(p=>{p.style.display=vis?"grid":"none";});
-    l.el.style.strokeOpacity=on?"0.95":any?"0.08":"0.38"; l.el.style.strokeWidth=(l.w+(on?1.6:0))+"px";
+    l.el.style.strokeOpacity=on?"0.95":any?"0.1":"0.38"; l.el.style.strokeWidth=(l.w+(on?1.6:0))+"px";
     if(on) l.el.parentNode.appendChild(l.el);});
   colsEl.querySelectorAll(".chips [data-li]").forEach(e=>{const l=LK.find(q=>q.i===+e.dataset.li);
     e.style.transition=`opacity .3s ${EASE}`; e.style.opacity=!sqOn?"0":any&&!(l&&set.has(l))?".22":"1";});
   colsEl.querySelectorAll("[data-node]").forEach(e=>{if(e.__tr) return; const t=touched.has(e.dataset.node); e.style.outline=t?"2px solid var(--strong)":""; e.style.outlineOffset="1px";});
   gX.querySelectorAll(".flowov").forEach(o=>o.remove());
   // lit routes draw themselves in, then one white pulse runs along each, once
-  if(anim&&!RM) lit.forEach((l,i)=>{
+  if(anim&&!RM) lit.filter(l=>!was.has(l)).forEach((l,i)=>{
     if(l.el.style.display==="none") return; let L; try{L=l.el.getTotalLength();}catch(e){return;}
     l.el.animate([{strokeDasharray:`${L} ${L}`,strokeDashoffset:L},{strokeDasharray:`${L} ${L}`,strokeDashoffset:0}],{duration:900,delay:i*60,easing:"cubic-bezier(.4,0,.2,1)",fill:"backwards"});
     const ov=document.createElementNS(NS,"path"); ov.setAttribute("d",l.el.getAttribute("d")); ov.setAttribute("class","flowov");
@@ -434,8 +452,9 @@ function placeNotes(notes,lines,stroke){
     n.card.style.left=n.x+"px"; n.card.style.top=n.y+"px";
     const cy=n.y+Math.min(22,n.h/2), cx=n.x, mx=(n.ax+cx)/2, ln=document.createElementNS(NS,"path");
     ln.setAttribute("d",`M${n.ax},${n.ay} C${mx},${n.ay} ${mx},${cy} ${cx},${cy}`);
-    ln.setAttribute("style",`fill:none;stroke:${stroke};stroke-width:1.3;stroke-opacity:.8;stroke-dasharray:2000;stroke-dashoffset:2000;animation:codraw .7s ${EASE} forwards;animation-delay:${k*90}ms`); lines.appendChild(ln);
-    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",n.ax); dot.setAttribute("cy",n.ay); dot.setAttribute("r",4.5); dot.setAttribute("style",`fill:${stroke};stroke:#fff;stroke-width:2`); lines.appendChild(dot);
+    const col=n.col||stroke;
+    ln.setAttribute("style",`fill:none;stroke:${col};stroke-width:1.2;stroke-opacity:.55;stroke-dasharray:1.5 4;stroke-linecap:round;opacity:0;animation:fadein .5s ${EASE} forwards;animation-delay:${200+k*90}ms`); lines.appendChild(ln);
+    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",n.ax); dot.setAttribute("cy",n.ay); dot.setAttribute("r",4.5); dot.setAttribute("style",`fill:#fff;stroke:${col};stroke-width:2`); lines.appendChild(dot);
   });
 }
 // on the IDP graphs the note also says how IMTM or the census counts the person
@@ -450,8 +469,8 @@ function callouts(s){
   if(!notes.length) return;
   const lines=lineSvg();
   notes.forEach((nt,k)=>{
-    const col=TC[nt.c.t]||"var(--ink)", card=document.createElement("div"); card.className="note"; card.style.animationDelay=k*90+"ms";
-    card.innerHTML=`<div class="nh">${numHtml(nt.c.n,nt.c.t)}<b>${nt.c.h}</b></div>${nt.c.ex?`<p>${nt.c.ex}</p>`:""}${outcome(nt.c.id)}${nt.n>1?`<span class="rt">${nt.n} routes</span>`:""}${nt.c.cite?`<span class="ct">${refHTML(nt.c.cite)}</span>`:""}`;
+    const col=TC[nt.c.t]||"var(--ink)", card=document.createElement("div"); card.className="note"; card.style.animationDelay=k*90+"ms"; card.style.setProperty("--tc",col); nt.col=col;
+    card.innerHTML=`<div class="nh"><span class="nn">${nt.c.n}</span><b>${nt.c.h}</b></div>${nt.c.ex?`<p>${nt.c.ex}</p>`:""}${outcome(nt.c.id)}${nt.n>1?`<span class="rt">${nt.n} routes</span>`:""}${nt.c.cite?`<span class="ct">${refHTML(nt.c.cite)}</span>`:""}`;
     notesEl.appendChild(card); nt.card=card;
     card.addEventListener("mouseenter",()=>trace(nt.c.id,col)); card.addEventListener("mouseleave",()=>untrace());});
   placeNotes(notes,lines,"var(--strong)");
@@ -471,8 +490,8 @@ function expNote(c){
   if(!rows.length) return;
   const lines=lineSvg();
   const notes=rows.map((r,k)=>{
-    const P=r.l.el.getPointAtLength(r.l.el.getTotalLength()*0.86), card=document.createElement("div"); card.className="note exp"; card.style.animationDelay=k*110+"ms";
-    card.innerHTML=`<div class="nh">${numHtml("E","e")}<span class="code">${r.code}</span><b>${r.h}</b></div><p>${r.ex}</p>${r.cite?`<span class="ct">${refHTML(r.cite)}</span>`:""}`;
+    const P=r.l.el.getPointAtLength(r.l.el.getTotalLength()*0.86), card=document.createElement("div"); card.className="note exp"; card.style.animationDelay=k*110+"ms"; card.style.setProperty("--tc","var(--v-prot)");
+    card.innerHTML=`<div class="nh"><span class="nn">E</span><span class="code">${r.code}</span><b>${r.h}</b></div><p>${r.ex}</p>${r.cite?`<span class="ct">${refHTML(r.cite)}</span>`:""}`;
     notesEl.appendChild(card);
     card.addEventListener("mouseenter",()=>paintLinks([r.l],true,false,false)); card.addEventListener("mouseleave",restore);
     return {ax:P.x,ay:P.y,card};
@@ -527,14 +546,24 @@ function laneFill(s){
 
 // ---------- scrolling: one step per screen ----------
 let navLock=0, stT=0, scrRaf=0;
+function enterSec(j){
+  if(j===curSec||!secs[j]) return; curSec=j; const el=secs[j];
+  if(el.dataset.chap){const k=+el.dataset.chap; showChap(k); applyS(CH[k].start);}
+  else {hideChap(); applyS(+el.dataset.i);}
+}
 function pickStep(){
   if(navLock>performance.now()) return;
-  const mid=innerHeight*0.5, i=steps.findIndex(s=>{const r=s.el.getBoundingClientRect(); return r.top<=mid&&r.bottom>mid;});
-  if(i<0||i===cur) return;
-  clearTimeout(stT); stT=setTimeout(()=>applyS(i),60);
+  const mid=innerHeight*0.5, j=secs.findIndex(e=>{const r=e.getBoundingClientRect(); return r.top<=mid&&r.bottom>mid;});
+  if(j<0||j===curSec) return;
+  clearTimeout(stT); stT=setTimeout(()=>enterSec(j),60);
 }
-function go(i){i=Math.max(0,Math.min(steps.length-1,i)); navLock=performance.now()+900; clearTimeout(stT); applyS(i); jump(i);}
-function jump(i){const r=steps[i].el.getBoundingClientRect(); scrollTo({top:scrollY+r.top,behavior:RM?"auto":"smooth"});}
+function goSec(j){
+  if(j>=secs.length){scrollTo({top:scrollY+$("#summary").getBoundingClientRect().top,behavior:RM?"auto":"smooth"}); return;}
+  if(j<0){scrollTo({top:0,behavior:RM?"auto":"smooth"}); return;}
+  navLock=performance.now()+900; clearTimeout(stT); enterSec(j);
+  const r=secs[j].getBoundingClientRect(); scrollTo({top:scrollY+r.top,behavior:RM?"auto":"smooth"});
+}
+function go(i){goSec(secs.indexOf(steps[Math.max(0,Math.min(steps.length-1,i))].el));}
 addEventListener("scroll",()=>{if(scrRaf) return; scrRaf=requestAnimationFrame(()=>{scrRaf=0; pickStep();});},{passive:true});
 addEventListener("scrollend",pickStep);
 addEventListener("keydown",e=>{
@@ -542,10 +571,7 @@ addEventListener("keydown",e=>{
   const r=stage.getBoundingClientRect(); if(r.bottom<80||r.top>innerHeight-80) return;
   const fwd=["ArrowDown","ArrowRight","PageDown"," "].includes(e.key), back=["ArrowUp","ArrowLeft","PageUp"].includes(e.key);
   if(!fwd&&!back) return; e.preventDefault();
-  const i=Math.max(0,cur)+(fwd?1:-1);
-  if(i>=steps.length){scrollTo({top:scrollY+$("#summary").getBoundingClientRect().top,behavior:RM?"auto":"smooth"}); return;}
-  if(i<0){scrollTo({top:0,behavior:RM?"auto":"smooth"}); return;}
-  go(i);
+  goSec(Math.max(0,curSec)+(fwd?1:-1));
 });
 new ResizeObserver(()=>{clearTimeout(stage.__t); stage.__t=setTimeout(()=>{
   if(!MS) return; const c=stage.clientWidth<1050;
@@ -554,5 +580,5 @@ new ResizeObserver(()=>{clearTimeout(stage.__t); stage.__t=setTimeout(()=>{
 // ---------- start ----------
 MS={irrs:model("irrs"),A:model("A"),B:model("B")};
 compact=stage.clientWidth<1050;
-applyS(0);
+enterSec(0);
 })();
