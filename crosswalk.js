@@ -570,6 +570,7 @@ const CASEB={
  P4:{t:"4",h:"Crossed the border briefly, recorded as from abroad",ex:"An IDP sheltered in a neighbouring country for four months, then came back to a different district.",a:"Still an IDP (back within 12 months).",b:"Previous residence or residence a year ago may be recorded as a foreign country, so the person looks like an international arrival, not an internal mover.",refs:"IRIS para 117 · P&R paras 5.74, 5.76"},
  P5:{t:"3",h:"IDP-related child moving home",ex:"A girl was born in the displacement camp; at six she moves with her parents back to their home district.",a:"IDP-related population, not an IDP.",b:"Lifetime internal migrant: place of birth differs from current residence.",refs:"IRIS para 78 · P&R paras 5.63, 5.64"},
  P6:{t:"3",h:"Internal migrant who is not an IDP",ex:"A young woman moves to the capital for work, or joins displaced relatives from another province.",a:"Not an IDP (voluntary move, or a non-displaced family member).",b:"Internal migrant. Only the reason for change of residence can tell her apart from an IDP.",refs:"IRIS paras 80, 115 · P&R paras 5.63, 5.81, 5.83"},
+ N:{t:"2",h:"Recently displaced",ex:"A family arrived in the camp two months ago and expects to go home: the census may still place them in their home district.",a:"IDP in a location of displacement from day one.",b:"Not yet a usual resident at the camp: counted at home, so a non-migrant until the duration criteria are met.",refs:"IRIS para 75 · P&R paras 2.61, 5.46, 5.54"},
  PN:{t:"E",h:"Neither moved nor displaced",ex:"A child of IDPs is born after the family settled in the town where they still live.",a:"IDP-related population (not an IDP).",b:"Non-migrant: born in the current civil division.",refs:"IRIS para 78 · P&R paras 5.63, 5.80"}
 };
 const TLA={E:"Aligned: IRIS exit matches IMTM emigration",2:"Crossed a border, still an IDP, not a migrant",4:"Counted differently by IRIS and IMTM",5:"Misalignment"};
@@ -590,13 +591,13 @@ const FLOWA={
  headline:"When displacement crosses an international border, <b>IRIS and IMTM only line up once a new country of residence is established</b>. Before that, and on return, the same person can be an IDP, a refugee or returnee, a returned migrant or a resident who never left."
 };
 const FLOWB={
- svg:"flowB",caseIds:["PE","PN","P1","P2","P3","P5","P6"],legend:"legendB",jump:"jumpB",hl:"hlB",cases:CASEB,tl:TLB,other:"P&R",
+ svg:"flowB",caseIds:["PE","PN","P1","P2","P3","P5","P6","N"],legend:"legendB",jump:"jumpB",hl:"hlB",cases:CASEB,tl:TLB,other:"P&R",
  left:[...IRISL,{g:"x",gl:"Outside IRIS",items:[["v1","Voluntary internal movers"]]}],
  mid:[{id:"MX",l:"Moved to another civil division",s:"province, district or municipality",k:"mig"},{id:"MW",l:"Moved within the same civil division",s:"same administrative area",k:"tmp"},{id:"MR",l:"Returned to the place of habitual residence",s:"after displacement elsewhere",k:"ret"},{id:"MN",l:"Did not move",s:"born there, or not displaced",k:"non"}],
  midHead:["What move happened?","IRIS paras 75, 115"], rightHead:["Census classification","P&R Rev. 4, paras 5.63-5.83"],
  right:[{id:"IM",l:"Internal migrant",s:"para 5.63",k:"pr"},{id:"NW",l:"Not an internal migrant: move within the division",s:"para 5.63",k:"pr"},{id:"NM",l:"Non-migrant: same place as birth or reference date",s:"paras 5.71-5.80",k:"pr"}],
  routes:[
-  ["d1","MX","IM","PE"],["d1","MW","NW","P1"],
+  ["d1","MX","IM","PE"],["d1","MW","NW","P1"],["d1","MX","NM","N"],
   ["d2","MR","NM","P2"],["d2","MR","IM","P3"],
   ["d3","MX","IM","PE"],["d3","MW","NW","P1"],
   ["d4","MN","NM","PN"],["d4","MX","IM","P5"],
