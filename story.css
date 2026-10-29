@@ -190,3 +190,19 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .hero-recs figure{margin:0;display:flex;flex-direction:column;gap:6px;align-items:center}
 .hero-recs img{height:96px;width:auto;border-radius:3px;border:1px solid var(--line);box-shadow:0 4px 12px rgba(20,35,76,.12)}
 .hero-recs figcaption{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+
+/* summary: every case by type */
+.ssum{scroll-snap-align:start;background:var(--bg);border-top:1px solid var(--line)}
+.ssum-in{max-width:1280px;margin:0 auto;padding:10vh 24px 12vh;display:flex;flex-direction:column;gap:14px}
+.ssum h2{margin:0;font-family:var(--f-display);font-weight:700;font-size:clamp(1.6rem,2.6vw,2.2rem);line-height:1.15;letter-spacing:-.02em;color:var(--strong)}
+.ssum-in>p{margin:0;font-size:1rem;line-height:1.55;color:var(--muted)}
+.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:10px;align-items:start}
+.sumcol{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--card-sh)}
+.sumcol .ty{align-self:flex-start;white-space:normal}
+.sumdef{margin:0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.sumcol ul{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.sumcol button{all:unset;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;padding:6px;border-radius:8px;width:100%;box-sizing:border-box}
+.sumcol button:hover,.sumcol button:focus-visible{background:var(--sunk)}
+.sumcol button:focus-visible{outline:2px solid var(--focus)}
+.sumcol b{display:block;font-family:var(--f-display);font-size:13.5px;font-weight:600;line-height:1.3;color:var(--strong)}
+.sumcol small{display:block;font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:2px}
