@@ -134,6 +134,8 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .note .nh{display:flex;gap:8px;align-items:center;margin-bottom:5px}
 .note b{font-family:var(--f-display);font-weight:700;font-size:13.5px;line-height:1.25;color:var(--strong)}
 .note p{margin:0;font-style:italic;font-size:13.5px;line-height:1.45}
+.note .ob{display:block;margin-top:6px;padding-top:6px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.4}
+.note .ob b{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;color:var(--imtm);margin-right:4px}
 .note .rt,.note .ct{display:block;margin-top:5px;font-family:var(--f-mono);font-size:10px;color:var(--muted)}
 .note .rt{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
 .note.exp{border-left:4px solid var(--v-prot);padding:9px 11px}
