@@ -8,23 +8,79 @@
 <link rel="stylesheet" href="story.css">
 </head>
 <body class="story">
-<header class="shero">
-  <span class="eyebrow">EGRISS Migration-Displacement task team · working draft</span>
-  <h1>Is every refugee an international migrant? Is every IDP an internal migrant?</h1>
-  <p>The refugee and IDP recommendations classify people by protection need and displacement. The migration recommendations classify them by where they live and whether that changed. This walk-through follows one graph, route by route: first the expected case, then each type of non-nested case, with a short description pinned to every line.</p>
-  <span class="sgo">Scroll to begin ↓</span>
+<header class="hero">
+  <span class="hero-eye">EGRISS Migration-Displacement task team · working draft</span>
+  <h1>Additional proposed non-nested cases</h1>
+  <p class="hero-paper">For the paper <i>Aligning International Recommendations: The importance of statistical coherence and practical guidance for measuring mobile populations</i></p>
+  <div class="rule"></div>
+  <div class="hero-q"><span>Is every refugee an international migrant?</span><span>Is every IDP an internal migrant?</span></div>
+  <div class="hero-ch" id="heroCh"></div>
 </header>
-<div class="sgrid">
-  <div class="stagewrap"><div class="sghead"></div><div id="stage"><div id="callouts"></div></div></div>
-  <div id="steps"></div>
+
+<div class="walk">
+  <nav class="snav">
+    <div class="snav-ch" id="navCh"></div>
+    <div class="snav-btn">
+      <button type="button" class="b-prev" id="prev" title="Previous step (↑)">↑</button>
+      <span class="counter" id="counter">01 / 29</span>
+      <button type="button" class="b-next" id="next" title="Next step (↓, → or space)">↓</button>
+    </div>
+    <a href="index.html">Open the crosswalk →</a>
+  </nav>
+  <div class="wgrid">
+    <div class="pane">
+      <div class="caprow">
+        <div class="caprow-l"><span class="eyebrow" id="eyebrow"></span><span class="caps" id="caps"></span><span class="types" id="types"></span></div>
+        <span class="gtitle" id="gtitle"></span>
+      </div>
+      <h2 id="head"></h2>
+      <div class="lead" id="lead"></div>
+      <div class="stage" id="stage">
+        <div class="layer gates" id="gates"></div>
+        <svg class="routes" id="routes"></svg>
+        <div class="cols" id="cols"></div>
+        <div class="layer pills" id="pills"></div>
+        <div class="layer notes" id="notes"></div>
+        <div class="pop" id="hov"></div>
+        <div class="pop tip" id="tip"></div>
+      </div>
+    </div>
+    <div class="steps" id="steps"></div>
+  </div>
 </div>
+
 <section class="send">
-  <h2>Now explore it yourself</h2>
-  <p>The full crosswalk has every route and case: click a pill for the case card with placements and paragraphs, click a box to isolate its routes, switch on the rare scenarios, or open the IDP timelines.</p>
-  <a class="sbtn" id="toCrosswalk" href="index.html">Open the crosswalk →</a>
+  <div class="send-in">
+    <div class="send-hd">
+      <span class="send-eye">End of the introduction</span>
+      <h2>Now explore it yourself</h2>
+      <div class="rule"></div>
+      <p>The full crosswalk has every route and case: click a numbered tag for the case card with placements and paragraphs, click a box to isolate its routes, switch on the rare scenarios, or open the IDP timelines.</p>
+    </div>
+    <div class="send-types">
+      <span>The five types of non-nested case</span>
+      <div>
+        <div><span class="n" style="background:var(--v-never)">1</span><span>Never moved</span></div>
+        <div><span class="n" style="background:var(--v-temp)">2</span><span>Not yet or not visible</span></div>
+        <div><span class="n" style="background:var(--v-other)">3</span><span>Migrant for a different reason</span></div>
+        <div><span class="n" style="background:var(--v-ret)">4</span><span>Counted differently</span></div>
+        <div><span class="n n5">5</span><span>Misalignment, the only type left unsettled</span></div>
+      </div>
+    </div>
+    <div class="send-links">
+      <a href="index.html#residents"><span class="k">View 1 · IRRS 2018 · IMTM 2025</span><span class="t">Refugees and international migration</span><span class="d">Every route and case card, with the paragraphs behind each placement.</span><span class="go">Open view 1 →</span></a>
+      <a href="index.html#temporary"><span class="k">View 2 · IRIS 2020 · IMTM · P&amp;R</span><span class="t">IDPs: IRIS against IMTM and the census</span><span class="d">Both IDP comparisons, and the worked timelines for an IDP who crosses a border.</span><span class="go">Open view 2 →</span></a>
+      <a href="index.html#nest"><span class="k">Overview · IRRS · IMTM · IRIS</span><span class="t">All cases on one picture</span><span class="d">Every NEST case placed on one diagram, filterable by type.</span><span class="go">Open the overview →</span></a>
+    </div>
+    <div class="send-act">
+      <a class="sbtn" href="index.html">Open the crosswalk →</a>
+      <button type="button" id="restart">Back to the start ↑</button>
+    </div>
+  </div>
 </section>
 
-
+<!-- the crosswalk markup, hidden: crosswalk.js needs it to build its data -->
+<div class="cwdata" hidden aria-hidden="true">
 <div class="wrap">
 <header>
   <span class="eyebrow">EGRISS Migration-Displacement task team · working draft <span class="draft">for discussion</span></span>
@@ -172,6 +228,8 @@
 </div>
 
 
+
+</div>
 
 <script src="crosswalk.js"></script>
 <script src="story.js"></script>

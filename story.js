@@ -1,258 +1,533 @@
-// ---------- guided tour: walks through the graph, then hands it over ----------
+// ---------- story walk-through: one step per screen, the graph built from cards ----------
 (function(){
 if(new URLSearchParams(location.search).get("embed")) return;
-const $=s=>document.querySelector(s);
-const B=[
- {s:"b0",cap:'<span class="type t-e">Expected route</span>',h:"A refugee crosses a border and stays",body:"Most refugees arrive, stay 12 months or more and become foreign-born foreign citizens in the resident population. Here IRRS and IMTM agree: the refugee is an international migrant.",cases:[],cite:"IRRS para 84 · IMTM para 34"},
- {s:"b1",cap:'<span class="fw fw-imtm">IMTM · Immigrants</span><span class="type t-3">Type 3</span>',h:"International migrants, but recorded for another reason",body:"These refugees are international migrants, so they nest. The reason IMTM records is not protection, so they disappear from any count of humanitarian migration.",cases:[
-   ["11","t-3","Refugee sur place","A student has lived in the country for three years when war breaks out at home and is recognised as a refugee.","IRRS 80 · IMTM 34, Box 1","c",1],
-   ["12","t-3","Refugee-like, on a visa or free movement","A man fled threats but entered on a three-year work visa and never applied for asylum.","IRRS 92.4 · IMTM 17","p"],
-   ["13","t-3","Reunified family member","A woman joins her refugee husband on a family reunification visa.","IRRS 94.3 · IMTM 17","c"]]},
- {s:"b2",cap:'<span class="fw fw-imtm">IMTM · Native-born foreign citizens</span><span class="type t-1">Type 1</span>',h:"In the immigrant stock without ever migrating",body:"IMTM counts everyone without citizenship in its immigrant stock. Refugees born in the country of asylum land here although they never crossed a border.<br><br><span class=\"type t-add\">Our addition</span> The box <b>No international migration</b> now appears on the graph. It sits outside the IMTM framework on purpose: IMTM has no category for residents who never changed country, yet births in exile, status changes and returns within 12 months all pass through it.",cases:[
-   ["1","t-1","Born in exile, derivative status","A girl is born to recognised refugees in a country that gives no citizenship at birth and receives refugee status through her parents.","IRRS 60, 90 · IMTM 25, 53","c",1],
-   ["3","t-1","Born under other protection","A child born to parents with subsidiary or temporary protection receives the same status, not citizenship.","IRRS 90, 92.3 · IMTM 57","p"],
-   ["2","t-1","Born here, facing removal","A man born to migrant parents loses his residence right at 18, faces removal to his parents' country and claims asylum.","IRRS 90, 92.2 · IMTM 53","p"],
-   ["4","t-1","Born in exile, status ceases, stays","Refugee status ends after peace returns to the parents' country; he stays without citizenship.","IRRS 67, 94.4 · IMTM 25","p"]]},
- {s:"b3",cap:'<span class="fw fw-imtm">IMTM · Native-born citizens</span><span class="type t-1">Type 1</span>',h:"Refugees and refugee background outside the immigrant stock",body:"Citizens born in the country are not in the immigrant stock at all, but some of them are refugees or have a refugee background.",cases:[
-   ["5","t-1","Palestine refugee with host citizenship","A Palestine refugee under UNRWA's mandate, born in the host country and a citizen from birth.","IRRS 78, 90 · IMTM 25","c"],
-   ["6","t-1","Child of refugees, citizen at birth","A boy born to refugee parents where citizenship comes with birthplace: refugee background, not a refugee.","IRRS 59, 94.2 · IMTM 25","c"],
-   ["7","t-1","Born in exile, later naturalised","A refugee born in the country of asylum naturalises at 18 and leaves the immigrant stock.","IRRS 94.1 · IMTM 58-61","p"],
-   ["8","t-1","Returnee away less than 12 months","A man's asylum claim abroad is rejected and he is back after six months: he never left the resident population.","IRRS 97.2 · IMTM Fig. 2","p"]]},
- {s:"b4",cap:'<span class="fw fw-imtm">IMTM · Foreign-born citizens</span><span class="type t-4">Type 4</span>',h:"Returnees who arrive for the first time",body:"IRRS defines home as the country of former habitual residence, which can be the parents' country.",cases:[
-   ["15","t-4","Child born in exile 'returns'","A boy born in a refugee camp abroad, with refugee status, repatriates with his parents to a country he has never lived in: an IRRS returnee, an IMTM first-time immigrant.","IRRS 95, 97.1 · IMTM 25","p"]]},
- {s:"b5",cap:'<span class="fw fw-imtm">IMTM · Returned migrants</span><span class="type t-4">Type 4</span>',h:"In the flow, not in the stock",body:"Refugees who come home after a year or more are returned migrants in the immigration flow, but as native-born citizens they never appear in the immigrant stock.",cases:[
-   ["14","t-4","Refugee returns after years abroad","A man returns home after eight years as a refugee abroad.","IRRS 97.1, 109 · IMTM 25, 27","c",1]]},
- {s:"b6",cap:'<span class="fw fw-imtm">IMTM · Temporary population</span><span class="type t-2">Type 2</span>',h:"Refugees who are not yet migrants",body:"IRRS has no duration rule; IMTM needs 12 months. Until then, asylum seekers and new arrivals are temporary population. They become migrants by elapsed time alone.",cases:[
-   ["9","t-2","Recent asylum seeker","A man filed his claim four months ago and does not yet know whether he can stay.","IRRS 85, 92.2 · IMTM 30, 33","c",1],
-   ["10","t-2","New prima facie or temporary protection arrival","A family arrived two months ago with a group recognised prima facie.","IRRS 55, 92.3 · IMTM 30, 33","c"]]},
- {s:"b7",cap:'<span class="type t-1">Result</span>',h:"Most refugee categories include people who never migrated",body:"Of the 14 IRRS categories, 12 include common or plausible cases of residents who never changed country of residence. Only the refugee-like and reunified family categories always arrive as international migrants. The two recommendations are consistent: IRRS para 80 and IMTM para 53 both say so. The assumption that every refugee is a migrant is what fails.",cases:[],cite:"IRRS paras 77, 80 · IMTM paras 34, 53"}
-];
-const C=[
- {s:"c0",cap:'<span class="type t-e">Expected route</span>',h:"An IDP who stays inside the country",body:"Displaced, but still usually resident in the country: no international migration in IMTM, and IRIS agrees. Nationality does not matter.",cases:[],cite:"IRIS paras 102, 116 · IMTM para 25"},
- {s:"c1",cap:'<span class="fw fw-imtm">IMTM · Residents temporarily abroad</span><span class="type t-2">Type 2</span>',h:"Crossed a border, still an IDP",body:"IRIS keeps people in the IDP stock if they come back within 12 months without a new residence abroad. IMTM agrees they never left the resident population, but nobody counts the border crossing.",cases:[
-   ["D3","t-2","Back within 12 months","After an attack a family shelters across the border for five months and comes back, but cannot return home.","IRIS 75, 117 · IMTM 23, Fig. 2","c",1]]},
- {s:"c2",cap:'<span class="fw fw-imtm">IMTM · Emigrants</span><span class="type t-5">Type 5</span>',h:"The real misalignment: claiming asylum abroad",body:"Until a new country of residence is established, the same person can be an IDP at home and an asylum seeker abroad. IRIS, IRRS and IMTM each have a rule; none settles the overlap.",cases:[
-   ["D7","t-5","IDP claims asylum abroad","An IDP crosses the border and files an asylum claim; for months she has no established residence there.","IRIS 98-99, 117 · IRRS 92.2 · IMTM 33","c",1],
-   ["16","t-5","Rejected and back within 12 months","An IDP's claim abroad is rejected and she is home after five months: an IDP under IRIS para 117 and an IRRS returnee.","IRIS 86, 117 · IRRS 97.2","p"]],
-  aligned:"Aligned: IDPs who settle abroad for 12 months or more leave the IDP stock by emigration, exactly as IMTM counts them (D6, D8; IRIS 83, 84, 98)."},
- {s:"c3",cap:'<span class="fw fw-imtm">IMTM · Returned migrants</span><span class="type t-4">Type 4</span>',h:"Back home, but not an IDP",body:"People who lived abroad for a year or more and come back are returned migrants. IRIS does not count them as IDPs, even when they cannot reach their home, unless they are displaced again.",cases:[
-   ["D9","t-4","Returned refugee who cannot go home","A refugee repatriates after six years but cannot reach her village and lives in a camp near the capital.","IRIS 86 · IRRS 97.1 · IMTM 27","c",1],
-   ["D10","t-4","Disaster-displaced, back after 12+ months","After an earthquake a man lives abroad for 18 months, comes back, and finds his town destroyed.","IRIS 88, 89 · IMTM 27","p"],
-   ["D4","t-4","Back after 12+ months, displaced again","A returned migrant is forced from his home again by a flood: an IDP again from that moment.","IRIS 89 · IMTM 27","p"]]},
- {s:"c4",cap:'<span class="fw fw-imtm">IMTM · Immigrants</span><span class="type t-3">Type 3</span>',h:"International migrants who become IDPs",body:"Because nationality is irrelevant for IRIS, foreign residents displaced inside the country are IDPs and international migrants at once, with work or family recorded as the reason for migration.",cases:[
-   ["D1","t-3","Immigrant first, IDP later","A foreign worker who has lived in the country for ten years loses his home in an earthquake.","IRIS 102 · IMTM 17, 25","c",1],
-   ["D2","t-4","Stateless IDP born in the country","A stateless man born in the country is displaced by flooding: never migrated, yet in the immigrant stock.","IRIS 102 · IMTM 25, 53","p"]]}
-];
-const D=[
- {s:"d0",cap:'<span class="type t-e">Expected route</span>',h:"Displaced to another district",body:"An IDP who moves across a civil division boundary is also an internal migrant: usually resident in one division, previously in another.",cases:[],cite:"IRIS para 115 · P&R para 5.64"},
- {s:"d1",cap:'<span class="fw fw-pr">P&amp;R · Moves within the division</span><span class="type t-1">Type 1</span>',h:"Displaced, but not an internal migrant",body:"IRIS counts any forced move from the dwelling. The census does not count moves inside a civil division as migration. How many IDPs fall here depends on how small the divisions are.",cases:[
-   ["P1","t-1","Displaced within the same district","After a landslide a family moves to an evacuation shelter two kilometres away, in the same municipality.","IRIS 115 · P&R 5.64, 5.69-5.70","c",1]]},
- {s:"d2",cap:'<span class="fw fw-pr">P&amp;R · Non-migrants</span><span class="type t-2">Type 2</span>',h:"IDPs the reference-date question cannot see",body:"The census often asks where people lived one or five years ago. IDPs who returned home within that period, or who were displaced before it, look like people who never moved.",cases:[
-   ["P2+","t-2","Protracted IDPs","A family displaced seven years ago still lives in the camp: residence five years ago and today are the same place.","IRIS 81 · P&R 5.77-5.78","c",1],
-   ["P2","t-2","Returned home within the period","A family displaced three years ago is back in its village but still lacks housing and documents.","IRIS 75 · P&R 5.77","c"],
-   ["P7","t-2","IDP-related child born after the reference date","Neither migrant nor IDP; the census treats young children separately.","IRIS 78 · P&R 5.81","p"]]},
- {s:"d3",cap:'<span class="fw fw-pr">P&amp;R · Internal migrants</span><span class="type t-3">Type 3</span>',h:"Internal migrants who are not IDPs",body:"Only the census question on reason for change of residence, with its forced displacement option, separates these people from IDPs.",cases:[
-   ["P6","t-3","Voluntary movers and joining relatives","A young woman moves to the capital for work, or joins displaced relatives from another province.","IRIS 80 · P&R 5.64, 5.82-5.84","c",1],
-   ["P5","t-3","IDP-related child moving home","A girl born in the displacement camp moves home with her parents at six: a lifetime internal migrant.","IRIS 78 · P&R 5.65","p"],
-   ["d6","t-3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.64","c"]]},
- {s:"d4",cap:'<span class="fw fw-pr">P&amp;R · Last move and moves from abroad</span><span class="type t-4">Type 4</span>',h:"Counted, but differently",body:"The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival.",cases:[
-   ["P3","t-4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.72-5.75","c",1],
-   ["P4","t-4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.75, 5.77","p"]]},
- {s:"d5",cap:'<span class="fw fw-pr">P&amp;R · Not yet usual residents</span><span class="type t-2">Type 2</span>',h:"Too recent to count where they are",body:"Usual residence needs six or twelve months, or the intention to stay. People who intend to return home, as many IDPs do, may be counted at the address they fled. IRIS counts them from day one.",cases:[
-   ["N","t-2","Recently displaced","A family arrived in the camp two months ago and expects to go home: the census may still place them in their home district.","IRIS 75 · P&R 2.51, 5.55","c",1]]}
+const $=s=>document.querySelector(s), NS="http://www.w3.org/2000/svg";
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches, EASE="cubic-bezier(.2,0,.1,1)";
+
+// steps: g graph, build columns shown (L, M, R, sq, links), hide node ids, focus (col:L|M|R, node:id, gate, frame),
+// exp expected-route case, cap source badges, h title, body paragraphs (the first is the caption), cases [n, id, type, title, example, paragraphs]
+const STEPS=[
+ {g:"irrs",build:"L",focus:"col:L",cap:["IRRS 2018 · Figure 3.1"],h:"Left: the IRRS framework",body:["Three groups, as in IRRS Figure 3.1: <b>a</b> in need of international protection, <b>b</b> with a refugee background, <b>c</b> returned after seeking protection abroad.","IRRS has no duration rule: a person enters by arrival, birth or a change of status. The codes a1 to c4 follow every route."]},
+ {g:"irrs",build:"L,M",hide:"NON",focus:"col:M,gate",cap:["IMTM 2025 · Figure 2"],h:"Middle: what kind of stay was it?",body:["IMTM sorts arrivals by duration. <b>Immigrants</b> change their country of residence. <b>Returned migrants</b> are previous residents back after 12 months or more. <b>Temporary mobility</b> stays below the 12-month rule.","The dashed arrow is IMTM para 33: an asylum seeker whose stay passes the minimum duration becomes a new resident."]},
+ {g:"irrs",build:"L,M,R,sq",hide:"NON",focus:"node:NBC,node:FBC,node:NBFC,node:FBFC,frame",cap:["IMTM 2025 · Figure 6"],h:"Right: where the person ends up",body:["The resident population by birthplace and citizenship. The three dashed groups form the IMTM immigrant stock: born abroad <b>or</b> a foreign citizen.","<span>Addition for overview</span> The small squares are IRRS codes. Each square is one route landing in that group, so you can read off which refugee categories end up where."]},
+ {g:"irrs",build:"L,M,R,sq",hide:"NON",focus:"node:TMP,node:TEMP",cap:["Addition for overview"],h:"Temporary stays have their own destination",body:["<b>Temporary population</b>: present in the country, not yet resident. Temporary mobility lands here until the 12-month rule is met. IMTM shows it in Figure 2, not in Figure 6, so we added it beside the resident groups."]},
+ {g:"irrs",hide:"NON",legend:1,tour:1,cap:["Reading the routes"],h:"Each line is a route, each number a case",body:["Each line runs from an IRRS category, through the type of stay, to a resident group. <b>Colour</b> is the type of case, <b>thickness</b> the number of cases, and the <b>numbered tags</b> are the cases.","From here on, the routes light up one type at a time, starting with the expected case. The notes on the graph are the same short descriptions you get when you hover a line."]},
+ {g:"irrs",hide:"NON",legend:1,cap:["Paper and proposed wording"],h:"Is every refugee an international migrant?",body:["The paper asks whether refugees always nest inside international migrants. The next eight steps show where they don't.","<span>Paper</span> \"A refugee may not be an international migrant (IRRS versus IMTM)\": mismatches or nesting issues, where a population \"may be classified in more than one, does not neatly nest within or sits outside the existing frameworks\".","<span>Proposed</span> a <b>non-nested case</b> wherever one population does not sit inside the other, in five types: 1 never moved, 2 not yet or not visible, 3 migrant for a different reason, 4 counted differently, 5 misalignment. Only type 5 is left unsettled by the recommendations."]},
+ {g:"irrs",hide:"NON",exp:"E",cap:[],h:"A refugee crosses a border and stays",body:["Most refugees arrive, stay 12 months or more and become foreign-born foreign citizens in the resident population. Here IRRS and IMTM agree: the refugee is an international migrant."]},
+ {g:"irrs",cap:["IMTM · Native-born foreign citizens"],h:"In the IRRS refugee stock without ever moving",body:["Refugees born in the country of asylum are in the IRRS refugee stock, but they never crossed a border. IMTM does not count them as international migrants: they did not come in as international arrivals.","<span>Addition for overview</span> The box <b>No international migration</b> now appears on the graph. It shows inflows from the population already in the country: births in exile, status changes and returns within 12 months go straight to a resident group without anyone changing country. IMTM has no box for these inflows, so it sits outside the IMTM framework."],cases:[["1","1","1","Born in exile, derivative status","A girl is born to recognised refugees in a country that gives no citizenship at birth and receives refugee status through her parents.","IRRS 60, 90 · IMTM 25, 53"],
+   ["3","3","1","Born under other protection","A child born to parents with subsidiary or temporary protection receives the same status, not citizenship.","IRRS 90, 92.3 · IMTM 57"],
+   ["2","2","1","Born here, facing removal","A man born to migrant parents loses his residence right at 18, faces removal to his parents' country and claims asylum.","IRRS 90, 92.2 · IMTM 53"],
+   ["4","4","1","Born in exile, status ceases, stays","Refugee status ends after peace returns to the parents' country; he stays without citizenship.","IRRS 67, 94.4 · IMTM 25"]]},
+ {g:"irrs",cap:["IMTM · Native-born citizens"],h:"Refugees and refugee background outside the immigrant stock",body:["Citizens born in the country are not in the immigrant stock at all, but some of them are refugees or have a refugee background."],cases:[["5","5","1","Palestine refugee with host citizenship","A Palestine refugee under UNRWA's mandate, born in the host country and a citizen from birth.","IRRS 78, 90 · IMTM 25"],
+   ["6","6","1","Child of refugees, citizen at birth","A boy born to refugee parents where citizenship comes with birthplace: refugee background, not a refugee.","IRRS 59, 94.2 · IMTM 25"],
+   ["7","7","1","Born in exile, later naturalised","A refugee born in the country of asylum naturalises at 18 and leaves the immigrant stock.","IRRS 94.1 · IMTM 58-61"],
+   ["8","8","1","Returnee away less than 12 months","A man's asylum claim abroad is rejected and he is back after six months: he never left the resident population.","IRRS 97.2 · IMTM Fig. 2"]]},
+ {g:"irrs",cap:["IMTM · Temporary population"],h:"Refugees in temporary mobility, not yet migrants",body:["IRRS has no duration rule; IMTM needs 12 months. Until then, asylum seekers and new arrivals are temporary population. They become migrants by elapsed time alone."],cases:[["9","9","2","Recent asylum seeker","A man filed his claim four months ago and does not yet know whether he can stay.","IRRS 85, 92.2 · IMTM 30, 33"],
+   ["10","10","2","New prima facie or temporary protection arrival","A family arrived two months ago with a group recognised prima facie.","IRRS 55, 92.3 · IMTM 30, 33"]]},
+ {g:"irrs",cap:["IMTM · Immigrants"],h:"International migrants, but recorded for another reason",body:["These refugees are international migrants, so they nest. The reason IMTM records is not protection, so they disappear from any count of humanitarian migration."],cases:[["11","11","3","Refugee sur place","A student has lived in the country for three years and is already part of the resident population when war breaks out at home and he is recognised as a refugee.","IRRS 80 · IMTM 34, Box 1"],
+   ["12","12","3","Refugee-like, on a visa or free movement","A man fled threats but entered on a three-year work visa and never applied for asylum.","IRRS 92.4 · IMTM 17"]]},
+ {g:"irrs",cap:["IMTM · Foreign-born citizens"],h:"Returnees who arrive for the first time",body:["IRRS defines home as the country of former habitual residence, which can be the parents' country, so a child born in exile can 'return' to a country they have never lived in."],cases:[["15","15","4","Child born in exile 'returns'","A boy born in a refugee camp abroad, with refugee status, repatriates with his parents to a country he has never lived in: an IRRS returnee, an IMTM first-time immigrant.","IRRS 95, 97.1 · IMTM 25"]]},
+ {g:"irrs",cap:["IMTM · Returned migrants"],h:"In the flow, not in the stock",body:["Refugees who come home after a year or more are returned migrants in the immigration flow, but as native-born citizens they never appear in the immigrant stock."],cases:[["14","14","4","Refugee returns after years abroad","A man returns home after eight years as a refugee abroad.","IRRS 97.1, 109 · IMTM 25, 27"]]},
+ {g:"irrs",cap:["Result"],h:"Most refugee categories include people who never migrated",body:["12 of the 14 IRRS categories include people who never changed country. The recommendations agree (IRRS para 80, IMTM para 53); the assumption that every refugee is a migrant is what fails.","Only the refugee-like and reunified family categories always arrive as international migrants."]},
+ {g:"A",build:"L",focus:"col:L",cap:["IRIS 2020 · Figures 3.1, 3.2"],h:"IDPs: the same graph, IRIS on the left",body:["The IDP stock (locations of displacement, return, other settlement) and IDP-related children follow IRIS Figure 3.1.","<span>Addition for overview</span> The three cross-border groups of IRIS Figure 3.2 (para 82) sit below, outside the IDP stock.","<span>Paper</span> no dedicated section; touched on under temporal coherence. <span>Proposed</span> What happens when an IDP crosses a border?"]},
+ {g:"A",build:"L,M,R",focus:"node:EMI,node:ABR",cap:["Addition for overview"],h:"People who leave the country",body:["IDPs who settle abroad leave the IDP stock by emigration (IRIS paras 98-99). We added the two Figure 6 groups they land in; most IDPs are citizens."]},
+ {g:"A",exp:"DE",cap:[],h:"An IDP who stays inside the country",body:["Displaced, but still usually resident in the country: no international migration in IMTM, and IRIS agrees. Nationality does not matter."]},
+ {g:"A",cap:["IMTM · Residents temporarily abroad"],h:"Crossed a border, still an IDP",body:["IRIS keeps people in the IDP stock if they come back within 12 months without a new residence abroad. IMTM agrees they never left the resident population, but nobody counts the border crossing."],cases:[["D3","D3","2","Back within 12 months","After an attack a family shelters across the border for five months and comes back, but cannot return home.","IRIS 75, 117 · IMTM 23, Fig. 2"]]},
+ {g:"A",cap:["IMTM · Immigrants"],h:"International migrants who become IDPs",body:["Because nationality is irrelevant for IRIS, foreign residents displaced inside the country are IDPs and international migrants at once, with work or family recorded as the reason for migration."],cases:[["D1","D1","3","Immigrant first, IDP later","A foreign worker who has lived in the country for ten years loses his home in an earthquake.","IRIS 102 · IMTM 17, 25"],
+   ["D2","D2","4","Stateless IDP born in the country","A stateless man born in the country is displaced by flooding: never migrated, yet in the immigrant stock.","IRIS 102 · IMTM 25, 53"]]},
+ {g:"A",cap:["IMTM · Returned migrants"],h:"Back home, but not an IDP",body:["People who lived abroad for a year or more and come back are returned migrants. IRIS does not count them as IDPs, even when they cannot reach their home, unless they are displaced again."],cases:[["D9","D9","4","Returned refugee who cannot go home","A refugee repatriates after six years but cannot reach her village and lives in a camp near the capital.","IRIS 86 · IRRS 97.1 · IMTM 27"],
+   ["D10","D10","4","Disaster-displaced, back after 12+ months","After an earthquake a man lives abroad for 18 months, comes back, and finds his town destroyed.","IRIS 88, 89 · IMTM 27"],
+   ["D4","D4","4","Back after 12+ months, displaced again","A returned migrant is forced from his home again by a flood: an IDP again from that moment.","IRIS 89 · IMTM 27"]]},
+ {g:"A",cap:["IMTM · Emigrants"],h:"The real misalignment: claiming asylum abroad",body:["Until a new country of residence is established, the same person can be an IDP at home and an asylum seeker abroad. IRIS, IRRS and IMTM each have a rule; none settles the overlap."],cases:[["D7","D7","5","IDP claims asylum abroad","An IDP crosses the border and files an asylum claim; for months she has no established residence there.","IRIS 98-99, 117 · IRRS 92.2 · IMTM 33"],
+   ["16","16","5","Rejected and back within 12 months","An IDP's claim abroad is rejected and she is home after five months: an IDP under IRIS para 117 and an IRRS returnee.","IRIS 86, 117 · IRRS 97.2"]]},
+ {g:"B",build:"L,M",focus:"col:M",cap:["Addition for overview"],h:"Middle: what move happened?",body:["IRIS records displacement; the census records moves. To join them we added a middle column on the move itself, taken from IRIS paras 75 and 115.","The four moves: to another civil division, within the same division, back home, or no move.","<span>Paper</span> \"An IDP may not be an internal migrant (IRIS versus P&amp;R Rev.4)\". <span>Proposed</span> Is every IDP an internal migrant?"]},
+ {g:"B",focus:"col:R",cap:["P&amp;R Rev. 4"],h:"Right: the census classification",body:["P&amp;R has no figure for internal migration, so the three outcomes are derived from its paragraphs: <b>internal migrant</b> (para 5.64), <b>move within the division</b>, which is not migration (para 5.64), and <b>non-migrant</b> by birth or reference date (paras 5.72-5.81).","<span>Addition for overview</span> Voluntary internal movers, outside IRIS, reach the same census boxes."]},
+ {g:"B",exp:"PE",cap:[],h:"Displaced to another district",body:["An IDP who moves across a civil division boundary is also an internal migrant: usually resident in one division, previously in another."]},
+ {g:"B",cap:["P&amp;R · Moves within the division"],h:"Displaced, but not an internal migrant",body:["IRIS counts any forced move from the dwelling. The census does not count moves inside a civil division as migration. How many IDPs fall here depends on how small the divisions are."],cases:[["P1","P1","1","Displaced within the same district","After a landslide a family moves to an evacuation shelter two kilometres away, in the same municipality.","IRIS 115 · P&R 5.64, 5.69-5.70"]]},
+ {g:"B",cap:["P&amp;R · Non-migrants"],h:"IDPs the reference-date question cannot see",body:["The census often asks where people lived one or five years ago. IDPs who returned home within that period, or who were displaced before it, look like people who never moved."],cases:[["P2+","P2","2","Protracted IDPs","A family displaced seven years ago still lives in the camp: residence five years ago and today are the same place.","IRIS 81 · P&R 5.77-5.78"],
+   ["P2","P2","2","Returned home within the period","A family displaced three years ago is back in its village but still lacks housing and documents.","IRIS 75 · P&R 5.77"],
+   ["P7","P7","2","IDP-related child born after the reference date","Neither migrant nor IDP; the census treats young children separately.","IRIS 78 · P&R 5.81"]]},
+ {g:"B",cap:["P&amp;R · Not yet usual residents"],h:"Too recent to count where they are",body:["Usual residence needs six or twelve months, or the intention to stay. People who intend to return home, as many IDPs do, may be counted at the address they fled. IRIS counts them from day one."],cases:[["N","N","2","Recently displaced","A family arrived in the camp two months ago and expects to go home: the census may still place them in their home district.","IRIS 75 · P&R 2.51, 5.55"]]},
+ {g:"B",cap:["P&amp;R · Internal migrants"],h:"Internal migrants who are not IDPs",body:["Only the census question on reason for change of residence, with its forced displacement option, separates these people from IDPs."],cases:[["P6","P6","3","Voluntary movers and joining relatives","A young woman moves to the capital for work, or joins displaced relatives from another province.","IRIS 80 · P&R 5.64, 5.82-5.84"],
+   ["P5","P5","3","IDP-related child moving home","A girl born in the displacement camp moves home with her parents at six: a lifetime internal migrant.","IRIS 78 · P&R 5.65"],
+   ["d6","d6","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.64"]]},
+ {g:"B",cap:["P&amp;R · Last move and moves from abroad"],h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.72-5.75"],
+   ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.75, 5.77"]]}
 ];
 
-const G={irrs:()=>({svg:$("#flow"),N:node,LK:LINKS,main:true}),A:()=>({svg:$("#flowA"),N:FLOWA.N,LK:FLOWA.LK,F:FLOWA}),B:()=>({svg:$("#flowB"),N:FLOWB.N,LK:FLOWB.LK,F:FLOWB})};
-const TAB={irrs:"residents",A:"temporary",B:"temporary"};
-const NS="http://www.w3.org/2000/svg";
-const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const cache=new Map();
-function items(g){
-  if(cache.has(g.svg)) return cache.get(g.svg);
-  const xs=c=>Object.values(g.N).filter(n=>n.col===c&&n.x!=null).map(n=>n.x);
-  const bL=Math.min(...xs("m"))-30,bR=Math.min(...xs("c"))-40,out=[];
-  const walk=el=>{[...el.children].forEach(ch=>{ if(ch.id==="spot"||ch.tagName==="defs"||ch.tagName==="title") return;
-    const cl=ch.getAttribute("class")||"";
-    if(/\b(route|hit)\b/.test(cl)||cl.includes("pillG")){out.push([ch,"links"]);return;}
-    if(cl.includes("sqG")){out.push([ch,"sq"]);return;}
-    if(ch.tagName==="g"&&!cl.includes("node")&&ch.children.length&&[...ch.children].some(k=>/route|hit|pillG|node|sqG/.test(k.getAttribute("class")||""))){walk(ch);return;}
-    let b;try{b=ch.getBBox();}catch(e){return;} if(!b.width&&!b.height) return;
-    const cx=b.x+b.width/2; out.push([ch,cx<bL?"L":cx<bR?"M":"R"]);
-    if(ch.tagName==="g"&&cl.includes("node")) ch.querySelectorAll(".sqG").forEach(s=>out.push([s,"sq"]));});};
-  walk(g.svg); cache.set(g.svg,out); return out;}
-function build(g,cats){items(g).forEach(([e,k])=>{const on=!cats||cats.includes(k);e.style.transition="opacity .6s ease, transform .6s ease";e.style.transformBox="fill-box";e.style.opacity=on?"":"0";e.style.transform=on||RM?"":"translateX(-14px)";e.style.pointerEvents=on?"":"none";});}
-const hitOf=(g,l)=>[...g.svg.querySelectorAll(".hit")].find(h=>h.getAttribute("d")===l.el.getAttribute("d"));
-function hide(g,ids){
-  g.svg.querySelectorAll("[data-thid]").forEach(e=>{e.style.display="";e.removeAttribute("data-thid");});
-  const off=e=>{if(e){e.style.display="none";e.setAttribute("data-thid","1");}};
-  Object.entries(g.N).forEach(([id,n])=>{if(ids.includes(id)) off(n.g);});
-  g.LK.forEach((l,li)=>{if(ids.includes(l.k)||ids.includes(l.m)||ids.includes(l.c)){off(l.el);off(hitOf(g,l));if(g.main) g.svg.querySelectorAll(`[data-li="${li}"]`).forEach(off);}});
-  if(g.main&&ids.includes("NON")) g.svg.querySelectorAll("text").forEach(t=>{if(t.textContent==="OUTSIDE THE IMTM FRAMEWORK") off(t);});}
-const casesOf=(g,l)=>g.main?l.rs.map(r=>r.case):l.cs;
-function show(g,ids){
-  const ls=g.LK.filter(l=>casesOf(g,l).some(c=>ids.includes(c))),any=ls.length>0;
-  g.LK.forEach(l=>{l.el.classList.toggle("dim",any&&!ls.includes(l));l.el.classList.toggle("hi",any&&ls.includes(l));});
-  if(g.main){g.svg.querySelectorAll(".sqG").forEach(s=>s.classList.toggle("dimq",any&&!ls.includes(LINKS[+s.dataset.li])));
-    const t=new Set(any?ls.flatMap(l=>[l.k,l.m,l.c]):[]);Object.values(node).forEach(n=>n.g&&n.g.classList.toggle("touch",t.has(n.id)));}
-  if(any) ls.forEach(l=>l.el.parentNode.insertBefore(l.el,l.el.parentNode.querySelector(".hit")));
-  // flowing animation: new routes draw themselves in, then particles run along them
-  g.svg.querySelectorAll(".flowov").forEach(o=>o.remove());
-  if(!RM) ls.forEach((l,i)=>{ if(l.el.style.display==="none") return; const wasOn=l.__on; drawIn(l.el,wasOn?0:i*60);
-    const ov=document.createElementNS(NS,"path"); ov.setAttribute("d",l.el.getAttribute("d")); ov.setAttribute("class","flowov"); ov.style.animationDelay=(-(i%7)*0.17)+"s"; l.el.after(ov);});
-  g.LK.forEach(l=>l.__on=ls.includes(l));
-  g.svg.querySelectorAll(".pillG").forEach(p=>{const on=any&&ids.includes(p.dataset.case);p.classList.toggle("faded",any&&!on);p.classList.toggle("on",on);});
-  document.body.classList.toggle("show-rare",T.rare0||ls.some(l=>l.rare));}
-function drawIn(el,delay){ if(el.__drawn&&!delay&&el.__on) return; let L; try{L=el.getTotalLength();}catch(e){return;}
-  el.style.transition="none"; el.style.strokeDasharray=L; el.style.strokeDashoffset=L; el.getBoundingClientRect();
-  setTimeout(()=>{el.style.transition="stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"; el.style.strokeDashoffset=0;},delay||0);
-  clearTimeout(el.__t); el.__t=setTimeout(()=>{el.style.strokeDasharray="";el.style.strokeDashoffset="";el.style.transition="";},(delay||0)+1050);}
-function hl(g,li){g.LK.forEach((l,i)=>l.el.classList.toggle("hov",i===li));g.svg.classList.toggle("hovering",li!=null);
-  if(li!=null){const l=g.LK[li];l.el.parentNode.insertBefore(l.el,l.el.parentNode.querySelector(".hit"));}}
-function focus(g,tg){
-  let sp=g.svg.querySelector("#spot"); const vb=g.svg.viewBox.baseVal;
-  const els=[]; (tg||[]).forEach(t=>{if(t.startsWith("node:")){const n=g.N[t.slice(5)];if(n&&n.g) els.push(n.g);} else if(t.startsWith("nth:")){const [,sel,i]=t.split("|");const e=g.svg.querySelectorAll(sel)[+i];if(e) els.push(e);}});
-  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; els.forEach(e=>{const b=e.getBBox();if(!b.width&&!b.height)return;x0=Math.min(x0,b.x);y0=Math.min(y0,b.y);x1=Math.max(x1,b.x+b.width);y1=Math.max(y1,b.y+b.height);});
-  if(x0>x1){ if(sp){sp.style.opacity="0"; const s=sp; setTimeout(()=>{if(s.style.opacity==="0") s.remove();},500);} return null; }
-  x0-=10;y0-=10;x1+=10;y1+=10; const to=[x0,y0,x1,y1];
-  if(!sp){ sp=document.createElementNS(NS,"g"); sp.id="spot"; sp.setAttribute("pointer-events","none"); sp.style.transition="opacity .5s ease"; sp.style.opacity="0";
-    const pa=document.createElementNS(NS,"path"); pa.setAttribute("fill-rule","evenodd"); pa.setAttribute("style","fill:var(--bg);opacity:.6"); sp.appendChild(pa);
-    const r=document.createElementNS(NS,"rect"); r.setAttribute("rx",12); r.setAttribute("style","fill:none;stroke:var(--ink);stroke-width:2.5"); sp.appendChild(r);
-    sp.__box=[vb.x,vb.y,vb.x+vb.width,vb.y+vb.height]; }
-  g.svg.appendChild(sp); requestAnimationFrame(()=>sp.style.opacity="1");
-  const from=sp.__box.slice(), t0=performance.now(), D=RM?0:650, ease=k=>k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
-  const paint=b=>{const [a,b2,c,d]=b; sp.firstChild.setAttribute("d",`M${vb.x-50},${vb.y-50}h${vb.width+100}v${vb.height+100}h${-vb.width-100}z M${a},${b2}v${d-b2}h${c-a}v${b2-d}z`);
-    const r=sp.lastChild; r.setAttribute("x",a);r.setAttribute("y",b2);r.setAttribute("width",c-a);r.setAttribute("height",d-b2); sp.__box=b;};
-  cancelAnimationFrame(sp.__raf);
-  const tick=now=>{const k=D?Math.min(1,(now-t0)/D):1, e=ease(k); paint(from.map((v,i)=>v+(to[i]-v)*e)); if(k<1) sp.__raf=requestAnimationFrame(tick);};
-  sp.__raf=requestAnimationFrame(tick);
-  return {y:y0,y1};}
-// on wide screens the graph runs the full page width, taller than the window, and pans to the part each step is about
-const wide=()=>innerWidth>900;
-function pan(g,fb){ const sv=g.svg; if(!wide()){sv.style.transform="";sv.style.height="100%";return;}
-  const vb=sv.viewBox.baseVal, H=stage.clientHeight, W=stage.clientWidth;
-  const h=W*vb.height/vb.width, k=W/vb.width; sv.style.height=h+"px";
-  let ty=0; if(fb){const top=(fb.y-vb.y)*k, bot=(fb.y1-vb.y)*k; ty=bot-top>H-32?16-top:H/2-(top+bot)/2;}
-  sv.style.transform=`translateY(${Math.round(Math.min(0,Math.max(H-h,ty)))}px)`;}
-function routesFor(g,id){
-  const rows=[]; g.LK.forEach((l,li)=>{ if(l.el.style.display==="none") return;
-    if(g.main){l.rs.filter(r=>r.case===id).forEach(r=>{const cat=CATS.find(c=>c.id===l.k);rows.push({li,path:`${l.k} ${cat?cat.l:""} → ${(MIDLAB[l.m]||[l.m])[0]} → ${CELLS.find(c=>c.id===l.c).l}`,ex:r.ex,rule:r.t,cite:r.ref,lk:r.lk,rare:l.rare});});}
-    else if(l.cs.includes(id)) rows.push({li,path:`${l.k} ${g.N[l.k].l} → ${g.N[l.m].l} → ${g.N[l.c].l}`,rare:l.rare});});
-  return rows;}
+const CH=[
+ {label:"Introduction",sub:"The three columns of the graph",start:0,count:5},
+ {label:"Refugees",sub:"IRRS → IMTM",start:5,count:9},
+ {label:"IDPs abroad",sub:"IRIS → IMTM",start:14,count:7},
+ {label:"IDPs at home",sub:"IRIS → census (P&R Rev. 4)",start:21,count:8}];
+const TITLES={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&R Rev. 4)"};
+const TT={e:"Expected route",1:"Type 1 · Never moved",2:"Type 2 · Not yet or not visible",3:"Type 3 · Migrant for a different reason",4:"Type 4 · Counted differently",5:"Type 5 · Misalignment"};
+const TC={e:"var(--v-prot)",1:"var(--v-never)",2:"var(--v-temp)",3:"var(--v-other)",4:"var(--v-ret)",5:"var(--strong)"};
+const HD={
+ irrs:[["IRRS 2018 · FIG. 3.1","Refugee and refugee related populations","var(--irrs-ink)"],["IMTM 2025 · FIG. 2","Type of stay","var(--imtm)"],["IMTM 2025 · FIG. 2 AND 6","Present population","var(--imtm)"]],
+ A:[["IRIS 2020 · FIG. 3.1 AND 3.2","IDP stock and cross-border groups","var(--iris)"],["IMTM 2025 · FIG. 2","Type of stay","var(--imtm)"],["IMTM 2025 · FIG. 2 AND 6","Present population","var(--imtm)"]],
+ B:[["IRIS 2020 · FIG. 3.1","Framework for internal displacement","var(--iris)"],["IRIS 2020 · PARAS 75, 115","What move happened?","var(--iris)"],["P&R REV. 4 · PARAS 5.64-5.84","Census classification","var(--pr)"]]};
+// expected-route notes: a3i always first, b2 never (its expected route is a side case)
+const EXP_SKIP=["b2"], EXP_FIRST=["a3i"];
+const tc=t=>TC[String(t).toLowerCase()]||TC.e;
+const srcCls=c=>c==="Addition for overview"?"sadd":/^IRRS/.test(c)?"srcb srcb-irrs":/^IMTM/.test(c)?"srcb srcb-imtm":/^IRIS/.test(c)?"srcb srcb-iris":/^P&/.test(c)?"srcb srcb-pr":"srcb srcb-plain";
 
-// ---------- steps ----------
-const ALIAS={"P2+":"P2"};
-const tb=(cls,t)=>`<span class="tbadge ${cls}">${t}</span>`;
-const ADD=tb("tt-add","Our addition");
-const fix=h=>h.replace(/class="type t-(e|\d|add)"/g,(m,k)=>`class="tbadge tt-${k}"`).replace(/class="fw fw-(\w+)"/g,'class="tbadge tfw tfw-$1"');
-const S=[];
-const step=o=>S.push(o);
-const fromArr=(arr,ch,g,extra)=>arr.forEach(st=>{const exp=st.s.endsWith("0");
-  step(Object.assign({ch,g,cap:fix(st.cap),h:st.h,body:fix(st.body),cite:st.cite,aligned:st.aligned,
-    cases:exp?[{n:{b0:"E",c0:"DE",d0:"PE"}[st.s],t:"e",h:"Expected route",ex:"",exp:true}]:st.cases.map(([n,t,h,ex,cite,lk,top])=>({n,t:t.replace("t-",""),h,ex,cite,lk,top}))},extra[st.s]||{}));});
-
-const RN=["NON"];
-step({ch:"How to read",g:"irrs",build:["L"],focus:["nth:|.band-irrs|0"],cap:tb("tfw tfw-irrs","IRRS 2018 · Figure 3.1"),h:"Left: the refugee recommendations, as published",
-  body:`<p>Three groups, split exactly as in IRRS Figure 3.1: <b>a</b> persons in need of international protection (a1 to a4, with refugees, complementary and temporary protection under a3), <b>b</b> persons with a refugee background, <b>c</b> persons returned after seeking protection abroad.</p><p>IRRS has no duration rule: a person enters by arrival, birth or a change of status. The codes a1 to c4 follow every route.</p>`,cite:"IRRS Figure 3.1, paras 88-97, 101"});
-step({ch:"How to read",g:"irrs",build:["L","M"],hide:RN,focus:["nth:|.band-imtm|0"],cap:tb("tfw tfw-imtm","IMTM 2025 · Figure 2"),h:"Middle: what kind of stay was it?",
-  body:`<p>IMTM sorts arrivals by duration. <b>Immigrants</b> change their country of residence. <b>Returned migrants</b> are previous residents back after 12 months or more. <b>Temporary mobility</b> stays below the 12-month rule.</p><p>The dashed arrow is IMTM para 33: an asylum seeker whose stay passes the minimum duration becomes a new resident.</p>`,cite:"IMTM Figure 2, paras 16-17, 27, 30, 33"});
-step({ch:"How to read",g:"irrs",build:["L","M","R","sq"],hide:RN,focus:["node:NBC","node:FBC","node:NBFC","node:FBFC"],cap:tb("tfw tfw-imtm","IMTM 2025 · Figure 6"),h:"Right: where the person ends up",
-  body:`<p>The resident population by birthplace and citizenship. The three dashed groups form the IMTM immigrant stock: born abroad <b>or</b> a foreign citizen.</p><p>${ADD} The small squares are IRRS codes. Each square is one route landing in that group, so you can read off which refugee categories end up where.</p>`,cite:"IMTM Figure 6, paras 25, 52-53"});
-step({ch:"How to read",g:"irrs",build:["L","M","R","sq"],hide:RN,focus:["node:TMP","node:TEMP"],cap:ADD,h:"Temporary stays have their own destination",
-  body:`<p><b>Temporary population</b>: present in the country, not yet resident. Temporary mobility lands here until the 12-month rule is met. IMTM shows it in Figure 2, not in Figure 6, so we added it beside the resident groups.</p>`,cite:"IMTM Figure 2, paras 30, 33"});
-step({ch:"How to read",g:"irrs",hide:RN,cap:tb("tt-add","Reading the routes"),h:"Each line is a route, each pill a case",
-  body:`<p>A route runs from an IRRS category, through the type of stay, to a resident group. <b>Colour</b> is the type of case, <b>thickness</b> the number of cases on the route, and the <b>numbered pills</b> are the cases.</p><p>From here on, the routes light up one type at a time, starting with the expected case. The notes on the graph are the same short descriptions you get when you hover a line.</p>`});
-step({ch:"Refugees",g:"irrs",hide:RN,cap:tb("tt-add","Paper and proposed wording"),h:"Is every refugee an international migrant?",
-  body:`<p><span class="tlab">Paper</span> "A refugee may not be an international migrant (IRRS versus IMTM)": mismatches or nesting issues, where a population "may be classified in more than one, does not neatly nest within or sits outside the existing frameworks".</p><p><span class="tlab tlab-p">Proposed</span> a <b>non-nested case</b> wherever one population does not sit inside the other, in five types: 1 never moved, 2 not yet or not visible, 3 migrant for a different reason, 4 counted differently, 5 misalignment. Only type 5 is left unsettled by the recommendations.</p>`,cite:"IRRS paras 77, 80 · IMTM paras 34, 53"});
-const pick=(arr,ord)=>ord.map(k=>arr.find(x=>x.s===k));
-fromArr(pick(B,["b0","b2","b3","b6","b1","b4","b5","b7"]),"Refugees","irrs",{b0:{hide:RN}});
-step({ch:"IDPs abroad",g:"A",build:["L"],focus:["nth:|.band-iris|0"],cap:tb("tfw tfw-iris","IRIS 2020 · Figures 3.1, 3.2"),h:"IDPs: the same graph, IRIS on the left",
-  body:`<p>The IDP stock (locations of displacement, return, other settlement) and IDP-related children follow IRIS Figure 3.1.</p><p>${ADD} The three cross-border groups of IRIS Figure 3.2 (para 82) sit below, outside the IDP stock.</p><p><span class="tlab">Paper</span> no dedicated section; touched on under temporal coherence. <span class="tlab tlab-p">Proposed</span> What happens when an IDP crosses a border?</p>`,cite:"IRIS Figures 3.1, 3.2; paras 75, 80-82"});
-step({ch:"IDPs abroad",g:"A",build:["L","M","R"],focus:["node:EMI","node:ABR"],cap:ADD,h:"People who leave the country",
-  body:`<p><b>Previous residents (emigrants)</b> and <b>Resident in another country</b>: IDPs who settle abroad leave the IDP stock by emigration (IRIS paras 98-99). Only two Figure 6 groups appear, as IDPs are usually citizens.</p>`,cite:"IRIS paras 98-99, 117 · IMTM paras 23, 26"});
-fromArr(pick(C,["c0","c1","c4","c3","c2"]),"IDPs abroad","A",{});
-step({ch:"IDPs at home",g:"B",build:["L","M"],focus:["nth:|.band-iris|1"],cap:ADD,h:"Census side: what move happened?",
-  body:`<p>IRIS records displacement, not the type of move; the census records moves, not displacement. To join them we added a middle column on the move itself: to another civil division, within the same division, back home, or no move. Each option comes from IRIS paras 75 and 115.</p><p><span class="tlab">Paper</span> "An IDP may not be an internal migrant (IRIS versus P&amp;R Rev.4)". <span class="tlab tlab-p">Proposed</span> Is every IDP an internal migrant?</p>`,cite:"IRIS paras 75, 115"});
-step({ch:"IDPs at home",g:"B",focus:["nth:|.band-pr|0"],cap:tb("tfw tfw-pr","P&amp;R Rev. 4"),h:"Right: the census classification",
-  body:`<p>P&amp;R has no figure for internal migration, so the three outcomes are derived from its paragraphs: <b>internal migrant</b> (para 5.64), <b>move within the division</b>, which is not migration (para 5.64), and <b>non-migrant</b> by birth or reference date (paras 5.72-5.81).</p><p>${ADD} Voluntary internal movers, outside IRIS, reach the same census boxes.</p>`,cite:"P&amp;R Rev. 4 (draft Aug 2024), paras 5.64-5.84"});
-fromArr(pick(D,["d0","d1","d2","d5","d3","d4"]),"IDPs at home","B",{});
-
-// ---------- scrollytelling layer ----------
-const T={rare0:false};
-const TL={e:"Expected",1:"Type 1 · never moved",2:"Type 2 · not yet or not visible",3:"Type 3 · migrant, different reason",4:"Type 4 · counted differently",5:"Type 5 · misalignment"};
-const stage=document.getElementById("stage"), stepsEl=document.getElementById("steps"), co=document.getElementById("callouts");
-// move the three graphs into the sticky stage
-const SV={irrs:$("#flow"),A:$("#flowA"),B:$("#flowB")};
-document.getElementById("temporary").hidden=false;
-Object.entries(SV).forEach(([k,s])=>{s.style.minWidth="0";s.style.width="100%";s.style.height="100%";s.dataset.g=k;stage.insertBefore(s,co);});
-document.querySelector(".wrap").hidden=true;
-// from tablet width up the graph hugs the left so the cards cover less of it
-const fit=()=>Object.values(SV).forEach(sv=>{sv.setAttribute("preserveAspectRatio",innerWidth>600?"xMinYMin meet":"xMidYMin meet");if(!wide()) sv.style.height="100%";});
-fit(); addEventListener("resize",fit);
-// steps
-stepsEl.innerHTML=S.map((s,i)=>{
-  const cases=(s.cases||[]).filter(c=>!c.exp);
-  return `<section class="sstep" data-i="${i}"><div class="scard">
-   ${i===0||S[i-1].ch!==s.ch?`<span class="schap">${s.ch}</span>`:""}
-   <div class="tcap">${s.cap||""}</div><h2>${s.h}</h2><div class="ttext">${/^\s*</.test(s.body)?s.body:`<p>${s.body}</p>`}</div>
-   ${cases.length?`<div class="scases">${cases.map(c=>`<div class="scase tt-${c.t}" data-id="${ALIAS[c.n]||c.n}"><span class="tnum">${c.n}</span><div><b>${c.h}</b>${c.top?` ${tb("ttop","Most impactful")}`:""}${c.lk?` ${tb("tlk",({c:"Common",p:"Plausible",r:"Rare"})[c.lk])}`:""}<p class="tcite">${c.cite||""}</p></div></div>`).join("")}</div>`:""}
-   ${(s.cases||[]).some(c=>c.exp)?`<div class="scases sexamples"></div>`:""}
-   ${s.aligned?`<p class="taligned">${s.aligned}</p>`:""}${s.cite?`<p class="tcite">${s.cite}</p>`:""}
-  </div></section>`;}).join("");
-let cur=-1,gk=null,g=null;
-function applyS(i){ if(i===cur) return; cur=i; const s=S[i];
-  stepsEl.querySelectorAll(".sstep").forEach(el=>el.classList.toggle("on",+el.dataset.i===i));
-  if(gk!==s.g){ if(g){build(g,null);hide(g,[]);focus(g,[]);show(g,[]);}
-    Object.entries(SV).forEach(([k,sv])=>{sv.style.display=k===s.g?"":"none";}); gk=s.g; g=G[s.g](); stage.dataset.g=s.g; }
-  build(g,s.build||null); hide(g,s.hide||[]); show(g,stepIds(s)); pan(g,focus(g,s.focus)); examples(i,s);
-  document.querySelector(".sghead").innerHTML={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&amp;R Rev. 4)"}[s.g];
-  clearTimeout(applyS.t); co.innerHTML=""; applyS.t=setTimeout(()=>callouts(s),RM?0:650);
+// ---------- one model per graph, read from crosswalk.js ----------
+function model(key){
+  if(key==="irrs"){
+    const nL=(f,id)=>LINKS.filter(l=>l[f]===id).length;
+    const groups=["a","b","c"].map(g=>({key:g,label:GFULL[g]+(g==="b"?" (draft mapping)":""),bg:"var(--irrs)",fg:"#fff",border:"none",items:[]}));
+    CATS.forEach(c=>{const gr=groups.find(x=>x.key===c.g);
+      if(c.id==="a3i") gr.items.push({head:true,text:"3. Persons with determined protection status"});
+      const sub=["a3i","a3ii","a3iii"].includes(c.id);
+      gr.items.push({node:true,id:c.id,name:c.l,indent:sub?18:0,grow:(0.7+nL("k",c.id)*0.22).toFixed(2),nl:nL("k",c.id),border:"1px solid transparent",codeColor:"var(--irrs-ink)",codeBg:"var(--irrs-soft)"});});
+    groups.forEach(g=>{g.grow=g.items.reduce((a,it)=>a+(it.node?+it.grow:0.45),0).toFixed(2);});
+    const mids=["NON","RET","IMM","TMP"].map(id=>{const m=MID.find(x=>x.id===id)||{};
+      return {id,name:MIDLAB[id][0],sub:MIDLAB[id][1],caption:id==="NON",color:id==="NON"?"var(--v-never)":"var(--strong)",
+        border:id==="NON"?"1.5px dashed var(--v-never)":m.k==="tmp"?"1.5px dashed #9aa6ba":"1px solid transparent",grow:(1+nL("m",id)*0.1).toFixed(2)};});
+    const cells=["NBC","FBC","NBFC","FBFC"].map(id=>{const c=CELLS.find(x=>x.id===id),fc=c.k==="fc";
+      return {id,row:fc?"FOREIGN CITIZENS":"CITIZENS",name:c.l,stock:c.stock?"in immigrant stock":"not in immigrant stock",stockColor:c.stock?"var(--strong)":"var(--muted)",
+        bg:fc?"#e8f0fa":"#f9f1e7",border:c.stock?"1.5px dashed rgba(20,35,76,.55)":"1px solid transparent",
+        chips:LINKS.map((l,i)=>({l,i})).filter(o=>o.l.c===id).map(o=>({code:o.l.k,li:o.i,color:tc(o.l.t)}))};});
+    const T=CELLS.find(x=>x.id==="TEMP");
+    const links=LINKS.map((l,i)=>({i,k:l.k,m:l.m,c:l.c,t:String(l.t).toLowerCase(),cases:[...new Set(l.rs.map(r=>r.case))],rs:l.rs,rare:!!l.rare,w:2+l.rs.length*1.3}));
+    return {key,groups,mids,cells,temp:{name:T.l,sub:T.s},links,lanes:{FBC:"top",FBFC:"bot"},arr:["RET","IMM","TMP"],dep:null,
+      cols:"minmax(0,1.4fr) minmax(64px,.5fr) minmax(0,1fr) minmax(56px,.42fr) minmax(0,1.2fr)",grid:true};
+  }
+  const F=key==="A"?FLOWA:FLOWB, nL=(f,id)=>F.LK.filter(l=>l[f]===id).length;
+  const groups=F.left.map(g=>({key:g.g,label:g.gl,bg:g.g==="x"?"#fff":"var(--iris)",fg:g.g==="x"?"var(--muted)":"#fff",border:g.g==="x"?"1.5px dashed var(--line-strong)":"none",
+    items:g.items.map(([id,l])=>({node:true,id,name:l,indent:0,grow:(0.7+nL("k",id)*0.22).toFixed(2),nl:nL("k",id),border:g.g==="x"?"1.5px dashed var(--line-strong)":"1px solid transparent",codeColor:"var(--iris)",codeBg:"var(--iris-soft)"}))}));
+  groups.forEach(g=>{g.grow=g.items.reduce((a,it)=>a+ +it.grow,0).toFixed(2);});
+  const mids=F.mid.map(m=>{const non=m.id==="NON"&&F.other==="IMTM";
+    return {id:m.id,name:m.l,sub:m.s,caption:non,color:non?"var(--v-never)":"var(--strong)",border:non?"1.5px dashed var(--v-never)":m.k==="tmp"?"1.5px dashed #9aa6ba":"1px solid transparent",grow:(1+nL("m",m.id)*0.12).toFixed(2)};});
+  const rights=F.right.map(r=>({id:r.id,name:r.l,sub:r.s,
+    qs:r.q?[[0,0],[1,0],[0,1],[1,1]].map(([a,b])=>a===r.q[0]&&b===r.q[1]?(b?"#8db8e3":"#e3c3a0"):"#fff"):null,
+    bg:r.q?(r.q[1]?"#e8f0fa":"#f9f1e7"):"#fff",
+    border:r.k==="tmp"?"1.5px dashed #9aa6ba":(r.s&&/^in /.test(r.s))?"1.5px dashed rgba(20,35,76,.55)":"1px solid transparent",grow:(1+nL("c",r.id)*0.1).toFixed(2)}));
+  const links=F.LK.map((l,i)=>({i,k:l.k,m:l.m,c:l.c,t:String(l.t).toLowerCase(),cases:[...new Set(l.cs)],rare:!!l.rare,w:2+l.cs.length*1.5}));
+  return {key,groups,mids,rights,links,lanes:{},F,arr:key==="A"?["RET","IMM"]:null,dep:key==="A"?["EMI"]:null,
+    cols:key==="A"?"minmax(0,1.4fr) minmax(64px,.5fr) minmax(0,1fr) minmax(64px,.5fr) minmax(0,1fr)":"minmax(0,1.4fr) minmax(56px,.45fr) minmax(0,1fr) minmax(56px,.45fr) minmax(0,1fr)",grid:false};
 }
-// expected-route steps: list the worked examples already in the data
-function examples(i,s){
-  const box=stepsEl.querySelector(`.sstep[data-i="${i}"] .sexamples`); if(!box||box.dataset.done) return;
-  const id=ALIAS[s.cases[0].n]||s.cases[0].n; let rows=[];
-  if(g.main){const seen=new Set(); routesFor(g,id).forEach(r=>{if(r.rare||!r.ex||seen.has(r.ex)) return; seen.add(r.ex); rows.push({h:r.path.split(" → ")[0],ex:r.ex,cite:r.cite});});}
-  else Object.entries(g.F.cases).forEach(([k,c])=>{if(c.t==="E"&&(!g.F.caseIds||g.F.caseIds.includes(k))) rows.push({h:c.h,ex:c.ex,cite:c.refs});});
-  box.innerHTML=`<span class="tlab">Examples</span>`+rows.slice(0,innerWidth<900?2:3).map(r=>`<div class="scase tt-e"><span class="tnum">E</span><div><b>${r.h}</b><p class="tex">${r.ex}</p>${r.cite?`<p class="tcite">${r.cite}</p>`:""}</div></div>`).join("");
-  box.dataset.done=1;}
-const stepIds=s=>(s.cases||[]).map(c=>ALIAS[c.n]||c.n);
-// notes pinned on the graph: the short description you get on hover
-function callouts(s){
-  co.innerHTML=""; if(innerWidth<900) return;
-  const cases=(s.cases||[]); if(!cases.length) return;
-  const sr=stage.getBoundingClientRect(), M=g.svg.getScreenCTM(); if(!M) return;
-  const toScr=(x,y)=>{const p=new DOMPoint(x,y).matrixTransform(M);return [p.x-sr.left,p.y-sr.top];};
-  const notes=[];
-  cases.forEach(c=>{const id=ALIAS[c.n]||c.n;
-    const ls=g.LK.filter(l=>(g.main?l.rs.map(r=>r.case):l.cs).includes(id)&&l.el.style.display!=="none"&&!(l.rare&&!document.body.classList.contains("show-rare")));
-    if(!ls.length) return;
-    let ax,ay;
-    const pill=[...g.svg.querySelectorAll(`.pillG[data-case="${id}"]`)].find(p=>p.style.display!=="none"&&getComputedStyle(p).display!=="none");
-    if(pill&&!c.exp){const b=pill.getBBox();[ax,ay]=toScr(b.x+b.width,b.y+b.height/2);}
-    else {const l=ls[0],L=l.el.getTotalLength(),p=l.el.getPointAtLength(L*0.62);[ax,ay]=toScr(p.x,p.y);}
-    let desc=c.ex; if(c.exp){const r=routesFor(g,id)[0]; desc=r&&r.ex?r.ex:"";}
-    notes.push({c,ax,ay,desc,n:ls.length});});
-  // lay out: cards in a column beside the anchors, pushed apart vertically
-  const W=250; notes.sort((a,b)=>a.ay-b.ay);
-  const svgR=g.svg.getBoundingClientRect();
-  let lastBottom=8;
-  const svgNS="http://www.w3.org/2000/svg", lines=document.createElementNS(svgNS,"svg"); lines.setAttribute("class","colines"); co.appendChild(lines);
-  notes.forEach((nt,k)=>{
-    const card=document.createElement("div"); card.className="callout tt-"+nt.c.t; card.style.width=W+"px";
-    card.innerHTML=`<div class="cohead"><span class="tnum">${nt.c.exp?"E":nt.c.n}</span><b>${nt.c.exp?"Expected route":nt.c.h}</b></div><p>${nt.desc}</p><span class="cot">${TL[nt.c.t]||""}${nt.n>1?` · ${nt.n} routes`:""}</span>`;
-    co.appendChild(card); const h=card.offsetHeight;
-    let x=nt.ax+28; if(x+W>sr.width-8) x=Math.max(8,nt.ax-28-W);
-    let y=Math.max(nt.ay-h/2,lastBottom+8); if(y+h>sr.height-8) y=Math.max(8,sr.height-8-h);
-    lastBottom=y+h; card.style.left=x+"px"; card.style.top=y+"px"; card.style.animationDelay=(k*90)+"ms";
-    const ln=document.createElementNS(svgNS,"path"); const cx=x>nt.ax?x:x+W, cy=y+Math.min(22,h/2);
-    ln.setAttribute("d",`M${nt.ax},${nt.ay} C${(nt.ax+cx)/2},${nt.ay} ${(nt.ax+cx)/2},${cy} ${cx},${cy}`); ln.style.animationDelay=(k*90)+"ms"; lines.appendChild(ln);
-    const dot=document.createElementNS(svgNS,"circle"); dot.setAttribute("cx",nt.ax); dot.setAttribute("cy",nt.ay); dot.setAttribute("r",4); lines.appendChild(dot);
-    card.addEventListener("mouseenter",()=>show(g,[ALIAS[nt.c.n]||nt.c.n])); card.addEventListener("mouseleave",()=>show(g,stepIds(S[cur])));
+function caseInfo(id){
+  const M=MS[gk];
+  if(M.key==="irrs"){const n=NEST.find(x=>x.id===id); return n?{t:String(n.t).toLowerCase(),h:id==="E"?"Expected route":n.h,ex:n.ex}:{t:"e",h:"Expected route",ex:""};}
+  const c=M.F.cases[id]; return c?{t:String(c.t).toLowerCase(),h:c.h,ex:c.ex,refs:c.refs}:{t:"e",h:id,ex:""};
+}
+
+// ---------- page elements ----------
+const stage=$("#stage"), colsEl=$("#cols"), gatesEl=$("#gates"), svg=$("#routes"), pillsEl=$("#pills"), notesEl=$("#notes"), hov=$("#hov"), tip=$("#tip");
+const stepsEl=$("#steps");
+stepsEl.innerHTML=STEPS.map((s,i)=>`<section class="sstep" data-i="${i}" aria-label="Step ${i+1}"><div class="sr"><h3>${s.h}</h3>${s.body.map(p=>`<p>${p}</p>`).join("")}</div></section>`).join("");
+const steps=STEPS.map((s,i)=>{const cases=s.exp?[{n:s.exp,id:s.exp,t:"e",h:"Expected route",ex:"",exp:true}]:(s.cases||[]).map(([n,id,t,h,ex,cite])=>({n,id,t,h,ex,cite}));
+  const sp=v=>v?v.split(","):null;
+  return {...s,i,el:stepsEl.children[i],build:sp(s.build),hide:sp(s.hide)||[],focus:sp(s.focus)||[],cases,ids:cases.map(c=>c.id)};});
+const chOf=i=>CH.findIndex(c=>i>=c.start&&i<c.start+c.count);
+$("#heroCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}"><span class="k"><span>0${k+1}</span><span>${c.count} steps</span></span><span class="t">${c.label}</span><span class="d">${c.sub}</span></button>`).join("");
+$("#navCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}" title="${c.label}" style="flex:${c.count} 1 auto"><span class="l">0${k+1} · ${c.label}</span><span class="bar"><i></i></span></button>`).join("");
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
+$("#prev").addEventListener("click",()=>go(cur-1));
+$("#next").addEventListener("click",()=>go(cur+1));
+$("#restart").addEventListener("click",()=>scrollTo({top:0,behavior:RM?"auto":"smooth"}));
+function navUpdate(){
+  [...$("#navCh").children].forEach((b,k)=>{const c=CH[k],done=cur>=c.start+c.count,on=cur>=c.start&&!done;
+    b.classList.toggle("on",on); b.querySelector("i").style.width=(cur<c.start?0:done?100:(cur-c.start+1)/c.count*100)+"%";});
+  $("#counter").textContent=String(cur+1).padStart(2,"0")+" / "+steps.length;
+}
+
+// ---------- the stage: three columns of cards ----------
+let MS=null, gk=null, compact=false, built={L:false,M:false,R:false}, cur=-1, pending=null, LK=null, R=null, gX=null, sqOn=true, tourT=[], coT=0;
+function renderStage(){
+  const M=MS[gk], cp=compact, letter=cp&&M.key==="irrs";
+  stage.classList.toggle("compact",cp);
+  colsEl.style.gridTemplateColumns=M.cols;
+  const nTop=M.grid?M.links.filter(l=>l.c==="FBC").length:0, nBot=M.grid?M.links.filter(l=>l.c==="FBFC").length:0;
+  const heads=HD[gk].map((h,i)=>`<div class="hd" data-hd="${"LMR"[i]}" style="grid-column:${1+i*2}"><span class="n">${i+1}</span><div><span class="e" style="color:${h[2]}">${h[0]}</span><span class="t">${h[1]}</span></div></div>`).join("");
+  const L=`<div class="col colL" data-colk="L">${M.groups.map(g=>`<div class="gr" style="flex:${g.grow} 1 auto">
+    <div class="grbox${letter?" letter":""}" data-group="${g.key}" style="background:${g.bg};border:${g.border};color:${g.fg}">${letter?g.key:g.label}</div>
+    <div class="gritems">${g.items.map(it=>it.head?`<div class="grhead">${it.text}</div>`:
+      `<div class="cat" data-node="${it.id}" style="flex:${it.grow} 1 auto;min-height:${Math.max(cp?16:26,6+it.nl*(cp?6:7))}px;margin-left:${it.indent}px;border:${it.border}"><span class="code" style="color:${it.codeColor};background:${it.codeBg}">${it.id}</span><span class="nm">${it.name}</span></div>`).join("")}</div></div>`).join("")}</div>`;
+  const Mc=`<div class="col colM" data-colk="M">${M.mids.map(m=>`<div class="mid" style="flex:${m.grow} 1 auto">${m.caption?`<span class="mcap" data-cap="${m.id}">OUTSIDE THE IMTM FRAMEWORK</span>`:""}
+    <div class="box" data-node="${m.id}" style="border:${m.border}"><span class="nm" style="color:${m.color}">${m.name}</span><span class="sub">${m.sub}</span></div></div>`).join("")}</div>`;
+  const Rc=M.grid?`<div class="col colR" data-colk="R"><div class="res" data-frame="res" style="padding-bottom:${10+nBot*4}px"><span class="res-lab">Resident population · IMTM Fig. 6</span>
+      <div class="res-hd" style="margin-bottom:${8+nTop*4}px"><span>BORN IN COUNTRY</span><span>BORN OUTSIDE</span></div>
+      <div class="cells">${M.cells.map(c=>`<div class="cell" data-node="${c.id}" style="background:${c.bg};border:${c.border}"><span class="row">${c.row}</span><span class="nm">${c.name}</span><span class="stock" style="color:${c.stockColor}">${c.stock}</span>
+        <div class="chips">${c.chips.map(q=>`<span data-li="${q.li}" style="background:${q.color}">${q.code}</span>`).join("")}</div></div>`).join("")}</div></div>
+      <div class="box temp" data-node="TEMP"><span class="nm" style="color:var(--strong)">${M.temp.name}</span><span class="sub">${M.temp.sub}</span></div></div>`
+    :`<div class="col colR list" data-colk="R">${M.rights.map(r=>`<div class="rbox" data-node="${r.id}" style="flex:${r.grow} 1 0;background:${r.bg};border:${r.border}">${r.qs?`<div class="quad">${r.qs.map(b=>`<span style="background:${b}"></span>`).join("")}</div>`:""}<div><span class="nm">${r.name}</span><span class="sub">${r.sub}</span></div></div>`).join("")}</div>`;
+  colsEl.innerHTML=heads+L+Mc+Rc;
+  colsEl.querySelectorAll(".col").forEach(c=>{c.style.paddingTop=gk==="A"?"30px":"6px";});
+  colsEl.querySelectorAll("[data-node]").forEach(e=>{e.addEventListener("mouseenter",()=>nodeHover(e.dataset.node,true));e.addEventListener("mouseleave",()=>nodeHover(e.dataset.node,false));});
+  $("#gtitle").textContent=TITLES[gk];
+  setBuilt(built);
+}
+function setBuilt(b){built=b; ["L","M","R"].forEach(k=>{const v=b[k]?"1":"0"; const c=colsEl.querySelector(`[data-colk="${k}"]`),h=colsEl.querySelector(`[data-hd="${k}"]`); if(c) c.style.opacity=v; if(h) h.style.opacity=v;});}
+// a column taller than the stage is scaled down as a whole, so the text keeps its size relative to the cards
+function fitCols(){
+  colsEl.querySelectorAll("[data-colk]").forEach(c=>{
+    c.style.transform=""; c.style.height=""; c.style.width="";
+    const avail=c.clientHeight, need=c.scrollHeight;
+    if(need>avail+1&&avail>0){const z=Math.max(0.5,avail/need);
+      c.style.height=need+"px"; c.style.width=(100/z).toFixed(3)+"%"; c.style.transformOrigin="0 0"; c.style.transform="scale("+z.toFixed(4)+")";}});
+}
+let rl=0,rlT=0;
+function relayout(){cancelAnimationFrame(rl); clearTimeout(rlT); let done=false; const run=()=>{if(done) return; done=true; afterLayout();};
+  rl=requestAnimationFrame(()=>{rl=requestAnimationFrame(run);}); rlT=setTimeout(run,120);}
+function afterLayout(){
+  if(!MS) return;
+  fitCols();
+  try{drawRoutes();}catch(e){console.error("drawRoutes",e);}
+  if(pending!=null){const i=pending; pending=null; cur=-1; applyS(i);}
+  else if(cur>=0) paint(steps[cur],false);
+}
+const bz=(p,t)=>{const [x0,y0,x1,y1,x2,y2,x3,y3]=p,u=1-t; return [u*u*u*x0+3*u*u*t*x1+3*u*t*t*x2+t*t*t*x3,u*u*u*y0+3*u*u*t*y1+3*u*t*t*y2+t*t*t*y3];};
+
+// ---------- routes: drawn between the cards after layout ----------
+function drawRoutes(){
+  const M=MS[gk], sr=stage.getBoundingClientRect(); R={};
+  colsEl.querySelectorAll("[data-node]").forEach(e=>{e.style.opacity="";e.style.outline="";e.style.visibility="";
+    const b=e.getBoundingClientRect(); R[e.dataset.node]={x0:b.left-sr.left,y0:b.top-sr.top,x1:b.right-sr.left,y1:b.bottom-sr.top,el:e};});
+  colsEl.querySelectorAll("[data-group],[data-frame],[data-cap]").forEach(e=>{e.style.opacity="";e.style.visibility="";});
+  const col=k=>{const e=colsEl.querySelector(`[data-colk="${k}"]`); if(!e) return null; const b=e.getBoundingClientRect(); return {x0:b.left-sr.left,x1:b.right-sr.left,y0:b.top-sr.top,y1:b.bottom-sr.top};};
+  const CL=col("L"), CM=col("M"), CR=col("R");
+  svg.innerHTML=""; pillsEl.innerHTML=""; gatesEl.innerHTML="";
+  svg.setAttribute("width",stage.clientWidth); svg.setAttribute("height",stage.clientHeight);
+  const gR=document.createElementNS(NS,"g"), gH=document.createElementNS(NS,"g"); gX=document.createElementNS(NS,"g");
+  svg.append(gR,gX,gH);
+  const cy=id=>(R[id].y0+R[id].y1)/2;
+  const L=M.links.filter(l=>R[l.k]&&R[l.m]&&R[l.c]);
+  // ports spread over each card's height, sorted to reduce crossings
+  const ports=(id,ls,kf)=>{const r=R[id],s=[...ls].sort((a,b)=>kf(a)-kf(b)),m=new Map(),h=r.y1-r.y0; s.forEach((l,i)=>m.set(l,r.y0+5+(i+0.5)*(h-10)/s.length)); return m;};
+  const pK=new Map(), pMi=new Map(), pMo=new Map(), pC=new Map();
+  Object.keys(R).forEach(id=>{const ls=L.filter(l=>l.k===id); if(ls.length) ports(id,ls,l=>cy(l.m)*1000+cy(l.c)).forEach((v,l)=>pK.set(l,v));});
+  Object.keys(R).forEach(id=>{const ls=L.filter(l=>l.m===id); if(!ls.length) return;
+    ports(id,ls,l=>pK.get(l)).forEach((v,l)=>pMi.set(l,v)); ports(id,ls,l=>cy(l.c)*1000+pK.get(l)).forEach((v,l)=>pMo.set(l,v));});
+  Object.keys(R).forEach(id=>{if(M.lanes[id]) return; const ls=L.filter(l=>l.c===id); if(ls.length) ports(id,ls,l=>pMo.get(l)).forEach((v,l)=>pC.set(l,v));});
+  // FB-C and FB-FC are entered from lanes above and below the cells
+  const lane=new Map();
+  Object.entries(M.lanes).forEach(([id,side])=>{const n=R[id]; if(!n) return; const top=side==="top",dir=top?1:-1;
+    const ls=L.filter(l=>l.c===id).sort((a,b)=>dir*(pMo.get(a)-pMo.get(b))),k=ls.length,w=n.x1-n.x0;
+    ls.forEach((l,i)=>lane.set(l,{px:n.x1-14-i*(w-28)/Math.max(k-1,1),yL:top?n.y0-8-(k-1-i)*4:n.y1+8+(k-1-i)*4,top}));});
+  const gate=(ids,c0,c1,label,name)=>{
+    if(!ids||!c0||!c1) return null; const rs=ids.map(i=>R[i]).filter(Boolean); if(!rs.length) return null;
+    const gap=c1.x0-c0.x1, gw=Math.max(44,Math.min(84,gap*0.55)), x=(c0.x1+c1.x0)/2-gw/2, y=Math.min(...rs.map(r=>r.y0))-8, y1=Math.max(...rs.map(r=>r.y1))+8;
+    const d=document.createElement("div"); d.className="gate"; d.dataset.gate=name;
+    Object.assign(d.style,{left:x+"px",top:y+"px",width:gw+"px",height:(y1-y)+"px"});
+    d.innerHTML=`<span>${label}</span>`; gatesEl.appendChild(d); return {x0:x,x1:x+gw,y0:y,y1,cx:x+gw/2};};
+  const GA=gate(M.arr,CL,CM,"International<br>arrivals","arrivals"), GD=gate(M.dep,CM,CR,"International<br>departures","departures");
+  if(GA&&GD){
+    const top=(CM?CM.y0:30)+14, p=document.createElementNS(NS,"path");
+    p.setAttribute("d",`M${GD.cx},${GD.y0} V${top+8} Q${GD.cx},${top} ${GD.cx-8},${top} H${GA.cx+8} Q${GA.cx},${top} ${GA.cx},${top+8} V${GA.y0-2}`);
+    p.setAttribute("style","fill:none;stroke:var(--imtm);stroke-opacity:.6;stroke-width:1.5;stroke-dasharray:5 4"); p.dataset.loop=1; gX.appendChild(p);
+    const lb=document.createElement("div"); lb.className="loop-lab"; lb.dataset.loop=1; lb.style.left=(GA.cx+GD.cx)/2+"px"; lb.style.top=top+"px";
+    lb.textContent="RETURN · PEOPLE WHO LEFT COME BACK AS INTERNATIONAL ARRIVALS"; pillsEl.appendChild(lb);
+  }
+  const frame=colsEl.querySelector('[data-frame="res"]'), fx0=frame?frame.getBoundingClientRect().left-sr.left:0;
+  L.forEach(l=>{
+    const ax=R[l.k].x1, ay=pK.get(l), bx=R[l.m].x0, by=pMi.get(l), mx=R[l.m].x1, mo=pMo.get(l);
+    const ga=GA&&M.arr.includes(l.m)?GA.x0:bx, m1=(ax+ga)/2;
+    let d=`M${ax},${ay} C${m1},${ay} ${m1},${by} ${ga},${by} L${bx},${by} L${mx},${mo}`;
+    const ex=GD&&M.dep.includes(l.m)?GD.x1:mx; if(ex!==mx) d+=` L${ex},${mo}`;
+    if(lane.has(l)){const Ln=lane.get(l),gx=fx0+3,m2=(ex+gx)/2,n=R[l.c],ey=Ln.top?n.y0:n.y1,s6=Ln.top?6:-6;
+      d+=` C${m2},${mo} ${m2},${Ln.yL} ${gx},${Ln.yL} L${Ln.px-6},${Ln.yL} Q${Ln.px},${Ln.yL} ${Ln.px},${Ln.yL+s6} L${Ln.px},${ey}`;}
+    else {const dx=R[l.c].x0, dy=pC.get(l), m2=(ex+dx)/2; d+=` C${m2},${mo} ${m2},${dy} ${dx},${dy}`;}
+    const p=document.createElementNS(NS,"path"); p.setAttribute("d",d); p.dataset.li=l.i;
+    p.setAttribute("style",`fill:none;stroke:${TC[l.t]||TC.e};stroke-width:${l.w}px;stroke-opacity:.38;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .35s ${EASE},stroke-width .3s ${EASE}`);
+    gR.appendChild(p);
+    const hit=document.createElementNS(NS,"path"); hit.setAttribute("d",d); hit.setAttribute("style","fill:none;stroke:transparent;stroke-width:16px;pointer-events:stroke;cursor:pointer");
+    gH.appendChild(hit);
+    l.el=p; l.hit=hit; l.pts=[ax,ay,m1,ay,m1,by,ga,by]; l.pills=[]; l.pillLink=null;
+    hit.addEventListener("mouseenter",e=>routeHover(l,e)); hit.addEventListener("mousemove",placeTip); hit.addEventListener("mouseleave",routeLeave);
+    l.pillIds=M.key==="irrs"?l.cases.filter(c=>c!=="E"):l.cases;
+  });
+  // case tags near the start of each route, pushed apart so none overlap
+  const items=[];
+  L.forEach(l=>{if(!l.pillIds.length) return; const [px,py]=bz(l.pts,0.1);
+    const ws=l.pillIds.map(id=>12+id.length*7), tot=ws.reduce((a,b)=>a+b,0)+(l.pillIds.length-1)*3;
+    items.push({l,x:px-4,y:py,w:tot,ws});});
+  const yMin=CL?CL.y0+9:9, yMax=CL?CL.y1-9:stage.clientHeight-9;
+  for(let it=0;it<12;it++){let moved=false; items.sort((a,b)=>a.y-b.y);
+    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){const a=items[i],b=items[j];
+      if(a.x>b.x+b.w+2||b.x>a.x+a.w+2) continue; const d=b.y-a.y; if(d>=20) continue;
+      const push=(20-d)/2+0.5; a.y-=push; b.y+=push; moved=true;}
+    items.forEach(p=>{p.y=Math.max(yMin,Math.min(yMax,p.y));}); if(!moved) break;}
+  items.forEach(P=>{const l=P.l; let x=P.x; const [qx,qy]=bz(l.pts,0.1);
+    if(Math.abs(P.y-qy)>3){const lk=document.createElementNS(NS,"path"); lk.setAttribute("d",`M${qx},${qy} L${x+2},${P.y}`); lk.setAttribute("style","fill:none;stroke:var(--imtm-line);stroke-width:1;stroke-dasharray:2 2"); gX.appendChild(lk); l.pillLink=lk;}
+    l.pillIds.forEach((id,j)=>{const info=caseInfo(id), pe=document.createElement("div"), col=TC[info.t]||TC.e;
+      pe.className="pill"; pe.dataset.case=id; pe.style.cssText=`left:${x}px;top:${P.y-9}px;min-width:${P.ws[j]}px;background:${col}`;
+      pe.textContent=id; pillsEl.appendChild(pe); l.pills.push(pe); x+=P.ws[j]+3;
+      pe.addEventListener("mouseenter",()=>trace(id,col)); pe.addEventListener("mouseleave",()=>untrace());});});
+  LK=L;
+}
+
+// ---------- applying a step ----------
+function applyS(i){
+  if(!steps[i]||i===cur) return;
+  cur=i; const s=steps[i]; navUpdate();
+  tourT.forEach(clearTimeout); tourT=[]; clearTimeout(coT); notesEl.innerHTML="";
+  if(s.g!==gk){gk=s.g; pending=i; cur=-1; built={L:false,M:false,R:false}; renderStage(); relayout(); cur=i; navUpdate(); return;}
+  paint(s,true); caption(s);
+}
+function caption(s){
+  const c=CH[chOf(s.i)];
+  $("#eyebrow").textContent=c.label+" · "+String(s.i-c.start+1).padStart(2,"0")+" / "+String(c.count).padStart(2,"0");
+  $("#caps").innerHTML=s.cap.map(x=>`<span class="${srcCls(x)}">${x}</span>`).join("");
+  const types=s.legend?["e","1","2","3","4","5"]:[...new Set(s.cases.map(c=>String(c.t)))];
+  $("#types").innerHTML=types.map(t=>`<span class="ty" data-ty="${t}" style="background:${TC[t]}">${TT[t]||t}</span>`).join("");
+  const hd=$("#head"), ld=$("#lead"); hd.textContent=s.h; ld.innerHTML=s.body[0]?`<p>${s.body[0].replace(/<span>/g,'<span class="sadd">')}</p>`:"";
+  if(!RM){hd.animate([{opacity:0,transform:"translateY(6px)"},{opacity:1,transform:"none"}],{duration:360,easing:EASE});
+    ld.animate([{opacity:0,transform:"translateY(4px)"},{opacity:1,transform:"none"}],{duration:320,easing:EASE});}
+}
+function paint(s,anim){
+  if(!LK) return;
+  const b=s.build, on=k=>!b||b.includes(k), nb={L:on("L"),M:on("M"),R:on("R")};
+  if(anim&&!RM) ["L","M","R"].forEach(k=>{if(nb[k]&&!built[k]) reveal(k);});
+  setBuilt(nb);
+  const linksOn=on("links"); sqOn=on("sq");
+  [svg,pillsEl].forEach(e=>{e.style.transition=`opacity .5s ${EASE}`; e.style.opacity=linksOn?"1":"0";});
+  const gA=gatesEl.querySelector('[data-gate="arrivals"]'), gD=gatesEl.querySelector('[data-gate="departures"]');
+  if(gA) gA.style.opacity=nb.M?"1":"0"; if(gD) gD.style.opacity=nb.R?"1":"0";
+  document.querySelectorAll("#pills [data-loop],#routes [data-loop]").forEach(e=>{e.style.opacity=nb.R?"1":"0";});
+  const hid=new Set(s.hide);
+  colsEl.querySelectorAll("[data-node]").forEach(e=>{e.style.visibility=hid.has(e.dataset.node)?"hidden":"";});
+  colsEl.querySelectorAll("[data-cap]").forEach(e=>{e.style.visibility=hid.has(e.dataset.cap)?"hidden":"";});
+  LK.forEach(l=>{l.hidden=hid.has(l.k)||hid.has(l.m)||hid.has(l.c);});
+  show(s.ids,anim);
+  focusOn(s.focus);
+  clearTimeout(coT);
+  coT=setTimeout(()=>{callouts(s); if(s.tour) legendTour(s);},RM?0:(anim?520:60));
+}
+// first reveal of a column: groups slide in, then the cards one by one
+function reveal(k){
+  const c=colsEl.querySelector(`[data-colk="${k}"]`); if(!c) return;
+  if(k==="L"){
+    c.querySelectorAll("[data-group]").forEach((e,i)=>e.animate([{opacity:0,transform:"translateX(-12px)"},{opacity:1,transform:"none"}],{duration:420,delay:120+i*120,easing:EASE,fill:"backwards"}));
+    c.querySelectorAll("[data-node]").forEach((e,i)=>e.animate([{opacity:0,transform:"translateX(-10px)"},{opacity:1,transform:"none"}],{duration:380,delay:480+i*45,easing:EASE,fill:"backwards"}));
+  } else {
+    c.querySelectorAll("[data-node],[data-frame]").forEach((e,i)=>e.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:420,delay:160+i*70,easing:EASE,fill:"backwards"}));
+    const g=gatesEl.querySelector(k==="M"?'[data-gate="arrivals"]':'[data-gate="departures"]');
+    if(g) g.animate([{opacity:0,transform:"scaleY(.85)"},{opacity:1,transform:"none"}],{duration:520,delay:80,easing:EASE,fill:"backwards"});
+  }
+}
+function show(ids,anim){
+  const any=ids.length>0, lit=LK.filter(l=>!l.hidden&&l.cases.some(c=>ids.includes(c)));
+  paintLinks(lit,any,lit.some(l=>l.rare),anim);
+  LK.forEach(l=>{l.pills.forEach(p=>{p.style.opacity=any&&!ids.includes(p.dataset.case)?".14":"1";}); if(l.pillLink) l.pillLink.style.opacity=any&&!l.pillIds.some(c=>ids.includes(c))?".14":"1";});
+}
+function paintLinks(lit,any,showRare,anim){
+  const set=new Set(lit), touched=new Set(); lit.forEach(l=>[l.k,l.m,l.c].forEach(n=>touched.add(n)));
+  LK.forEach(l=>{const on=set.has(l), vis=!l.hidden&&(!l.rare||showRare);
+    l.el.style.display=vis?"":"none"; l.hit.style.display=vis?"":"none"; l.pills.forEach(p=>{p.style.display=vis?"grid":"none";});
+    l.el.style.strokeOpacity=on?"0.95":any?"0.08":"0.38"; l.el.style.strokeWidth=(l.w+(on?1.6:0))+"px";
+    if(on) l.el.parentNode.appendChild(l.el);});
+  colsEl.querySelectorAll(".chips [data-li]").forEach(e=>{const l=LK.find(q=>q.i===+e.dataset.li);
+    e.style.transition=`opacity .3s ${EASE}`; e.style.opacity=!sqOn?"0":any&&!(l&&set.has(l))?".22":"1";});
+  colsEl.querySelectorAll("[data-node]").forEach(e=>{if(e.__tr) return; const t=touched.has(e.dataset.node); e.style.outline=t?"2px solid var(--strong)":""; e.style.outlineOffset="1px";});
+  gX.querySelectorAll(".flowov").forEach(o=>o.remove());
+  // lit routes draw themselves in, then one white pulse runs along each, once
+  if(anim&&!RM) lit.forEach((l,i)=>{
+    if(l.el.style.display==="none") return; let L; try{L=l.el.getTotalLength();}catch(e){return;}
+    l.el.animate([{strokeDasharray:`${L} ${L}`,strokeDashoffset:L},{strokeDasharray:`${L} ${L}`,strokeDashoffset:0}],{duration:900,delay:i*60,easing:"cubic-bezier(.4,0,.2,1)",fill:"backwards"});
+    const ov=document.createElementNS(NS,"path"); ov.setAttribute("d",l.el.getAttribute("d")); ov.setAttribute("class","flowov");
+    ov.setAttribute("style",`fill:none;stroke:#fff;stroke-opacity:.95;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:22 ${L+60};stroke-dashoffset:22;pointer-events:none`); gX.appendChild(ov);
+    const a=ov.animate([{strokeDashoffset:22},{strokeDashoffset:-(L+4)}],{duration:1200,delay:i*60+900,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"}); a.onfinish=()=>ov.remove();
   });
 }
-stepsEl.querySelectorAll(".scase").forEach(el=>{el.addEventListener("mouseenter",()=>{if(g) show(g,[el.dataset.id]);});el.addEventListener("mouseleave",()=>{if(g&&cur>=0) show(g,stepIds(S[cur]));});});
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) applyS(+e.target.dataset.i);}),{rootMargin:"-45% 0px -45% 0px"});
-stepsEl.querySelectorAll(".sstep").forEach(el=>io.observe(el));
-addEventListener("resize",()=>{if(cur>=0){pan(g,focus(g,S[cur].focus)); callouts(S[cur]);}});
-requestAnimationFrame(()=>applyS(0));
+// focus: col:L|M|R, node:<id>, gate, frame; everything else fades to .2
+function focusOn(tokens){
+  const keepC=new Set(), keepN=new Set(); let keepFrame=false, keepGate=false;
+  tokens.forEach(t=>{if(t.startsWith("node:")) keepN.add(t.slice(5)); else if(t.startsWith("col:")) keepC.add(t.slice(4)); else if(t==="gate") keepGate=true; else if(t==="frame") keepFrame=true;});
+  const anyF=keepC.size||keepN.size||keepFrame||keepGate;
+  colsEl.querySelectorAll("[data-node],[data-group],[data-frame]").forEach(e=>{
+    if(!anyF){e.style.opacity=""; return;}
+    const c=e.closest("[data-colk]"), ck=c?c.dataset.colk:"", inFrame=!!e.closest('[data-frame="res"]');
+    const keep=keepC.has(ck)||(e.dataset.node&&keepN.has(e.dataset.node))||(keepFrame&&(inFrame||e.dataset.frame))||(e.dataset.frame&&[...keepN].some(n=>["NBC","FBC","NBFC","FBFC"].includes(n)));
+    e.style.transition=`opacity .45s ${EASE}, outline-color .2s`; e.style.opacity=keep?"":"0.2";});
+  const gA=gatesEl.querySelector('[data-gate="arrivals"]');
+  if(gA&&anyF&&built.M) gA.style.opacity=keepGate||keepC.has("M")?"1":"0.2";
+}
+
+// ---------- hovers ----------
+const numHtml=(id,t)=>`<span class="num" style="background:${TC[t]||TC.e}">${id}</span>`;
+function nodeName(id){const r=R&&R[id]; if(!r) return id; const s=r.el.querySelector(".nm"); return (s?s.textContent:id).trim();}
+function routeHover(l,e){
+  paintLinks([l],true,l.rare,false);
+  LK.forEach(q=>q.pills.forEach(p=>{p.style.opacity=q===l?"1":".14";}));
+  const rows=MS[gk].key==="irrs"?l.rs.map(r=>({id:r.case,...caseInfo(r.case),ex:r.ex,ref:r.ref})):l.cases.map(id=>({id,...caseInfo(id),ref:caseInfo(id).refs}));
+  tip.innerHTML=`<span class="path">${l.k} → ${nodeName(l.m)} → ${nodeName(l.c)}</span>`+rows.slice(0,4).map(r=>`<div class="r">${numHtml(r.id,r.t)}<div><b>${r.h}</b>${r.ex?`<i>${r.ex}</i>`:""}${r.ref?`<small>${r.ref}</small>`:""}</div></div>`).join("");
+  tip.style.display="block"; placeTip(e);
+}
+function placeTip(e){if(tip.style.display==="none") return; const sr=stage.getBoundingClientRect();
+  let x=e.clientX-sr.left+16, y=e.clientY-sr.top+14; const w=tip.offsetWidth, h=tip.offsetHeight;
+  if(x+w>sr.width-8) x=e.clientX-sr.left-w-16; if(y+h>sr.height-8) y=Math.max(8,sr.height-8-h);
+  tip.style.left=x+"px"; tip.style.top=y+"px";}
+function routeLeave(){tip.style.display="none"; restore();}
+function restore(){if(cur>=0&&steps[cur]&&LK) show(steps[cur].ids,false);}
+function nodeHover(id,on){
+  if(!LK) return;
+  if(!on){hov.style.display="none"; restore(); return;}
+  const ls=LK.filter(l=>!l.hidden&&(l.k===id||l.m===id||l.c===id));
+  paintLinks(ls,true,ls.some(l=>l.rare),false);
+  const ids=[...new Set(ls.flatMap(l=>l.cases))];
+  LK.forEach(q=>q.pills.forEach(p=>{p.style.opacity=ls.includes(q)?"1":".14";}));
+  const r=R[id], SW=stage.clientWidth, SH=stage.clientHeight;
+  hov.innerHTML=`<b>${nodeName(id)}</b><div class="hb"><span class="cnt">${ls.length} ${ls.length===1?"route":"routes"} · ${ids.length} ${ids.length===1?"case":"cases"}</span><div>${ids.map(c=>numHtml(c,caseInfo(c).t)).join("")}</div></div>`;
+  hov.style.display="block"; const bw=hov.offsetWidth, bh=hov.offsetHeight;
+  let x=r.x1+12; if(x+bw>SW-8) x=r.x0-12-bw; x=Math.max(8,x);
+  hov.style.left=x+"px"; hov.style.top=Math.min(Math.max(8,(r.y0+r.y1)/2-bh/2),SH-8-bh)+"px";
+}
+// trace a case: a dot travels each of its routes, touched cards get an outline, the destination a ring
+function trace(id,color){
+  untrace(true); show([id],false);
+  const ls=LK.filter(l=>!l.hidden&&l.cases.includes(id)&&l.el.style.display!=="none");
+  const lay=document.createElementNS(NS,"g"); lay.dataset.trace=1; svg.appendChild(lay);
+  const ends=new Set(); ls.forEach(l=>[l.k,l.m,l.c].forEach(n=>ends.add(n)));
+  ends.forEach(n=>{const r=R[n]; if(r){r.el.style.outline=`2.5px solid ${color}`; r.el.__tr=1;}});
+  ls.forEach((l,i)=>{
+    const p=l.el, L=p.getTotalLength(), dest=R[l.c];
+    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("r",6); dot.setAttribute("style",`fill:${color};stroke:#fff;stroke-width:2.5`); lay.appendChild(dot);
+    const t0=performance.now()+i*120, D=RM?0:1100;
+    const tick=now=>{if(!dot.isConnected) return; const k=D?Math.max(0,Math.min(1,(now-t0)/D)):1, e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2, pt=p.getPointAtLength(L*e);
+      dot.setAttribute("cx",pt.x); dot.setAttribute("cy",pt.y); if(k<1) requestAnimationFrame(tick);};
+    requestAnimationFrame(tick);
+    if(dest) setTimeout(()=>{if(dot.isConnected){dest.el.style.boxShadow=`0 0 0 4px #fff, 0 0 0 6px ${color}`; dest.el.__ring=1;}},D+i*120);
+  });
+}
+function untrace(keep){
+  svg.querySelectorAll("[data-trace]").forEach(e=>e.remove());
+  if(R) Object.values(R).forEach(r=>{if(r.el.__ring){r.el.style.boxShadow=""; r.el.__ring=0;} if(r.el.__tr){r.el.style.outline=""; r.el.__tr=0;}});
+  if(!keep) restore();
+}
+
+// ---------- notes pinned on the graph ----------
+function anchorOf(id){
+  const sr=stage.getBoundingClientRect();
+  const p=[...pillsEl.querySelectorAll(`[data-case="${id}"]`)].find(x=>x.style.display!=="none"); if(p){const b=p.getBoundingClientRect(); return [b.right-sr.left,b.top-sr.top+b.height/2];}
+  const l=LK.find(q=>!q.hidden&&q.cases.includes(id)&&q.el.style.display!=="none"); if(!l) return null;
+  const P=l.el.getPointAtLength(l.el.getTotalLength()*0.62); return [P.x,P.y];
+}
+function lineSvg(){const s=document.createElementNS(NS,"svg"); s.setAttribute("style","position:absolute;inset:0;width:100%;height:100%;overflow:visible"); notesEl.appendChild(s); return s;}
+function callouts(s){
+  notesEl.innerHTML=""; if(!LK) return;
+  const cases=s.cases; if(!cases.length) return;
+  const SW=stage.clientWidth, SH=stage.clientHeight;
+  if(cases.length===1&&cases[0].exp){expNote(cases[0],SW,SH); return;}
+  const notes=[];
+  cases.forEach(c=>{const ls=LK.filter(l=>l.cases.includes(c.id)&&l.el.style.display!=="none"); if(!ls.length) return;
+    const a=anchorOf(c.id); if(!a) return; notes.push({c,ax:a[0],ay:a[1],n:ls.length});});
+  let W=250; notes.sort((a,b)=>a.ay-b.ay);
+  const lines=lineSvg();
+  notes.forEach((nt,k)=>{
+    const col=TC[nt.c.t]||"var(--ink)", card=document.createElement("div"); card.className="note";
+    card.style.width=W+"px"; card.style.animationDelay=k*90+"ms";
+    card.innerHTML=`<div class="nh">${numHtml(nt.c.n,nt.c.t)}<b>${nt.c.h}</b></div>${nt.c.ex?`<p>${nt.c.ex}</p>`:""}${nt.n>1?`<span class="rt">${nt.n} routes</span>`:""}${nt.c.cite?`<span class="ct">${nt.c.cite}</span>`:""}`;
+    notesEl.appendChild(card); nt.card=card; nt.h=card.offsetHeight;
+    card.addEventListener("mouseenter",()=>trace(nt.c.id,col)); card.addEventListener("mouseleave",()=>untrace());});
+  // one column beside the tags, or two when they don't fit
+  const fits=arr=>arr.reduce((t,n)=>t+n.h+14,0)<=SH-12;
+  const cols=fits(notes)?[notes]:[notes.filter((_,k)=>k%2===0),notes.filter((_,k)=>k%2===1)];
+  let xs=null;
+  if(cols.length>1){const ax0=Math.min(...notes.map(n=>n.ax)), room=SW-10-(ax0+28); W=Math.max(190,Math.min(250,(room-14)/2));
+    notes.forEach(n=>{n.card.style.width=W+"px"; n.h=n.card.offsetHeight;}); xs=room>=2*190+14?[ax0+28,ax0+28+W+14]:[10,10+W+14];}
+  cols.forEach((arr,ci)=>{
+    arr.forEach(n=>{n.ci=ci;});
+    const GAP=arr.length>1?Math.max(12,Math.min(40,(SH-20-arr.reduce((t,n)=>t+n.h,0))/(arr.length-1))):0;
+    arr.forEach((n,k)=>{n.y=k===0?Math.max(10,n.ay-n.h/2):Math.max(n.ay-n.h/2,arr[k-1].y+arr[k-1].h+Math.min(GAP,20));});
+    for(let it=0;it<2;it++){
+      for(let k=arr.length-1;k>=0;k--){const lim=k===arr.length-1?SH-10:arr[k+1].y-GAP; if(arr[k].y+arr[k].h>lim) arr[k].y=lim-arr[k].h;}
+      for(let k=0;k<arr.length;k++){const lim=k===0?10:arr[k-1].y+arr[k-1].h+GAP; if(arr[k].y<lim) arr[k].y=lim;}}
+  });
+  notes.forEach((nt,k)=>{
+    let x; if(xs) x=xs[nt.ci]; else {x=nt.ax+28; if(x+W>SW-10) x=Math.max(10,nt.ax-28-W);}
+    nt.card.style.left=x+"px"; nt.card.style.top=nt.y+"px";
+    const cx=x>nt.ax?x:x+W, cy=nt.y+Math.min(22,nt.h/2), ln=document.createElementNS(NS,"path");
+    ln.setAttribute("d",`M${nt.ax},${nt.ay} C${(nt.ax+cx)/2},${nt.ay} ${(nt.ax+cx)/2},${cy} ${cx},${cy}`);
+    ln.setAttribute("style",`fill:none;stroke:var(--strong);stroke-width:1.3;stroke-dasharray:400;stroke-dashoffset:400;animation:codraw .5s ${EASE} forwards;animation-delay:${k*90}ms`); lines.appendChild(ln);
+    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",nt.ax); dot.setAttribute("cy",nt.ay); dot.setAttribute("r",4); dot.setAttribute("style","fill:var(--strong)"); lines.appendChild(dot);
+  });
+}
+function expRows(id){
+  const M=MS[gk]; let rows=[];
+  if(M.key==="irrs"){const seen=new Set(); LK.forEach(l=>{if(l.hidden||l.rare||!l.cases.includes(id)) return; l.rs.filter(r=>r.case===id).forEach(r=>{
+    if(!r.ex||seen.has(r.ex)||EXP_SKIP.includes(l.k)) return; seen.add(r.ex); const c=CATS.find(q=>q.id===l.k); rows.push({l,code:l.k,h:c?c.l:l.k,ex:r.ex});});});}
+  else Object.entries(M.F.cases).forEach(([k,c])=>{if(String(c.t).toLowerCase()!=="e"||(M.F.caseIds&&!M.F.caseIds.includes(k))) return; const l=LK.find(q=>q.cases.includes(k)&&!q.rare); if(l) rows.push({l,code:k,h:c.h,ex:c.ex});});
+  const used=new Set(); return rows.filter(r=>!used.has(r.l)&&used.add(r.l));
+}
+// expected route: up to three green notes, each centred on its own route
+function expNote(c,SW,SH,lvl){
+  lvl=lvl||0; let rows=expRows(c.id); const maxN=lvl>=1?2:3;
+  if(rows.length>maxN){const pri=rows.filter(r=>EXP_FIRST.includes(r.code)).slice(0,1), rest=rows.filter(r=>!pri.includes(r)), need=maxN-pri.length;
+    const idx=need>=3?[0,Math.floor((rest.length-1)/2),rest.length-1]:need===2?[0,rest.length-1]:[0]; rows=[...pri,...[...new Set(idx)].map(i=>rest[i]).filter(Boolean)];}
+  const W=Math.min(250,(SW-30)/2), lines=lineSvg();
+  const notes=rows.map((r,k)=>{
+    const P=r.l.el.getPointAtLength(r.l.el.getTotalLength()*0.5), card=document.createElement("div"); card.className="note exp";
+    card.style.width=W+"px"; card.style.animationDelay=k*110+"ms";
+    card.innerHTML=`<div class="nh">${numHtml("E","e")}<span class="code">${r.code}</span><b>${r.h}</b></div>${lvl>=2?"":`<p>${r.ex}</p>`}`;
+    notesEl.appendChild(card);
+    card.addEventListener("mouseenter",()=>paintLinks([r.l],true,false,false)); card.addEventListener("mouseleave",restore);
+    return {ax:P.x,ay:P.y,card,h:card.offsetHeight};
+  }).sort((p,q)=>p.ay-q.ay);
+  if(lvl<2&&notes.reduce((a,n)=>a+n.h+12,0)>SH-8){notesEl.innerHTML=""; return expNote(c,SW,SH,lvl+1);}
+  notes.forEach((n,k)=>{n.y=Math.max(n.ay-n.h/2,k?notes[k-1].y+notes[k-1].h+12:10);});
+  for(let k=notes.length-1;k>=0;k--){const lim=k===notes.length-1?SH-10:notes[k+1].y-12; if(notes[k].y+notes[k].h>lim) notes[k].y=lim-notes[k].h;}
+  notes.forEach(n=>{
+    const x=Math.max(10,Math.min(SW-10-W,n.ax-W/2)), y=Math.max(10,n.y); n.card.style.left=x+"px"; n.card.style.top=y+"px";
+    if(!(n.ay>=y&&n.ay<=y+n.h)){const cy=n.ay<y?y:y+n.h, ln=document.createElementNS(NS,"path"); ln.setAttribute("d",`M${n.ax},${n.ay} L${n.ax},${cy}`); ln.setAttribute("style","fill:none;stroke:var(--v-prot);stroke-width:1.3"); lines.appendChild(ln);}
+    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",n.ax); dot.setAttribute("cy",n.ay); dot.setAttribute("r",4.5); dot.setAttribute("style","fill:var(--v-prot);stroke:#fff;stroke-width:2"); lines.appendChild(dot);
+  });
+}
+// legend tour: expected, then types 1 to 5, each with a line from its pill to one of its routes
+function legendTour(s){
+  const order=["e","1","2","3","4","5"], STEP=RM?0:1500;
+  const pillOp=on=>document.querySelectorAll("#types [data-ty]").forEach(p=>{p.style.opacity=on==null||on===p.dataset.ty?"1":".3";});
+  const run=k=>{
+    if(steps[cur]!==s) return; notesEl.innerHTML="";
+    if(k>=order.length){pillOp(null); show([],false); return;}
+    const t=order[k], ls=LK.filter(l=>l.t===t&&!l.hidden&&!l.rare); pillOp(t);
+    if(!ls.length){tourT.push(setTimeout(()=>run(k+1),300)); return;}
+    paintLinks(ls,true,false,true);
+    const ids=new Set(ls.flatMap(l=>l.cases)); LK.forEach(q=>q.pills.forEach(p=>{p.style.opacity=ids.has(p.dataset.case)?"1":".14";}));
+    requestAnimationFrame(()=>{
+      const pill=document.querySelector(`#types [data-ty="${t}"]`); if(!pill) return;
+      const sr=stage.getBoundingClientRect(), pr=pill.getBoundingClientRect(), px=pr.left+pr.width/2-sr.left;
+      const l=ls.slice().sort((a,b)=>b.cases.length-a.cases.length)[0], P=l.el.getPointAtLength(l.el.getTotalLength()*0.32), col=TC[t];
+      const sv=lineSvg(), path=document.createElementNS(NS,"path"); path.setAttribute("d",`M${px},0 C${px},${P.y*0.6} ${P.x},${P.y*0.4} ${P.x},${P.y}`);
+      path.setAttribute("style",`fill:none;stroke:${col};stroke-width:1.6;stroke-dasharray:900;stroke-dashoffset:900;animation:codraw .6s ${EASE} forwards`); sv.appendChild(path);
+      const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",P.x); dot.setAttribute("cy",P.y); dot.setAttribute("r",5); dot.setAttribute("style",`fill:${col};stroke:#fff;stroke-width:2`); sv.appendChild(dot);
+    });
+    tourT.push(setTimeout(()=>run(k+1),STEP));
+  };
+  run(0);
+}
+
+// ---------- scrolling: one step per screen ----------
+let navLock=0, stT=0, scrRaf=0;
+function pickStep(){
+  if(navLock>performance.now()) return;
+  const mid=innerHeight*0.5, i=steps.findIndex(s=>{const r=s.el.getBoundingClientRect(); return r.top<=mid&&r.bottom>mid;});
+  if(i<0||i===cur) return;
+  clearTimeout(stT); stT=setTimeout(()=>applyS(i),60);
+}
+function go(i){i=Math.max(0,Math.min(steps.length-1,i)); navLock=performance.now()+900; clearTimeout(stT); applyS(i); jump(i);}
+function jump(i){const r=steps[i].el.getBoundingClientRect(); scrollTo({top:scrollY+r.top,behavior:RM?"auto":"smooth"});}
+addEventListener("scroll",()=>{if(scrRaf) return; scrRaf=requestAnimationFrame(()=>{scrRaf=0; pickStep();});},{passive:true});
+addEventListener("scrollend",pickStep);
+addEventListener("keydown",e=>{
+  if(e.target.closest&&e.target.closest("input,textarea,select,[contenteditable]")) return;
+  const r=stage.getBoundingClientRect(); if(r.bottom<80||r.top>innerHeight-80) return;
+  const fwd=["ArrowDown","ArrowRight","PageDown"," "].includes(e.key), back=["ArrowUp","ArrowLeft","PageUp"].includes(e.key);
+  if(!fwd&&!back) return; e.preventDefault();
+  const i=Math.max(0,cur)+(fwd?1:-1);
+  if(i>=steps.length){scrollTo({top:scrollY+$(".send").getBoundingClientRect().top,behavior:RM?"auto":"smooth"}); return;}
+  if(i<0){scrollTo({top:0,behavior:RM?"auto":"smooth"}); return;}
+  go(i);
+});
+new ResizeObserver(()=>{clearTimeout(stage.__t); stage.__t=setTimeout(()=>{
+  if(!MS) return; const c=stage.clientWidth<1050;
+  if(c!==compact){compact=c; renderStage();} relayout();},90);}).observe(stage);
+
+// ---------- start ----------
+document.querySelectorAll("body > .tip").forEach(t=>t.remove());
+MS={irrs:model("irrs"),A:model("A"),B:model("B")};
+compact=stage.clientWidth<1050;
+applyS(0);
 })();
