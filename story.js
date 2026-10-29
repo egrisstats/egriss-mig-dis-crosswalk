@@ -38,13 +38,13 @@ const STEPS=[
  {g:"B",focus:"col:R",lane:"cover:pr",cap:["P&amp;R Rev. 4"],h:"Right: the census classification",body:["P&amp;R has no figure for internal migration, so the three outcomes are derived from its paragraphs: <b>internal migrant</b> (para 5.63), <b>move within the division</b>, which is not migration (para 5.63), and <b>non-migrant</b> by birth or reference date (paras 5.71-5.80).","<span>Addition for overview</span> Voluntary internal movers, outside IRIS, reach the same census boxes."]},
  {g:"B",exp:"PE",cap:[],bridge:"Again, the expected route first.",h:"Displaced to another district",body:["An IDP who moves across a civil division boundary is also an internal migrant: usually resident in one division, previously in another."]},
  {g:"B",cap:["P&amp;R · Moves within the division"],bridge:"But not every displacement is a migration.",h:"Displaced, but not an internal migrant",body:["IRIS counts any forced move from the dwelling. The census does not count moves inside a civil division as migration. How many IDPs fall here depends on how small the divisions are."],cases:[["P1","P1","1","Displaced within the same district","After a landslide a family moves to an evacuation shelter two kilometres away, in the same municipality.","IRIS 115 · P&R 5.63, 5.68-5.69"]]},
- {g:"B",cap:["P&amp;R · Non-migrants"],bridge:"Some IDPs the census question cannot see.",h:"IDPs the reference-date question cannot see",body:["The census often asks where people lived one or five years ago. IDPs who returned home within that period, or who were displaced before it, look like people who never moved."],cases:[["P2+","P2","2","Protracted IDPs","A family displaced seven years ago still lives in the camp: residence five years ago and today are the same place.","IRIS 81 · P&R 5.76-5.77"],
+ {g:"B",cap:["P&amp;R · Non-migrants"],bridge:"Some IDPs the census question cannot see.",h:"IDPs the reference-date question cannot see",body:["The census often asks where people lived one or five years ago. IDPs who returned home within that period, or who were displaced before it, look like people who never moved."],cases:[["P2+","P2+","2","Protracted IDPs","A family displaced seven years ago still lives in the camp: residence five years ago and today are the same place.","IRIS 81 · P&R 5.76-5.77"],
    ["P2","P2","2","Returned home within the period","A family displaced three years ago is back in its village but still lacks housing and documents.","IRIS 75 · P&R 5.76"],
    ["P7","P7","2","IDP-related child born after the reference date","Neither migrant nor IDP; the census treats young children separately.","IRIS 78 · P&R 5.80"]]},
  {g:"B",cap:["P&amp;R · Not yet usual residents"],bridge:"Others are too recent to count where they are.",h:"Too recent to count where they are",body:["Usual residence needs six or twelve months, or the intention to stay. People who intend to return home, as many IDPs do, may be counted at the address they fled. IRIS counts them from day one."],cases:[["N","N","2","Recently displaced","A family arrived in the camp two months ago and expects to go home: the census may still place them in their home district.","IRIS 75 · P&R 2.61, 5.46, 5.54"]]},
  {g:"B",cap:["P&amp;R · Internal migrants"],bridge:"And some internal migrants are not IDPs at all.",h:"Internal migrants who are not IDPs",body:["Only the census question on reason for change of residence, with its forced displacement option, separates these people from IDPs."],cases:[["P6","P6","3","Voluntary movers and joining relatives","A young woman moves to the capital for work, or joins displaced relatives from another province.","IRIS 80 · P&R 5.63, 5.81-5.83"],
    ["P5","P5","3","IDP-related child moving home","A girl born in the displacement camp moves home with her parents at six: a lifetime internal migrant.","IRIS 78 · P&R 5.64"],
-   ["d6","d6","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.63"]]},
+   ["P8","P8","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.63"]]},
  {g:"B",cap:["P&amp;R · Last move and moves from abroad"],bridge:"Finally, the same return can be counted two ways.",h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.71-5.74"],
    ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.74, 5.76"]]}
 ];
@@ -513,6 +513,18 @@ function laneFill(s){
   else l.innerHTML="";
 }
 
+// ---------- summary: every case by type, each linking back to its step ----------
+(()=>{
+  const chName=i=>CH[chOf(i)].label, rows={e:[],1:[],2:[],3:[],4:[],5:[]};
+  steps.forEach(s=>{
+    if(s.exp) rows.e.push({i:s.i,n:"E",h:s.h,ch:chName(s.i)});
+    else s.cases.forEach(c=>{const t=String(c.t); if(rows[t]) rows[t].push({i:s.i,n:c.n,h:c.h,ch:chName(s.i)});});});
+  $("#sumgrid").innerHTML=["e","1","2","3","4","5"].map(t=>[t,rows[t]]).filter(([,r])=>r.length).map(([t,r])=>`<div class="sumcol">
+    <span class="ty" style="background:${TC[t]}">${TT[t]}</span><p class="sumdef">${TD[t]}</p>
+    <ul>${r.map(x=>`<li><button type="button" data-go="${x.i}">${numHtml(x.n,t)}<span><b>${x.h}</b><small>${x.ch}</small></span></button></li>`).join("")}</ul></div>`).join("");
+  $("#sumgrid").querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
+})();
+
 // ---------- scrolling: one step per screen ----------
 let navLock=0, stT=0, scrRaf=0;
 function pickStep(){
@@ -531,7 +543,7 @@ addEventListener("keydown",e=>{
   const fwd=["ArrowDown","ArrowRight","PageDown"," "].includes(e.key), back=["ArrowUp","ArrowLeft","PageUp"].includes(e.key);
   if(!fwd&&!back) return; e.preventDefault();
   const i=Math.max(0,cur)+(fwd?1:-1);
-  if(i>=steps.length){scrollTo({top:scrollY+$(".send").getBoundingClientRect().top,behavior:RM?"auto":"smooth"}); return;}
+  if(i>=steps.length){scrollTo({top:scrollY+$("#summary").getBoundingClientRect().top,behavior:RM?"auto":"smooth"}); return;}
   if(i<0){scrollTo({top:0,behavior:RM?"auto":"smooth"}); return;}
   go(i);
 });
