@@ -7,65 +7,65 @@ const RM=matchMedia("(prefers-reduced-motion: reduce)").matches, EASE="cubic-bez
 // steps: g graph, build columns shown (L, M, R, sq, links), hide node ids, focus (col:L|M|R, node:id, gate, frame),
 // exp expected-route case, cap source badges, h title, body paragraphs (the first is the caption), cases [n, id, type, title, example, paragraphs]
 const STEPS=[
- {g:"irrs",build:"L",focus:"col:L",cap:["IRRS 2018 · Figure 3.1"],h:"Left: the IRRS framework",body:["Three groups, as in IRRS Figure 3.1: <b>a</b> in need of international protection, <b>b</b> with a refugee background, <b>c</b> returned after seeking protection abroad.","IRRS has no duration rule: a person enters by arrival, birth or a change of status. The codes a1 to c4 follow every route."]},
- {g:"irrs",build:"L,M",hide:"NON",focus:"col:M,gate",cap:["IMTM 2025 · Figure 2"],h:"Middle: what kind of stay was it?",body:["IMTM sorts arrivals by duration. <b>Immigrants</b> change their country of residence. <b>Returned migrants</b> are previous residents back after 12 months or more. <b>Temporary mobility</b> stays below the 12-month rule.","The dashed arrow is IMTM para 33: an asylum seeker whose stay passes the minimum duration becomes a new resident."]},
- {g:"irrs",build:"L,M,R,sq",hide:"NON",focus:"node:NBC,node:FBC,node:NBFC,node:FBFC,frame",cap:["IMTM 2025 · Figure 6"],h:"Right: where the person ends up",body:["The resident population by birthplace and citizenship. The three dashed groups form the IMTM immigrant stock: born abroad <b>or</b> a foreign citizen.","<span>Addition for overview</span> The small squares are IRRS codes. Each square is one route landing in that group, so you can read off which refugee categories end up where."]},
+ {g:"irrs",build:"L",focus:"col:L",lane:"cover:irrs",cap:["IRRS 2018 · Figure 3.1"],h:"Left: the IRRS framework",body:["Three groups, as in IRRS Figure 3.1: <b>a</b> in need of international protection, <b>b</b> with a refugee background, <b>c</b> returned after seeking protection abroad.","IRRS has no duration rule: a person enters by arrival, birth or a change of status. The codes a1 to c4 follow every route."]},
+ {g:"irrs",build:"L,M",hide:"NON",focus:"col:M,gate",lane:"cover:imtm",cap:["IMTM 2025 · Figure 2"],h:"Middle: what kind of stay was it?",body:["IMTM sorts arrivals by duration. <b>Immigrants</b> change their country of residence. <b>Returned migrants</b> are previous residents back after 12 months or more. <b>Temporary mobility</b> stays below the 12-month rule.","The dashed arrow is IMTM para 33: an asylum seeker whose stay passes the minimum duration becomes a new resident."]},
+ {g:"irrs",build:"L,M,R,sq",hide:"NON",focus:"node:NBC,node:FBC,node:NBFC,node:FBFC,frame",lane:"cover:imtm",cap:["IMTM 2025 · Figure 6"],h:"Right: where the person ends up",body:["The resident population by birthplace and citizenship. The three dashed groups form the IMTM immigrant stock: born abroad <b>or</b> a foreign citizen.","<span>Addition for overview</span> The small squares are IRRS codes. Each square is one route landing in that group, so you can read off which refugee categories end up where."]},
  {g:"irrs",build:"L,M,R,sq",hide:"NON",focus:"node:TMP,node:TEMP",cap:["Addition for overview"],h:"Temporary stays have their own destination",body:["<b>Temporary population</b>: present in the country, not yet resident. Temporary mobility lands here until the 12-month rule is met. IMTM shows it in Figure 2, not in Figure 6, so we added it beside the resident groups."]},
  {g:"irrs",hide:"NON",legend:1,tour:1,cap:["Reading the routes"],h:"Each line is a route, each number a case",body:["Each line runs from an IRRS category, through the type of stay, to a resident group. <b>Colour</b> is the type of case, <b>thickness</b> the number of cases, and the <b>numbered tags</b> are the cases.","From here on, the routes light up one type at a time, starting with the expected case. The notes on the graph are the same short descriptions you get when you hover a line."]},
- {g:"irrs",hide:"NON",legend:1,cap:["Paper and proposed wording"],h:"Is every refugee an international migrant?",body:["The paper asks whether refugees always nest inside international migrants. The next eight steps show where they don't.","<span>Paper</span> \"A refugee may not be an international migrant (IRRS versus IMTM)\": mismatches or nesting issues, where a population \"may be classified in more than one, does not neatly nest within or sits outside the existing frameworks\".","<span>Proposed</span> a <b>non-nested case</b> wherever one population does not sit inside the other, in five types: 1 never moved, 2 not yet or not visible, 3 migrant for a different reason, 4 counted differently, 5 misalignment. Only type 5 is left unsettled by the recommendations."]},
- {g:"irrs",hide:"NON",exp:"E",cap:[],h:"A refugee crosses a border and stays",body:["Most refugees arrive, stay 12 months or more and become foreign-born foreign citizens in the resident population. Here IRRS and IMTM agree: the refugee is an international migrant."]},
- {g:"irrs",cap:["IMTM · Native-born foreign citizens"],h:"In the IRRS refugee stock without ever moving",body:["Refugees born in the country of asylum are in the IRRS refugee stock, but they never crossed a border. IMTM does not count them as international migrants: they did not come in as international arrivals.","<span>Addition for overview</span> The box <b>No international migration</b> now appears on the graph. It shows inflows from the population already in the country: births in exile, status changes and returns within 12 months go straight to a resident group without anyone changing country. IMTM has no box for these inflows, so it sits outside the IMTM framework."],cases:[["1","1","1","Born in exile, derivative status","A girl is born to recognised refugees in a country that gives no citizenship at birth and receives refugee status through her parents.","IRRS 60, 90 · IMTM 25, 53"],
+ {g:"irrs",hide:"NON",legend:1,lane:"types",cap:["Paper and proposed wording"],h:"Is every refugee an international migrant?",body:["The paper asks whether refugees always nest inside international migrants. The next eight steps show where they don't.","<span>Paper</span> \"A refugee may not be an international migrant (IRRS versus IMTM)\": mismatches or nesting issues, where a population \"may be classified in more than one, does not neatly nest within or sits outside the existing frameworks\".","<span>Proposed</span> a <b>non-nested case</b> wherever one population does not sit inside the other, in five types: 1 never moved, 2 not yet or not visible, 3 migrant for a different reason, 4 counted differently, 5 misalignment. Only type 5 is left unsettled by the recommendations."]},
+ {g:"irrs",hide:"NON",exp:"E",cap:[],bridge:"Start with the route everyone expects.",h:"A refugee crosses a border and stays",body:["Most refugees arrive, stay 12 months or more and become foreign-born foreign citizens in the resident population. Here IRRS and IMTM agree: the refugee is an international migrant."]},
+ {g:"irrs",cap:["IMTM · Native-born foreign citizens"],bridge:"The first surprise: refugees who never crossed a border.",h:"In the IRRS refugee stock without ever moving",body:["Refugees born in the country of asylum are in the IRRS refugee stock, but they never crossed a border. IMTM does not count them as international migrants: they did not come in as international arrivals.","<span>Addition for overview</span> The box <b>No international migration</b> now appears on the graph. It shows inflows from the population already in the country: births in exile, status changes and returns within 12 months go straight to a resident group without anyone changing country. IMTM has no box for these inflows, so it sits outside the IMTM framework."],cases:[["1","1","1","Born in exile, derivative status","A girl is born to recognised refugees in a country that gives no citizenship at birth and receives refugee status through her parents.","IRRS 60, 90 · IMTM 25, 53"],
    ["3","3","1","Born under other protection","A child born to parents with subsidiary or temporary protection receives the same status, not citizenship.","IRRS 90, 92.3 · IMTM 57"],
    ["2","2","1","Born here, facing removal","A man born to migrant parents loses his residence right at 18, faces removal to his parents' country and claims asylum.","IRRS 90, 92.2 · IMTM 53"],
    ["4","4","1","Born in exile, status ceases, stays","Refugee status ends after peace returns to the parents' country; he stays without citizenship.","IRRS 67, 94.4 · IMTM 25"]]},
- {g:"irrs",cap:["IMTM · Native-born citizens"],h:"Refugees and refugee background outside the immigrant stock",body:["Citizens born in the country are not in the immigrant stock at all, but some of them are refugees or have a refugee background."],cases:[["5","5","1","Palestine refugee with host citizenship","A Palestine refugee under UNRWA's mandate, born in the host country and a citizen from birth.","IRRS 78, 90 · IMTM 25"],
+ {g:"irrs",cap:["IMTM · Native-born citizens"],bridge:"Some of them are not in the immigrant stock at all.",h:"Refugees and refugee background outside the immigrant stock",body:["Citizens born in the country are not in the immigrant stock at all, but some of them are refugees or have a refugee background."],cases:[["5","5","1","Palestine refugee with host citizenship","A Palestine refugee under UNRWA's mandate, born in the host country and a citizen from birth.","IRRS 78, 90 · IMTM 25"],
    ["6","6","1","Child of refugees, citizen at birth","A boy born to refugee parents where citizenship comes with birthplace: refugee background, not a refugee.","IRRS 59, 94.2 · IMTM 25"],
    ["7","7","1","Born in exile, later naturalised","A refugee born in the country of asylum naturalises at 18 and leaves the immigrant stock.","IRRS 94.1 · IMTM 58-61"],
    ["8","8","1","Returnee away less than 12 months","A man's asylum claim abroad is rejected and he is back after six months: he never left the resident population.","IRRS 97.2 · IMTM Fig. 2"]]},
- {g:"irrs",cap:["IMTM · Temporary population"],h:"Refugees in temporary mobility, not yet migrants",body:["IRRS has no duration rule; IMTM needs 12 months. Until then, asylum seekers and new arrivals are temporary population. They become migrants by elapsed time alone."],cases:[["9","9","2","Recent asylum seeker","A man filed his claim four months ago and does not yet know whether he can stay.","IRRS 85, 92.2 · IMTM 30, 33"],
+ {g:"irrs",cap:["IMTM · Temporary population"],bridge:"Others did cross, but too recently to count as migrants.",h:"Refugees in temporary mobility, not yet migrants",body:["IRRS has no duration rule; IMTM needs 12 months. Until then, asylum seekers and new arrivals are temporary population. They become migrants by elapsed time alone."],cases:[["9","9","2","Recent asylum seeker","A man filed his claim four months ago and does not yet know whether he can stay.","IRRS 85, 92.2 · IMTM 30, 33"],
    ["10","10","2","New prima facie or temporary protection arrival","A family arrived two months ago with a group recognised prima facie.","IRRS 55, 92.3 · IMTM 30, 33"]]},
- {g:"irrs",cap:["IMTM · Immigrants"],h:"International migrants, but recorded for another reason",body:["These refugees are international migrants, so they nest. The reason IMTM records is not protection, so they disappear from any count of humanitarian migration."],cases:[["11","11","3","Refugee sur place","A student has lived in the country for three years and is already part of the resident population when war breaks out at home and he is recognised as a refugee.","IRRS 80 · IMTM 34, Box 1"],
+ {g:"irrs",cap:["IMTM · Immigrants"],bridge:"Then refugees who are counted as migrants, for another reason.",h:"International migrants, but recorded for another reason",body:["These refugees are international migrants, so they nest. The reason IMTM records is not protection, so they disappear from any count of humanitarian migration."],cases:[["11","11","3","Refugee sur place","A student has lived in the country for three years and is already part of the resident population when war breaks out at home and he is recognised as a refugee.","IRRS 80 · IMTM 34, Box 1"],
    ["12","12","3","Refugee-like, on a visa or free movement","A man fled threats but entered on a three-year work visa and never applied for asylum.","IRRS 92.4 · IMTM 17"]]},
- {g:"irrs",cap:["IMTM · Foreign-born citizens"],h:"Returnees who arrive for the first time",body:["IRRS defines home as the country of former habitual residence, which can be the parents' country, so a child born in exile can 'return' to a country they have never lived in."],cases:[["15","15","4","Child born in exile 'returns'","A boy born in a refugee camp abroad, with refugee status, repatriates with his parents to a country he has never lived in: an IRRS returnee, an IMTM first-time immigrant.","IRRS 95, 97.1 · IMTM 25"]]},
- {g:"irrs",cap:["IMTM · Returned migrants"],h:"In the flow, not in the stock",body:["Refugees who come home after a year or more are returned migrants in the immigration flow, but as native-born citizens they never appear in the immigrant stock."],cases:[["14","14","4","Refugee returns after years abroad","A man returns home after eight years as a refugee abroad.","IRRS 97.1, 109 · IMTM 25, 27"]]},
- {g:"irrs",cap:["Result"],h:"Most refugee categories include people who never migrated",body:["12 of the 14 IRRS categories include people who never changed country. The recommendations agree (IRRS para 80, IMTM para 53); the assumption that every refugee is a migrant is what fails.","Only the refugee-like and reunified family categories always arrive as international migrants."]},
- {g:"A",build:"L",focus:"col:L",cap:["IRIS 2020 · Figures 3.1, 3.2"],h:"IDPs: the same graph, IRIS on the left",body:["The IDP stock (locations of displacement, return, other settlement) and IDP-related children follow IRIS Figure 3.1.","<span>Addition for overview</span> The three cross-border groups of IRIS Figure 3.2 (para 82) sit below, outside the IDP stock.","<span>Paper</span> no dedicated section; touched on under temporal coherence. <span>Proposed</span> What happens when an IDP crosses a border?"]},
- {g:"A",build:"L,M,R",focus:"node:EMI,node:ABR",cap:["Addition for overview"],h:"People who leave the country",body:["IDPs who settle abroad leave the IDP stock by emigration (IRIS paras 98-99). We added the two Figure 6 groups they land in; most IDPs are citizens."]},
- {g:"A",exp:"DE",cap:[],h:"An IDP who stays inside the country",body:["Displaced, but still usually resident in the country: no international migration in IMTM, and IRIS agrees. Nationality does not matter."]},
- {g:"A",cap:["IMTM · Residents temporarily abroad"],h:"Crossed a border, still an IDP",body:["IRIS keeps people in the IDP stock if they come back within 12 months without a new residence abroad. IMTM agrees they never left the resident population, but nobody counts the border crossing."],cases:[["D3","D3","2","Back within 12 months","After an attack a family shelters across the border for five months and comes back, but cannot return home.","IRIS 75, 117 · IMTM 23, Fig. 2"]]},
- {g:"A",cap:["IMTM · Immigrants"],h:"International migrants who become IDPs",body:["Because nationality is irrelevant for IRIS, foreign residents displaced inside the country are IDPs and international migrants at once, with work or family recorded as the reason for migration."],cases:[["D1","D1","3","Immigrant first, IDP later","A foreign worker who has lived in the country for ten years loses his home in an earthquake.","IRIS 102 · IMTM 17, 25"],
-   ["D2","D2","4","Stateless IDP born in the country","A stateless man born in the country is displaced by flooding: never migrated, yet in the immigrant stock.","IRIS 102 · IMTM 25, 53"]]},
- {g:"A",cap:["IMTM · Returned migrants"],h:"Back home, but not an IDP",body:["People who lived abroad for a year or more and come back are returned migrants. IRIS does not count them as IDPs, even when they cannot reach their home, unless they are displaced again."],cases:[["D9","D9","4","Returned refugee who cannot go home","A refugee repatriates after six years but cannot reach her village and lives in a camp near the capital.","IRIS 86 · IRRS 97.1 · IMTM 27"],
-   ["D10","D10","4","Disaster-displaced, back after 12+ months","After an earthquake a man lives abroad for 18 months, comes back, and finds his town destroyed.","IRIS 88, 89 · IMTM 27"],
-   ["D4","D4","4","Back after 12+ months, displaced again","A returned migrant is forced from his home again by a flood: an IDP again from that moment.","IRIS 89 · IMTM 27"]]},
- {g:"A",cap:["IMTM · Emigrants"],h:"The real misalignment: claiming asylum abroad",body:["Until a new country of residence is established, the same person can be an IDP at home and an asylum seeker abroad. IRIS, IRRS and IMTM each have a rule; none settles the overlap."],cases:[["D7","D7","5","IDP claims asylum abroad","An IDP crosses the border and files an asylum claim; for months she has no established residence there.","IRIS 98-99, 117 · IRRS 92.2 · IMTM 33"],
-   ["16","16","5","Rejected and back within 12 months","An IDP's claim abroad is rejected and she is home after five months: an IDP under IRIS para 117 and an IRRS returnee.","IRIS 86, 117 · IRRS 97.2"]]},
- {g:"B",build:"L,M",focus:"col:M",cap:["Addition for overview"],h:"Middle: what move happened?",body:["IRIS records displacement; the census records moves. To join them we added a middle column on the move itself, taken from IRIS paras 75 and 115.","The four moves: to another civil division, within the same division, back home, or no move.","<span>Paper</span> \"An IDP may not be an internal migrant (IRIS versus P&amp;R Rev.4)\". <span>Proposed</span> Is every IDP an internal migrant?"]},
- {g:"B",focus:"col:R",cap:["P&amp;R Rev. 4"],h:"Right: the census classification",body:["P&amp;R has no figure for internal migration, so the three outcomes are derived from its paragraphs: <b>internal migrant</b> (para 5.64), <b>move within the division</b>, which is not migration (para 5.64), and <b>non-migrant</b> by birth or reference date (paras 5.72-5.81).","<span>Addition for overview</span> Voluntary internal movers, outside IRIS, reach the same census boxes."]},
- {g:"B",exp:"PE",cap:[],h:"Displaced to another district",body:["An IDP who moves across a civil division boundary is also an internal migrant: usually resident in one division, previously in another."]},
- {g:"B",cap:["P&amp;R · Moves within the division"],h:"Displaced, but not an internal migrant",body:["IRIS counts any forced move from the dwelling. The census does not count moves inside a civil division as migration. How many IDPs fall here depends on how small the divisions are."],cases:[["P1","P1","1","Displaced within the same district","After a landslide a family moves to an evacuation shelter two kilometres away, in the same municipality.","IRIS 115 · P&R 5.64, 5.69-5.70"]]},
- {g:"B",cap:["P&amp;R · Non-migrants"],h:"IDPs the reference-date question cannot see",body:["The census often asks where people lived one or five years ago. IDPs who returned home within that period, or who were displaced before it, look like people who never moved."],cases:[["P2+","P2","2","Protracted IDPs","A family displaced seven years ago still lives in the camp: residence five years ago and today are the same place.","IRIS 81 · P&R 5.77-5.78"],
+ {g:"irrs",cap:["IMTM · Foreign-born citizens"],bridge:"Returns can be counted differently too.",h:"Returnees who arrive for the first time",body:["IRRS defines home as the country of former habitual residence, which can be the parents' country, so a child born in exile can 'return' to a country they have never lived in."],cases:[["15","15","4","Child born in exile 'returns'","A boy born in a refugee camp abroad, with refugee status, repatriates with his parents to a country he has never lived in: an IRRS returnee, an IMTM first-time immigrant.","IRRS 95, 97.1 · IMTM 25"]]},
+ {g:"irrs",cap:["IMTM · Returned migrants"],bridge:"And a return home can show up in one count but not the other.",h:"In the flow, not in the stock",body:["Refugees who come home after a year or more are returned migrants in the immigration flow, but as native-born citizens they never appear in the immigrant stock."],cases:[["14","14","4","Refugee returns after years abroad","A man returns home after eight years as a refugee abroad.","IRRS 97.1, 109 · IMTM 25, 27"]]},
+ {g:"irrs",cap:["Result"],bridge:"Stepping back: the whole refugee graph again, every route at once.",h:"Most refugee categories include people who never migrated",body:["12 of the 14 IRRS categories include people who never changed country. The recommendations agree (IRRS para 80, IMTM para 53); the assumption that every refugee is a migrant is what fails.","Only the refugee-like and reunified family categories always arrive as international migrants."]},
+ {g:"A",build:"L",focus:"col:L",lane:"cover:iris",cap:["IRIS 2020 · Figure 3.1"],bridge:"Now the same question for IDPs, with IRIS on the left.",h:"IDPs: the same graph, IRIS on the left",body:["The IDP stock (locations of displacement, return, other settlement) and IDP-related children follow IRIS Figure 3.1.","The cross-border groups of IRIS Figure 3.2 are left out here: they fall under the refugee recommendations (IRRS)."]},
+ {g:"A",build:"L,M,R",focus:"node:EMI,node:ABR",cap:["Addition for overview"],bridge:"On this graph people can also leave the country.",h:"People who leave the country",body:["IDPs who settle abroad leave the IDP stock by emigration (IRIS paras 98-99). We added the two Figure 6 groups they land in; most IDPs are citizens."]},
+ {g:"A",exp:"DE",cap:[],bridge:"First, where the two recommendations agree.",h:"Where IRIS and IMTM agree",body:["An IDP who stays inside the country is no international migrant, and IRIS agrees. Once IDPs cross a border, the two line up when they settle abroad: they leave the IDP stock by emigration."]},
+ {g:"A",cap:["IMTM · Residents temporarily abroad"],bridge:"Crossing a border does not always end displacement.",h:"Crossed a border, still an IDP",body:["IRIS keeps people in the IDP stock if they come back within 12 months without a new residence abroad. IMTM agrees they never left the resident population, but nobody counts the border crossing."],cases:[["D3","D3","2","Back within 12 months","After an attack a family shelters across the border for five months without applying for international protection, and comes back, but cannot return home.","IRIS 75, 117 · IMTM 23, Fig. 2"]]},
+ {g:"A",cap:["IMTM · Returned migrants"],bridge:"A long stay abroad changes how a return is counted.",h:"Back home, but not an IDP",body:["People who lived abroad for a year or more and come back are returned migrants. IRIS does not count them as IDPs, even when they cannot reach their home, unless they are displaced again."],cases:[["D4","D4","4","Back after 12+ months, displaced again","A returned migrant is forced from his home again by a flood: an IDP again from that moment.","IRIS 89 · IMTM 27"]]},
+ {g:"A",cap:["IMTM · Emigrants"],bridge:"And one overlap the recommendations do not settle.",h:"The real misalignment: claiming asylum abroad",body:["Until a new country of residence is established, the same person can be an IDP at home and an asylum seeker abroad. IRIS, IRRS and IMTM each have a rule; none settles the overlap."],cases:[["D7","D7","5","IDP claims asylum abroad","An IDP crosses the border and files an asylum claim; for months she has no established residence there.","IRIS 98-99, 117 · IRRS 92.2 · IMTM 33"]]},
+ {g:"B",build:"L,M",focus:"col:M",lane:"cover:iris",cap:["Addition for overview"],bridge:"Last, IDPs who stay inside the country, against the census.",h:"Middle: what move happened?",body:["IRIS records displacement; the census records moves. To join them we added a middle column on the move itself, taken from IRIS paras 75 and 115.","The four moves: to another civil division, within the same division, back home, or no move.","<span>Paper</span> \"An IDP may not be an internal migrant (IRIS versus P&amp;R Rev.4)\". <span>Proposed</span> Is every IDP an internal migrant?"]},
+ {g:"B",focus:"col:R",lane:"cover:pr",cap:["P&amp;R Rev. 4"],h:"Right: the census classification",body:["P&amp;R has no figure for internal migration, so the three outcomes are derived from its paragraphs: <b>internal migrant</b> (para 5.64), <b>move within the division</b>, which is not migration (para 5.64), and <b>non-migrant</b> by birth or reference date (paras 5.72-5.81).","<span>Addition for overview</span> Voluntary internal movers, outside IRIS, reach the same census boxes."]},
+ {g:"B",exp:"PE",cap:[],bridge:"Again, the expected route first.",h:"Displaced to another district",body:["An IDP who moves across a civil division boundary is also an internal migrant: usually resident in one division, previously in another."]},
+ {g:"B",cap:["P&amp;R · Moves within the division"],bridge:"But not every displacement is a migration.",h:"Displaced, but not an internal migrant",body:["IRIS counts any forced move from the dwelling. The census does not count moves inside a civil division as migration. How many IDPs fall here depends on how small the divisions are."],cases:[["P1","P1","1","Displaced within the same district","After a landslide a family moves to an evacuation shelter two kilometres away, in the same municipality.","IRIS 115 · P&R 5.64, 5.69-5.70"]]},
+ {g:"B",cap:["P&amp;R · Non-migrants"],bridge:"Some IDPs the census question cannot see.",h:"IDPs the reference-date question cannot see",body:["The census often asks where people lived one or five years ago. IDPs who returned home within that period, or who were displaced before it, look like people who never moved."],cases:[["P2+","P2","2","Protracted IDPs","A family displaced seven years ago still lives in the camp: residence five years ago and today are the same place.","IRIS 81 · P&R 5.77-5.78"],
    ["P2","P2","2","Returned home within the period","A family displaced three years ago is back in its village but still lacks housing and documents.","IRIS 75 · P&R 5.77"],
    ["P7","P7","2","IDP-related child born after the reference date","Neither migrant nor IDP; the census treats young children separately.","IRIS 78 · P&R 5.81"]]},
- {g:"B",cap:["P&amp;R · Not yet usual residents"],h:"Too recent to count where they are",body:["Usual residence needs six or twelve months, or the intention to stay. People who intend to return home, as many IDPs do, may be counted at the address they fled. IRIS counts them from day one."],cases:[["N","N","2","Recently displaced","A family arrived in the camp two months ago and expects to go home: the census may still place them in their home district.","IRIS 75 · P&R 2.51, 5.55"]]},
- {g:"B",cap:["P&amp;R · Internal migrants"],h:"Internal migrants who are not IDPs",body:["Only the census question on reason for change of residence, with its forced displacement option, separates these people from IDPs."],cases:[["P6","P6","3","Voluntary movers and joining relatives","A young woman moves to the capital for work, or joins displaced relatives from another province.","IRIS 80 · P&R 5.64, 5.82-5.84"],
+ {g:"B",cap:["P&amp;R · Not yet usual residents"],bridge:"Others are too recent to count where they are.",h:"Too recent to count where they are",body:["Usual residence needs six or twelve months, or the intention to stay. People who intend to return home, as many IDPs do, may be counted at the address they fled. IRIS counts them from day one."],cases:[["N","N","2","Recently displaced","A family arrived in the camp two months ago and expects to go home: the census may still place them in their home district.","IRIS 75 · P&R 2.51, 5.55"]]},
+ {g:"B",cap:["P&amp;R · Internal migrants"],bridge:"And some internal migrants are not IDPs at all.",h:"Internal migrants who are not IDPs",body:["Only the census question on reason for change of residence, with its forced displacement option, separates these people from IDPs."],cases:[["P6","P6","3","Voluntary movers and joining relatives","A young woman moves to the capital for work, or joins displaced relatives from another province.","IRIS 80 · P&R 5.64, 5.82-5.84"],
    ["P5","P5","3","IDP-related child moving home","A girl born in the displacement camp moves home with her parents at six: a lifetime internal migrant.","IRIS 78 · P&R 5.65"],
    ["d6","d6","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.64"]]},
- {g:"B",cap:["P&amp;R · Last move and moves from abroad"],h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.72-5.75"],
+ {g:"B",cap:["P&amp;R · Last move and moves from abroad"],bridge:"Finally, the same return can be counted two ways.",h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.72-5.75"],
    ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.75, 5.77"]]}
 ];
 
-const CH=[
- {label:"Introduction",sub:"The three columns of the graph",start:0,count:5},
- {label:"Refugees",sub:"IRRS → IMTM",start:5,count:9},
- {label:"IDPs abroad",sub:"IRIS → IMTM",start:14,count:7},
- {label:"IDPs at home",sub:"IRIS → census (P&R Rev. 4)",start:21,count:8}];
+// chapters: the first five steps introduce the graph, then one chapter per graph
+const CH=(()=>{const o=[["Introduction","The three columns of the graph"],["Refugees","IRRS → IMTM"],["IDPs abroad","IRIS → IMTM"],["IDPs at home","IRIS → census (P&R Rev. 4)"]].map(([label,sub])=>({label,sub,start:-1,count:0}));
+  STEPS.forEach((s,i)=>{const c=o[i<5?0:s.g==="irrs"?1:s.g==="A"?2:3]; if(c.start<0) c.start=i; c.count++;}); return o;})();
 const TITLES={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&R Rev. 4)"};
-const TT={e:"Expected route",1:"Type 1 · Never moved",2:"Type 2 · Not yet or not visible",3:"Type 3 · Migrant for a different reason",4:"Type 4 · Counted differently",5:"Type 5 · Misalignment"};
+const TT={e:"Expected route",1:"Type 1 · Never moved",2:"Type 2 · Temporary or not yet counted",3:"Type 3 · Migrant for a different reason",4:"Type 4 · Counted differently",5:"Type 5 · Misalignment"};
+// what each type means, shown beside the legend
+const TD={e:"Both recommendations agree: the person changed country (or civil division) and is counted as a migrant.",
+ 1:"In the refugee or IDP population, but no change of country or civil division as migration counts it: born in exile, a status change in place, a move within the same division.",
+ 2:"They moved, but the count does not see it yet: a stay under the 12-month residence rule, a return within the census reference period, or too recent to be a usual resident.",
+ 3:"Counted as a migrant, but the reason recorded is work, study or family, not protection.",
+ 4:"Both recommendations count the person, but in different groups, or in the flow and not the stock.",
+ 5:"The rules overlap and the recommendations do not settle which one applies."};
 const TC={e:"var(--v-prot)",1:"var(--v-never)",2:"var(--v-temp)",3:"var(--v-other)",4:"var(--v-ret)",5:"var(--strong)"};
 const HD={
  irrs:[["IRRS 2018 · FIG. 3.1","Refugee and refugee related populations","var(--irrs-ink)"],["IMTM 2025 · FIG. 2","Type of stay","var(--imtm)"],["IMTM 2025 · FIG. 2 AND 6","Present population","var(--imtm)"]],
- A:[["IRIS 2020 · FIG. 3.1 AND 3.2","IDP stock and cross-border groups","var(--iris)"],["IMTM 2025 · FIG. 2","Type of stay","var(--imtm)"],["IMTM 2025 · FIG. 2 AND 6","Present population","var(--imtm)"]],
+ A:[["IRIS 2020 · FIG. 3.1","IDP stock and IDP-related populations","var(--iris)"],["IMTM 2025 · FIG. 2","Type of stay","var(--imtm)"],["IMTM 2025 · FIG. 2 AND 6","Present population","var(--imtm)"]],
  B:[["IRIS 2020 · FIG. 3.1","Framework for internal displacement","var(--iris)"],["IRIS 2020 · PARAS 75, 115","What move happened?","var(--iris)"],["P&R REV. 4 · PARAS 5.64-5.84","Census classification","var(--pr)"]]};
 // expected-route notes: a3i always first, b2 never (its expected route is a side case)
 const EXP_SKIP=["b2"], EXP_FIRST=["a3i"];
@@ -94,8 +94,10 @@ function model(key){
     return {key,groups,mids,cells,temp:{name:T.l,sub:T.s},links,lanes:{FBC:"top",FBFC:"bot"},arr:["RET","IMM","TMP"],dep:null,
       cols:"minmax(0,1.4fr) minmax(64px,.5fr) minmax(0,1fr) minmax(56px,.42fr) minmax(0,1.2fr)",grid:true};
   }
-  const F=key==="A"?FLOWA:FLOWB, nL=(f,id)=>F.LK.filter(l=>l[f]===id).length;
-  const groups=F.left.map(g=>({key:g.g,label:g.gl,bg:g.g==="x"?"#fff":"var(--iris)",fg:g.g==="x"?"var(--muted)":"#fff",border:g.g==="x"?"1.5px dashed var(--line-strong)":"none",
+  // the IRIS Fig. 3.2 groups outside the IDP stock fall under IRRS, so the story leaves them out
+  const F=key==="A"?FLOWA:FLOWB, out=key==="A"?(F.left.find(g=>g.g==="x")||{items:[]}).items.map(([id])=>id):[];
+  const FLK=F.LK.filter(l=>!out.includes(l.k)), nL=(f,id)=>FLK.filter(l=>l[f]===id).length;
+  const groups=F.left.filter(g=>!(key==="A"&&g.g==="x")).map(g=>({key:g.g,label:g.gl,bg:g.g==="x"?"#fff":"var(--iris)",fg:g.g==="x"?"var(--muted)":"#fff",border:g.g==="x"?"1.5px dashed var(--line-strong)":"none",
     items:g.items.map(([id,l])=>({node:true,id,name:l,indent:0,grow:(0.7+nL("k",id)*0.22).toFixed(2),nl:nL("k",id),border:g.g==="x"?"1.5px dashed var(--line-strong)":"1px solid transparent",codeColor:"var(--iris)",codeBg:"var(--iris-soft)"}))}));
   groups.forEach(g=>{g.grow=g.items.reduce((a,it)=>a+ +it.grow,0).toFixed(2);});
   const mids=F.mid.map(m=>{const non=m.id==="NON"&&F.other==="IMTM";
@@ -104,7 +106,7 @@ function model(key){
     qs:r.q?[[0,0],[1,0],[0,1],[1,1]].map(([a,b])=>a===r.q[0]&&b===r.q[1]?(b?"#8db8e3":"#e3c3a0"):"#fff"):null,
     bg:r.q?(r.q[1]?"#e8f0fa":"#f9f1e7"):"#fff",
     border:r.k==="tmp"?"1.5px dashed #9aa6ba":(r.s&&/^in /.test(r.s))?"1.5px dashed rgba(20,35,76,.55)":"1px solid transparent",grow:(1+nL("c",r.id)*0.1).toFixed(2)}));
-  const links=F.LK.map((l,i)=>({i,k:l.k,m:l.m,c:l.c,t:String(l.t).toLowerCase(),cases:[...new Set(l.cs)],rare:!!l.rare,w:2+l.cs.length*1.5}));
+  const links=F.LK.map((l,i)=>({l,i})).filter(o=>!out.includes(o.l.k)).map(({l,i})=>({i,k:l.k,m:l.m,c:l.c,t:String(l.t).toLowerCase(),cases:[...new Set(l.cs)],rare:!!l.rare,w:2+l.cs.length*1.5}));
   return {key,groups,mids,rights,links,lanes:{},F,arr:key==="A"?["RET","IMM"]:null,dep:key==="A"?["EMI"]:null,
     cols:key==="A"?"minmax(0,1.4fr) minmax(64px,.5fr) minmax(0,1fr) minmax(64px,.5fr) minmax(0,1fr)":"minmax(0,1.4fr) minmax(56px,.45fr) minmax(0,1fr) minmax(56px,.45fr) minmax(0,1fr)",grid:false};
 }
@@ -127,7 +129,6 @@ $("#navCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}" 
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.go)));
 $("#prev").addEventListener("click",()=>go(cur-1));
 $("#next").addEventListener("click",()=>go(cur+1));
-$("#restart").addEventListener("click",()=>scrollTo({top:0,behavior:RM?"auto":"smooth"}));
 function navUpdate(){
   [...$("#navCh").children].forEach((b,k)=>{const c=CH[k],done=cur>=c.start+c.count,on=cur>=c.start&&!done;
     b.classList.toggle("on",on); b.querySelector("i").style.width=(cur<c.start?0:done?100:(cur-c.start+1)/c.count*100)+"%";});
@@ -139,7 +140,7 @@ let MS=null, gk=null, compact=false, built={L:false,M:false,R:false}, cur=-1, pe
 function renderStage(){
   const M=MS[gk], cp=compact, letter=cp&&M.key==="irrs";
   stage.classList.toggle("compact",cp);
-  colsEl.style.gridTemplateColumns=M.cols;
+  colsEl.style.gridTemplateColumns=M.cols+(cp?" 220px":" 268px");
   const nTop=M.grid?M.links.filter(l=>l.c==="FBC").length:0, nBot=M.grid?M.links.filter(l=>l.c==="FBFC").length:0;
   const heads=HD[gk].map((h,i)=>`<div class="hd" data-hd="${"LMR"[i]}" style="grid-column:${1+i*2}"><span class="n">${i+1}</span><div><span class="e" style="color:${h[2]}">${h[0]}</span><span class="t">${h[1]}</span></div></div>`).join("");
   const L=`<div class="col colL" data-colk="L">${M.groups.map(g=>`<div class="gr" style="flex:${g.grow} 1 auto">
@@ -154,8 +155,8 @@ function renderStage(){
         <div class="chips">${c.chips.map(q=>`<span data-li="${q.li}" style="background:${q.color}">${q.code}</span>`).join("")}</div></div>`).join("")}</div></div>
       <div class="box temp" data-node="TEMP"><span class="nm" style="color:var(--strong)">${M.temp.name}</span><span class="sub">${M.temp.sub}</span></div></div>`
     :`<div class="col colR list" data-colk="R">${M.rights.map(r=>`<div class="rbox" data-node="${r.id}" style="flex:${r.grow} 1 0;background:${r.bg};border:${r.border}">${r.qs?`<div class="quad">${r.qs.map(b=>`<span style="background:${b}"></span>`).join("")}</div>`:""}<div><span class="nm">${r.name}</span><span class="sub">${r.sub}</span></div></div>`).join("")}</div>`;
-  colsEl.innerHTML=heads+L+Mc+Rc;
-  colsEl.querySelectorAll(".col").forEach(c=>{c.style.paddingTop=gk==="A"?"30px":"6px";});
+  colsEl.innerHTML=heads+L+Mc+Rc+`<div class="lane" id="lane"></div>`;
+  colsEl.querySelectorAll(".col,.lane").forEach(c=>{c.style.paddingTop=gk==="A"?"30px":"6px";});
   colsEl.querySelectorAll("[data-node]").forEach(e=>{e.addEventListener("mouseenter",()=>nodeHover(e.dataset.node,true));e.addEventListener("mouseleave",()=>nodeHover(e.dataset.node,false));});
   $("#gtitle").textContent=TITLES[gk];
   setBuilt(built);
@@ -209,7 +210,7 @@ function drawRoutes(){
     ls.forEach((l,i)=>lane.set(l,{px:n.x1-14-i*(w-28)/Math.max(k-1,1),yL:top?n.y0-8-(k-1-i)*4:n.y1+8+(k-1-i)*4,top}));});
   const gate=(ids,c0,c1,label,name)=>{
     if(!ids||!c0||!c1) return null; const rs=ids.map(i=>R[i]).filter(Boolean); if(!rs.length) return null;
-    const gap=c1.x0-c0.x1, gw=Math.max(44,Math.min(84,gap*0.55)), x=(c0.x1+c1.x0)/2-gw/2, y=Math.min(...rs.map(r=>r.y0))-8, y1=Math.max(...rs.map(r=>r.y1))+8;
+    const gap=c1.x0-c0.x1, gw=Math.max(60,Math.min(92,gap*0.72)), x=(c0.x1+c1.x0)/2-gw/2, y=Math.max(4,Math.min(...rs.map(r=>r.y0))-8), y1=Math.min(stage.clientHeight-4,Math.max(...rs.map(r=>r.y1))+8);
     const d=document.createElement("div"); d.className="gate"; d.dataset.gate=name;
     Object.assign(d.style,{left:x+"px",top:y+"px",width:gw+"px",height:(y1-y)+"px"});
     d.innerHTML=`<span>${label}</span>`; gatesEl.appendChild(d); return {x0:x,x1:x+gw,y0:y,y1,cx:x+gw/2};};
@@ -267,14 +268,19 @@ function applyS(i){
   if(s.g!==gk){gk=s.g; pending=i; cur=-1; built={L:false,M:false,R:false}; renderStage(); relayout(); cur=i; navUpdate(); return;}
   paint(s,true); caption(s);
 }
+// paragraph numbers in the text get the same hover as on the crosswalk (refHTML and PARAS come from crosswalk.js)
+const linkRefs=h=>h.replace(/\b(IRRS|IMTM|IRIS|P&amp;R|P&R)( paras?)? (\d+(?:\.\d+)*[a-z]?(?:-\d+(?:\.\d+)*)?(?:, \d+(?:\.\d+)*[a-z]?(?:-\d+(?:\.\d+)*)?)*)/g,
+  (m,src,pp,nums)=>{const k=src.replace("&amp;","&"); return src+(pp||"")+" "+refHTML(k+" "+nums).slice(k.length+1);});
 function caption(s){
   const c=CH[chOf(s.i)];
   $("#eyebrow").textContent=c.label+" · "+String(s.i-c.start+1).padStart(2,"0")+" / "+String(c.count).padStart(2,"0");
   $("#caps").innerHTML=s.cap.map(x=>`<span class="${srcCls(x)}">${x}</span>`).join("");
   const types=s.legend?["e","1","2","3","4","5"]:[...new Set(s.cases.map(c=>String(c.t)))];
   $("#types").innerHTML=types.map(t=>`<span class="ty" data-ty="${t}" style="background:${TC[t]}">${TT[t]||t}</span>`).join("");
-  const hd=$("#head"), ld=$("#lead"); hd.textContent=s.h; ld.innerHTML=s.body[0]?`<p>${s.body[0].replace(/<span>/g,'<span class="sadd">')}</p>`:"";
-  if(!RM){hd.animate([{opacity:0,transform:"translateY(6px)"},{opacity:1,transform:"none"}],{duration:360,easing:EASE});
+  const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||"";
+  ld.innerHTML=s.body[0]?`<p>${linkRefs(s.body[0].replace(/<span>/g,'<span class="sadd">'))}</p>`:"";
+  if(!RM){br.animate([{opacity:0},{opacity:1}],{duration:420,easing:EASE});
+    hd.animate([{opacity:0,transform:"translateY(6px)"},{opacity:1,transform:"none"}],{duration:360,easing:EASE});
     ld.animate([{opacity:0,transform:"translateY(4px)"},{opacity:1,transform:"none"}],{duration:320,easing:EASE});}
 }
 function paint(s,anim){
@@ -291,6 +297,8 @@ function paint(s,anim){
   colsEl.querySelectorAll("[data-node]").forEach(e=>{e.style.visibility=hid.has(e.dataset.node)?"hidden":"";});
   colsEl.querySelectorAll("[data-cap]").forEach(e=>{e.style.visibility=hid.has(e.dataset.cap)?"hidden":"";});
   LK.forEach(l=>{l.hidden=hid.has(l.k)||hid.has(l.m)||hid.has(l.c);});
+  if(s.exp) s.ids=[...new Set(LK.filter(l=>l.t==="e").flatMap(l=>l.cases))];
+  laneFill(s);
   show(s.ids,anim);
   focusOn(s.focus);
   clearTimeout(coT);
@@ -353,7 +361,7 @@ function routeHover(l,e){
   paintLinks([l],true,l.rare,false);
   LK.forEach(q=>q.pills.forEach(p=>{p.style.opacity=q===l?"1":".14";}));
   const rows=MS[gk].key==="irrs"?l.rs.map(r=>({id:r.case,...caseInfo(r.case),ex:r.ex,ref:r.ref})):l.cases.map(id=>({id,...caseInfo(id),ref:caseInfo(id).refs}));
-  tip.innerHTML=`<span class="path">${l.k} → ${nodeName(l.m)} → ${nodeName(l.c)}</span>`+rows.slice(0,4).map(r=>`<div class="r">${numHtml(r.id,r.t)}<div><b>${r.h}</b>${r.ex?`<i>${r.ex}</i>`:""}${r.ref?`<small>${r.ref}</small>`:""}</div></div>`).join("");
+  tip.innerHTML=`<span class="path">${l.k} → ${nodeName(l.m)} → ${nodeName(l.c)}</span>`+rows.slice(0,4).map(r=>`<div class="r">${numHtml(r.id,r.t)}<div><b>${r.h}</b>${r.ex?`<i>${r.ex}</i>`:""}${r.ref?`<small>${refHTML(r.ref)}</small>`:""}</div></div>`).join("");
   tip.style.display="block"; placeTip(e);
 }
 function placeTip(e){if(tip.style.display==="none") return; const sr=stage.getBoundingClientRect();
@@ -406,83 +414,78 @@ function anchorOf(id){
   const P=l.el.getPointAtLength(l.el.getTotalLength()*0.62); return [P.x,P.y];
 }
 function lineSvg(){const s=document.createElementNS(NS,"svg"); s.setAttribute("style","position:absolute;inset:0;width:100%;height:100%;overflow:visible"); notesEl.appendChild(s); return s;}
+// notes sit in the lane on the right, so the cards of the graph stay readable; a leader line runs back to the route
+function laneBox(){const sr=stage.getBoundingClientRect(), l=$("#lane"); if(!l) return {x:stage.clientWidth-268,w:260}; const b=l.getBoundingClientRect(); return {x:b.left-sr.left,w:b.width};}
+function stack(notes,SH){
+  const GAP=12; notes.sort((a,b)=>a.ay-b.ay);
+  notes.forEach((n,k)=>{n.y=Math.max(10,n.ay-n.h/2); if(k) n.y=Math.max(n.y,notes[k-1].y+notes[k-1].h+GAP);});
+  for(let k=notes.length-1;k>=0;k--){const lim=k===notes.length-1?SH-10:notes[k+1].y-GAP; if(notes[k].y+notes[k].h>lim) notes[k].y=lim-notes[k].h;}
+  for(let k=0;k<notes.length;k++){const lim=k===0?10:notes[k-1].y+notes[k-1].h+GAP; if(notes[k].y<lim) notes[k].y=lim;}
+}
+function placeNotes(notes,lines,stroke){
+  const SH=stage.clientHeight, L=laneBox(), fits=()=>notes.reduce((t,n)=>t+n.h+12,0)<=SH-12;
+  notes.forEach(n=>{n.card.style.width=L.w+"px"; n.h=n.card.offsetHeight;});
+  if(!fits()){notes.forEach(n=>{n.card.classList.add("tight"); n.h=n.card.offsetHeight;});}
+  // still too tall: a second column just left of the lane
+  const cols=fits()?[notes]:[notes.filter((_,k)=>k%2===0),notes.filter((_,k)=>k%2===1)];
+  cols.forEach((arr,ci)=>{stack(arr,SH); arr.forEach(n=>{n.x=ci?L.x-L.w-12:L.x;});});
+  notes.forEach((n,k)=>{
+    n.card.style.left=n.x+"px"; n.card.style.top=n.y+"px";
+    const cy=n.y+Math.min(22,n.h/2), cx=n.x, mx=(n.ax+cx)/2, ln=document.createElementNS(NS,"path");
+    ln.setAttribute("d",`M${n.ax},${n.ay} C${mx},${n.ay} ${mx},${cy} ${cx},${cy}`);
+    ln.setAttribute("style",`fill:none;stroke:${stroke};stroke-width:1.3;stroke-opacity:.8;stroke-dasharray:2000;stroke-dashoffset:2000;animation:codraw .7s ${EASE} forwards;animation-delay:${k*90}ms`); lines.appendChild(ln);
+    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",n.ax); dot.setAttribute("cy",n.ay); dot.setAttribute("r",4.5); dot.setAttribute("style",`fill:${stroke};stroke:#fff;stroke-width:2`); lines.appendChild(dot);
+  });
+}
 function callouts(s){
   notesEl.innerHTML=""; if(!LK) return;
   const cases=s.cases; if(!cases.length) return;
-  const SW=stage.clientWidth, SH=stage.clientHeight;
-  if(cases.length===1&&cases[0].exp){expNote(cases[0],SW,SH); return;}
+  if(cases.length===1&&cases[0].exp){expNote(cases[0]); return;}
   const notes=[];
   cases.forEach(c=>{const ls=LK.filter(l=>l.cases.includes(c.id)&&l.el.style.display!=="none"); if(!ls.length) return;
     const a=anchorOf(c.id); if(!a) return; notes.push({c,ax:a[0],ay:a[1],n:ls.length});});
-  let W=250; notes.sort((a,b)=>a.ay-b.ay);
+  if(!notes.length) return;
   const lines=lineSvg();
   notes.forEach((nt,k)=>{
-    const col=TC[nt.c.t]||"var(--ink)", card=document.createElement("div"); card.className="note";
-    card.style.width=W+"px"; card.style.animationDelay=k*90+"ms";
-    card.innerHTML=`<div class="nh">${numHtml(nt.c.n,nt.c.t)}<b>${nt.c.h}</b></div>${nt.c.ex?`<p>${nt.c.ex}</p>`:""}${nt.n>1?`<span class="rt">${nt.n} routes</span>`:""}${nt.c.cite?`<span class="ct">${nt.c.cite}</span>`:""}`;
-    notesEl.appendChild(card); nt.card=card; nt.h=card.offsetHeight;
+    const col=TC[nt.c.t]||"var(--ink)", card=document.createElement("div"); card.className="note"; card.style.animationDelay=k*90+"ms";
+    card.innerHTML=`<div class="nh">${numHtml(nt.c.n,nt.c.t)}<b>${nt.c.h}</b></div>${nt.c.ex?`<p>${nt.c.ex}</p>`:""}${nt.n>1?`<span class="rt">${nt.n} routes</span>`:""}${nt.c.cite?`<span class="ct">${refHTML(nt.c.cite)}</span>`:""}`;
+    notesEl.appendChild(card); nt.card=card;
     card.addEventListener("mouseenter",()=>trace(nt.c.id,col)); card.addEventListener("mouseleave",()=>untrace());});
-  // one column beside the tags, or two when they don't fit
-  const fits=arr=>arr.reduce((t,n)=>t+n.h+14,0)<=SH-12;
-  const cols=fits(notes)?[notes]:[notes.filter((_,k)=>k%2===0),notes.filter((_,k)=>k%2===1)];
-  let xs=null;
-  if(cols.length>1){const ax0=Math.min(...notes.map(n=>n.ax)), room=SW-10-(ax0+28); W=Math.max(190,Math.min(250,(room-14)/2));
-    notes.forEach(n=>{n.card.style.width=W+"px"; n.h=n.card.offsetHeight;}); xs=room>=2*190+14?[ax0+28,ax0+28+W+14]:[10,10+W+14];}
-  cols.forEach((arr,ci)=>{
-    arr.forEach(n=>{n.ci=ci;});
-    const GAP=arr.length>1?Math.max(12,Math.min(40,(SH-20-arr.reduce((t,n)=>t+n.h,0))/(arr.length-1))):0;
-    arr.forEach((n,k)=>{n.y=k===0?Math.max(10,n.ay-n.h/2):Math.max(n.ay-n.h/2,arr[k-1].y+arr[k-1].h+Math.min(GAP,20));});
-    for(let it=0;it<2;it++){
-      for(let k=arr.length-1;k>=0;k--){const lim=k===arr.length-1?SH-10:arr[k+1].y-GAP; if(arr[k].y+arr[k].h>lim) arr[k].y=lim-arr[k].h;}
-      for(let k=0;k<arr.length;k++){const lim=k===0?10:arr[k-1].y+arr[k-1].h+GAP; if(arr[k].y<lim) arr[k].y=lim;}}
-  });
-  notes.forEach((nt,k)=>{
-    let x; if(xs) x=xs[nt.ci]; else {x=nt.ax+28; if(x+W>SW-10) x=Math.max(10,nt.ax-28-W);}
-    nt.card.style.left=x+"px"; nt.card.style.top=nt.y+"px";
-    const cx=x>nt.ax?x:x+W, cy=nt.y+Math.min(22,nt.h/2), ln=document.createElementNS(NS,"path");
-    ln.setAttribute("d",`M${nt.ax},${nt.ay} C${(nt.ax+cx)/2},${nt.ay} ${(nt.ax+cx)/2},${cy} ${cx},${cy}`);
-    ln.setAttribute("style",`fill:none;stroke:var(--strong);stroke-width:1.3;stroke-dasharray:400;stroke-dashoffset:400;animation:codraw .5s ${EASE} forwards;animation-delay:${k*90}ms`); lines.appendChild(ln);
-    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",nt.ax); dot.setAttribute("cy",nt.ay); dot.setAttribute("r",4); dot.setAttribute("style","fill:var(--strong)"); lines.appendChild(dot);
-  });
+  placeNotes(notes,lines,"var(--strong)");
 }
 function expRows(id){
   const M=MS[gk]; let rows=[];
   if(M.key==="irrs"){const seen=new Set(); LK.forEach(l=>{if(l.hidden||l.rare||!l.cases.includes(id)) return; l.rs.filter(r=>r.case===id).forEach(r=>{
-    if(!r.ex||seen.has(r.ex)||EXP_SKIP.includes(l.k)) return; seen.add(r.ex); const c=CATS.find(q=>q.id===l.k); rows.push({l,code:l.k,h:c?c.l:l.k,ex:r.ex});});});}
-  else Object.entries(M.F.cases).forEach(([k,c])=>{if(String(c.t).toLowerCase()!=="e"||(M.F.caseIds&&!M.F.caseIds.includes(k))) return; const l=LK.find(q=>q.cases.includes(k)&&!q.rare); if(l) rows.push({l,code:k,h:c.h,ex:c.ex});});
+    if(!r.ex||seen.has(r.ex)||EXP_SKIP.includes(l.k)) return; seen.add(r.ex); const c=CATS.find(q=>q.id===l.k); rows.push({l,code:l.k,h:c?c.l:l.k,ex:r.ex,cite:r.ref});});});}
+  else Object.entries(M.F.cases).forEach(([k,c])=>{if(String(c.t).toLowerCase()!=="e"||(M.F.caseIds&&!M.F.caseIds.includes(k))) return; const l=LK.find(q=>q.cases.includes(k)&&!q.rare); if(l) rows.push({l,code:k,h:c.h,ex:c.ex,cite:c.refs});});
   const used=new Set(); return rows.filter(r=>!used.has(r.l)&&used.add(r.l));
 }
-// expected route: up to three green notes, each centred on its own route
-function expNote(c,SW,SH,lvl){
-  lvl=lvl||0; let rows=expRows(c.id); const maxN=lvl>=1?2:3;
-  if(rows.length>maxN){const pri=rows.filter(r=>EXP_FIRST.includes(r.code)).slice(0,1), rest=rows.filter(r=>!pri.includes(r)), need=maxN-pri.length;
+// expected route: up to three green notes, one per route, in the lane
+function expNote(c){
+  let rows=expRows(c.id);
+  if(rows.length>3){const pri=rows.filter(r=>EXP_FIRST.includes(r.code)).slice(0,1), rest=rows.filter(r=>!pri.includes(r)), need=3-pri.length;
     const idx=need>=3?[0,Math.floor((rest.length-1)/2),rest.length-1]:need===2?[0,rest.length-1]:[0]; rows=[...pri,...[...new Set(idx)].map(i=>rest[i]).filter(Boolean)];}
-  const W=Math.min(250,(SW-30)/2), lines=lineSvg();
+  if(!rows.length) return;
+  const lines=lineSvg();
   const notes=rows.map((r,k)=>{
-    const P=r.l.el.getPointAtLength(r.l.el.getTotalLength()*0.5), card=document.createElement("div"); card.className="note exp";
-    card.style.width=W+"px"; card.style.animationDelay=k*110+"ms";
-    card.innerHTML=`<div class="nh">${numHtml("E","e")}<span class="code">${r.code}</span><b>${r.h}</b></div>${lvl>=2?"":`<p>${r.ex}</p>`}`;
+    const P=r.l.el.getPointAtLength(r.l.el.getTotalLength()*0.86), card=document.createElement("div"); card.className="note exp"; card.style.animationDelay=k*110+"ms";
+    card.innerHTML=`<div class="nh">${numHtml("E","e")}<span class="code">${r.code}</span><b>${r.h}</b></div><p>${r.ex}</p>${r.cite?`<span class="ct">${refHTML(r.cite)}</span>`:""}`;
     notesEl.appendChild(card);
     card.addEventListener("mouseenter",()=>paintLinks([r.l],true,false,false)); card.addEventListener("mouseleave",restore);
-    return {ax:P.x,ay:P.y,card,h:card.offsetHeight};
-  }).sort((p,q)=>p.ay-q.ay);
-  if(lvl<2&&notes.reduce((a,n)=>a+n.h+12,0)>SH-8){notesEl.innerHTML=""; return expNote(c,SW,SH,lvl+1);}
-  notes.forEach((n,k)=>{n.y=Math.max(n.ay-n.h/2,k?notes[k-1].y+notes[k-1].h+12:10);});
-  for(let k=notes.length-1;k>=0;k--){const lim=k===notes.length-1?SH-10:notes[k+1].y-12; if(notes[k].y+notes[k].h>lim) notes[k].y=lim-notes[k].h;}
-  notes.forEach(n=>{
-    const x=Math.max(10,Math.min(SW-10-W,n.ax-W/2)), y=Math.max(10,n.y); n.card.style.left=x+"px"; n.card.style.top=y+"px";
-    if(!(n.ay>=y&&n.ay<=y+n.h)){const cy=n.ay<y?y:y+n.h, ln=document.createElementNS(NS,"path"); ln.setAttribute("d",`M${n.ax},${n.ay} L${n.ax},${cy}`); ln.setAttribute("style","fill:none;stroke:var(--v-prot);stroke-width:1.3"); lines.appendChild(ln);}
-    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",n.ax); dot.setAttribute("cy",n.ay); dot.setAttribute("r",4.5); dot.setAttribute("style","fill:var(--v-prot);stroke:#fff;stroke-width:2"); lines.appendChild(dot);
+    return {ax:P.x,ay:P.y,card};
   });
+  placeNotes(notes,lines,"var(--v-prot)");
 }
-// legend tour: expected, then types 1 to 5, each with a line from its pill to one of its routes
+// legend tour: expected, then types 1 to 5; each gets a line from its pill to one of its routes and a short definition in the lane
+const typeCard=(t,on)=>`<div class="tydef${on?" on":""}" data-tyd="${t}"><span class="ty" style="background:${TC[t]}">${TT[t]}</span><p>${TD[t]}</p></div>`;
+function laneTypes(active){const l=$("#lane"); if(l) l.innerHTML=`<div class="tylist">${["e","1","2","3","4","5"].map(t=>typeCard(t,active==null||active===t)).join("")}</div>`;}
 function legendTour(s){
-  const order=["e","1","2","3","4","5"], STEP=RM?0:1500;
+  const order=["e","1","2","3","4","5"], STEP=RM?0:3200;
   const pillOp=on=>document.querySelectorAll("#types [data-ty]").forEach(p=>{p.style.opacity=on==null||on===p.dataset.ty?"1":".3";});
   const run=k=>{
     if(steps[cur]!==s) return; notesEl.innerHTML="";
-    if(k>=order.length){pillOp(null); show([],false); return;}
-    const t=order[k], ls=LK.filter(l=>l.t===t&&!l.hidden&&!l.rare); pillOp(t);
+    if(k>=order.length){pillOp(null); laneTypes(null); show([],false); return;}
+    const t=order[k], ls=LK.filter(l=>l.t===t&&!l.hidden&&!l.rare); pillOp(t); laneTypes(t);
     if(!ls.length){tourT.push(setTimeout(()=>run(k+1),300)); return;}
     paintLinks(ls,true,false,true);
     const ids=new Set(ls.flatMap(l=>l.cases)); LK.forEach(q=>q.pills.forEach(p=>{p.style.opacity=ids.has(p.dataset.case)?"1":".14";}));
@@ -497,6 +500,14 @@ function legendTour(s){
     tourT.push(setTimeout(()=>run(k+1),STEP));
   };
   run(0);
+}
+const COVERS={irrs:["International Recommendations on Refugee Statistics","IRRS · EGRISS, 2018"],iris:["International Recommendations on Internally Displaced Persons Statistics","IRIS · EGRISS, 2020"],
+ imtm:["Recommendations on Statistics of International Migration and Temporary Mobility","IMTM · UN Statistical Commission, 2025"],pr:["Principles and Recommendations for Population and Housing Censuses, Revision 4","P&R Rev. 4 · United Nations"]};
+function laneFill(s){
+  const l=$("#lane"); if(!l) return;
+  if(s.lane&&s.lane.startsWith("cover:")){const k=s.lane.slice(6),c=COVERS[k]; l.innerHTML=`<figure class="cover"><img src="covers/${k}.jpg" alt="Cover of ${c[0]}"><figcaption><b>${c[0]}</b><span>${c[1]}</span></figcaption></figure>`;}
+  else if(s.lane==="types"||s.tour) laneTypes(null);
+  else l.innerHTML="";
 }
 
 // ---------- scrolling: one step per screen ----------
@@ -526,7 +537,6 @@ new ResizeObserver(()=>{clearTimeout(stage.__t); stage.__t=setTimeout(()=>{
   if(c!==compact){compact=c; renderStage();} relayout();},90);}).observe(stage);
 
 // ---------- start ----------
-document.querySelectorAll("body > .tip").forEach(t=>t.remove());
 MS={irrs:model("irrs"),A:model("A"),B:model("B")};
 compact=stage.clientWidth<1050;
 applyS(0);
