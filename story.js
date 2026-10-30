@@ -46,12 +46,23 @@ const STEPS=[
    ["P5","P5","3","IDP-related child moving home","A girl born in the displacement camp moves home with her parents at six: a lifetime internal migrant.","IRIS 78 · P&R 5.64"],
    ["P8","P8","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.63"]]},
  {g:"B",cap:["P&amp;R · Last move and moves from abroad"],bridge:"Finally, the same return can be counted two ways.",h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.71-5.74"],
-   ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.74, 5.76"]]}
+   ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.74, 5.76"]]},
+ {g:"irrs",uga:1,title:"Uganda, end 2025 · IRRS → IMTM",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"Last, one real country on the refugee graph.",h:"Uganda: where 1.97 million refugees and asylum seekers sit",body:["Refugees and asylum seekers are 87% of Uganda's 2.06 million international migrants, so how they nest decides its migration figures. <b>At least one in six, about 340,000, are not on the expected route.</b>"]}
 ];
+// Uganda example: people on each route, end 2025 (UNHCR Refugee Population Statistics; births estimated from the under-5 count)
+const UGA={
+ routes:[
+  {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m",h:"Stayed 12 months or more",p:"Refugees and immigrants: both counts agree. Plus 16,828 asylum seekers waiting over a year."},
+  {k:"a2|IMM|FBFC|e",n:16828},
+  {k:"a3i|NON|NBFC|1",n:171300,nn:"171k",h:"Born in Uganda, under 5",p:"About 34,000 a year. Never moved, yet in the immigrant stock. Assumes no citizenship at birth."},
+  {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k",h:"Here under 12 months",p:"147,096 prima facie arrivals and 18,421 new claims: temporary population for IMTM."},
+  {k:"a2|TMP|TEMP|2",n:18421}],
+ has:["a2","a3i"], zero:{b1:"0",b2:"0",c1:"0"},
+ bar:[["e",1635151,"expected"],["1",171300,"born here"],["2",165517,"under 12 months"]]};
 
 // chapters: the first five steps introduce the graph, then one chapter per graph
-const CH=(()=>{const o=[["Introduction","The three columns of the graph"],["Refugees","IRRS → IMTM"],["IDPs abroad","IRIS → IMTM"],["IDPs at home","IRIS → census (P&R Rev. 4)"]].map(([label,sub])=>({label,sub,start:-1,count:0}));
-  STEPS.forEach((s,i)=>{const c=o[i<5?0:s.g==="irrs"?1:s.g==="A"?2:3]; if(c.start<0) c.start=i; c.count++;}); return o;})();
+const CH=(()=>{const o=[["Introduction","The three columns of the graph"],["Refugees","IRRS → IMTM"],["IDPs abroad","IRIS → IMTM"],["IDPs at home","IRIS → census (P&R Rev. 4)"],["Uganda","A real country on the graph"]].map(([label,sub])=>({label,sub,start:-1,count:0}));
+  STEPS.forEach((s,i)=>{const c=o[i<5?0:s.uga?4:s.g==="irrs"?1:s.g==="A"?2:3]; if(c.start<0) c.start=i; c.count++;}); return o;})();
 const TITLES={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&R Rev. 4)"};
 const TT={e:"Expected route",1:"Type 1 · Never moved",2:"Type 2 · Temporary or not yet counted",3:"Type 3 · Migrant for a different reason",4:"Type 4 · Counted differently",5:"Type 5 · Misalignment"};
 // what each type means, shown beside the legend
@@ -129,7 +140,7 @@ const steps=STEPS.map((s,i)=>{const cases=s.exp?[{n:s.exp,id:s.exp,t:"e",h:"Expe
   const sp=v=>v?v.split(","):null;
   return {...s,i,el:stepsEl.querySelector(`[data-i="${i}"]`),build:sp(s.build),hide:sp(s.hide)||[],focus:sp(s.focus)||[],cases,ids:cases.map(c=>c.id)};});
 const chOf=i=>CH.findIndex(c=>i>=c.start&&i<c.start+c.count);
-$("#heroCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}"><span class="k"><span>0${k+1}</span><span>${c.count} steps</span></span><span class="t">${c.label}</span><span class="d">${c.sub}</span></button>`).join("");
+$("#heroCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}"><span class="k"><span>0${k+1}</span><span>${c.count} step${c.count>1?"s":""}</span></span><span class="t">${c.label}</span><span class="d">${c.sub}</span></button>`).join("");
 $("#navCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}" title="${c.label}" style="flex:${c.count} 1 auto"><span class="l">0${k+1} · ${c.label}</span><span class="bar"><i></i></span></button>`).join("");
 const secs=[...stepsEl.children];
 const secOfStep=i=>{const k=chapAt(i); return secs.indexOf(k>0?stepsEl.querySelector(`[data-chap="${k}"]`):steps[i].el);};
@@ -140,7 +151,7 @@ function navUpdate(){
   [...$("#navCh").children].forEach((b,k)=>{const c=CH[k],done=cur>=c.start+c.count,on=cur>=c.start&&!done;
     b.classList.toggle("on",on); b.querySelector("i").style.width=(cur<c.start?0:done?100:(cur-c.start+1)/c.count*100)+"%";});
   $("#counter").textContent=String(cur+1).padStart(2,"0")+" / "+steps.length;
-  [...$("#navCh").children].forEach((b,k)=>b.querySelector("i").style.background=["var(--teal)","var(--irrs)","var(--iris)","var(--pr)"][k]);
+  [...$("#navCh").children].forEach((b,k)=>b.querySelector("i").style.background=["var(--teal)","var(--irrs)","var(--iris)","var(--pr)","var(--strong)"][k]);
 }
 // chapter card: a full-pane divider shown while its section is on screen; the graph behind is already the new one
 let curSec=-1;
@@ -294,7 +305,7 @@ function caption(s){
   $("#caps").innerHTML=s.cap.map(x=>`<span class="${srcCls(x)}">${x}</span>`).join("");
   const types=s.legend?["e","1","2","3","4","5"]:[...new Set(s.cases.map(c=>String(c.t)))];
   $("#types").innerHTML=types.map(t=>`<span class="ty" data-ty="${t}" style="background:${TC[t]}">${TT[t]||t}</span>`).join("");
-  const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||"";
+  const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||""; $("#gtitle").textContent=s.title||TITLES[s.g];
   ld.innerHTML=s.body[0]?`<p>${linkRefs(s.body[0].replace(/<span>/g,'<span class="sadd">'))}</p>`:"";
   if(!RM){br.animate([{opacity:0},{opacity:1}],{duration:420,easing:EASE});
     hd.animate([{opacity:0,transform:"translateY(6px)"},{opacity:1,transform:"none"}],{duration:360,easing:EASE});
@@ -316,7 +327,7 @@ function paint(s,anim){
   LK.forEach(l=>{l.hidden=hid.has(l.k)||hid.has(l.m)||hid.has(l.c);});
   if(s.exp) s.ids=[...new Set(LK.filter(l=>l.t==="e").flatMap(l=>l.cases))];
   laneFill(s);
-  show(s.ids,anim);
+  if(s.uga) ugaPaint(anim); else show(s.ids,anim);
   focusOn(s.focus);
   clearTimeout(coT);
   coT=setTimeout(()=>{callouts(s); if(s.tour) legendTour(s);},RM?0:(anim?520:60));
@@ -344,7 +355,7 @@ function paintLinks(lit,any,showRare,anim){
   const set=new Set(lit), touched=new Set(); lit.forEach(l=>[l.k,l.m,l.c].forEach(n=>touched.add(n)));
   LK.forEach(l=>{const on=set.has(l), vis=!l.hidden&&(!l.rare||showRare);
     l.el.style.display=vis?"":"none"; l.hit.style.display=vis?"":"none"; l.pills.forEach(p=>{p.style.display=vis?"grid":"none";});
-    l.el.style.strokeOpacity=on?"0.95":any?"0.1":"0.38"; l.el.style.strokeWidth=(l.w+(on?1.6:0))+"px";
+    l.el.style.strokeOpacity=on?"0.95":any?"0.1":"0.38"; l.el.style.strokeWidth=(l.w+(on?1.6:0))+"px"; l.el.style.strokeDasharray="";
     if(on) l.el.parentNode.appendChild(l.el);});
   colsEl.querySelectorAll(".chips [data-li]").forEach(e=>{const l=LK.find(q=>q.i===+e.dataset.li);
     e.style.transition=`opacity .3s ${EASE}`; e.style.opacity=!sqOn?"0":any&&!(l&&set.has(l))?".22":"1";});
@@ -388,7 +399,7 @@ function placeTip(e){if(tip.style.display==="none") return; const sr=stage.getBo
   if(x+w>sr.width-8) x=e.clientX-sr.left-w-16; if(y+h>sr.height-8) y=Math.max(8,sr.height-8-h);
   tip.style.left=x+"px"; tip.style.top=y+"px";}
 function routeLeave(){tip.style.display="none"; restore();}
-function restore(){if(cur>=0&&steps[cur]&&LK) show(steps[cur].ids,false);}
+function restore(){if(cur>=0&&steps[cur]&&LK){if(steps[cur].uga) ugaPaint(false); else show(steps[cur].ids,false);}}
 function nodeHover(id,on){
   if(!LK) return;
   if(!on){hov.style.display="none"; restore(); return;}
@@ -435,19 +446,20 @@ function anchorOf(id){
 function lineSvg(){const s=document.createElementNS(NS,"svg"); s.setAttribute("style","position:absolute;inset:0;width:100%;height:100%;overflow:visible"); notesEl.appendChild(s); return s;}
 // notes sit in the lane on the right, so the cards of the graph stay readable; a leader line runs back to the route
 function laneBox(){const sr=stage.getBoundingClientRect(), l=$("#lane"); if(!l) return {x:stage.clientWidth-268,w:260}; const b=l.getBoundingClientRect(); return {x:b.left-sr.left,w:b.width};}
-function stack(notes,SH){
+// notes are kept between top and SH (the Uganda step reserves the top and bottom of the lane)
+function stack(notes,SH,top=10){
   const GAP=12; notes.sort((a,b)=>a.ay-b.ay);
-  notes.forEach((n,k)=>{n.y=Math.max(10,n.ay-n.h/2); if(k) n.y=Math.max(n.y,notes[k-1].y+notes[k-1].h+GAP);});
+  notes.forEach((n,k)=>{n.y=Math.max(top,n.ay-n.h/2); if(k) n.y=Math.max(n.y,notes[k-1].y+notes[k-1].h+GAP);});
   for(let k=notes.length-1;k>=0;k--){const lim=k===notes.length-1?SH-10:notes[k+1].y-GAP; if(notes[k].y+notes[k].h>lim) notes[k].y=lim-notes[k].h;}
-  for(let k=0;k<notes.length;k++){const lim=k===0?10:notes[k-1].y+notes[k-1].h+GAP; if(notes[k].y<lim) notes[k].y=lim;}
+  for(let k=0;k<notes.length;k++){const lim=k===0?top:notes[k-1].y+notes[k-1].h+GAP; if(notes[k].y<lim) notes[k].y=lim;}
 }
-function placeNotes(notes,lines,stroke){
-  const SH=stage.clientHeight, L=laneBox(), fits=()=>notes.reduce((t,n)=>t+n.h+12,0)<=SH-12;
+function placeNotes(notes,lines,stroke,box){
+  const top=box?box.top:10, SH=box?box.bot:stage.clientHeight, L=laneBox(), fits=()=>notes.reduce((t,n)=>t+n.h+12,0)<=SH-top-2;
   notes.forEach(n=>{n.card.style.width=L.w+"px"; n.h=n.card.offsetHeight;});
   if(!fits()){notes.forEach(n=>{n.card.classList.add("tight"); n.h=n.card.offsetHeight;});}
   // still too tall: a second column just left of the lane
   const cols=fits()?[notes]:[notes.filter((_,k)=>k%2===0),notes.filter((_,k)=>k%2===1)];
-  cols.forEach((arr,ci)=>{stack(arr,SH); arr.forEach(n=>{n.x=ci?L.x-L.w-12:L.x;});});
+  cols.forEach((arr,ci)=>{stack(arr,SH,top); arr.forEach(n=>{n.x=ci?L.x-L.w-12:L.x;});});
   notes.forEach((n,k)=>{
     n.card.style.left=n.x+"px"; n.card.style.top=n.y+"px";
     const cy=n.y+Math.min(22,n.h/2), cx=n.x, mx=(n.ax+cx)/2, ln=document.createElementNS(NS,"path");
@@ -461,6 +473,7 @@ function placeNotes(notes,lines,stroke){
 function outcome(id){const M=MS[gk], c=M.F&&M.F.cases[id]; return c&&c.b?`<span class="ob"><b>${gk==="A"?"IMTM":"Census"}</b> ${c.b}</span>`:"";}
 function callouts(s){
   notesEl.innerHTML=""; if(!LK) return;
+  if(s.uga){ugaNotes(); return;}
   const cases=s.cases; if(!cases.length) return;
   if(cases.length===1&&cases[0].exp){expNote(cases[0]); return;}
   const notes=[];
@@ -497,6 +510,37 @@ function expNote(c){
     return {ax:P.x,ay:P.y,card};
   });
   placeNotes(notes,lines,"var(--v-prot)");
+}
+// ---------- Uganda: line thickness is people, notes carry the figures, routes without data are marked ----------
+const ugaLink=key=>LK&&LK.find(l=>!l.hidden&&[l.k,l.m,l.c,l.t].join("|")===key);
+function ugaPaint(anim){
+  const rs=UGA.routes.map(r=>({r,l:ugaLink(r.k)})).filter(o=>o.l), max=Math.max(...rs.map(o=>o.r.n));
+  paintLinks(rs.map(o=>o.l),true,false,anim);
+  rs.forEach(({r,l})=>{l.el.style.strokeWidth=(3+26*Math.sqrt(r.n/max)).toFixed(1)+"px";});
+  LK.forEach(l=>{l.pills.forEach(p=>{p.style.opacity=".14";}); if(l.pillLink) l.pillLink.style.opacity=".14";});
+}
+function ugaNotes(){
+  const L=laneBox(), SH=stage.clientHeight, tot=UGA.bar.reduce((a,b)=>a+b[1],0), pc=v=>Math.round(v/tot*100)+"%";
+  const sum=document.createElement("div"); sum.className="ugsum"; sum.style.cssText=`left:${L.x+10}px;top:8px;width:${L.w-10}px`;
+  sum.innerHTML=`<span class="ugk">Refugees and asylum seekers · 1.97m</span>
+    <div class="ugbar">${UGA.bar.map(([t,v])=>`<i style="flex:${v} 1 0;background:${TC[t]}"></i>`).join("")}</div>
+    <div class="ugleg"><span><b style="color:${TC.e}">1.64m</b>expected · ${pc(UGA.bar[0][1])}</span><span><b>0.34m</b>not nested · ${pc(tot-UGA.bar[0][1])}</span></div>`;
+  notesEl.appendChild(sum);
+  const foot=document.createElement("div"); foot.className="ugfoot"; foot.style.cssText=`left:${L.x+10}px;width:${L.w-10}px`;
+  foot.innerHTML=`<p><b>A floor.</b> Children 5 to 17 born in Uganda sit inside the 1.62m. Faded: no Uganda data. 0: none recorded (b2 assumed).</p><p><b>IDPs:</b> 31,452 displaced in 2025, with no record of district crossings, so none can be placed on the census graph.</p>`;
+  notesEl.appendChild(foot); foot.style.top=(SH-8-foot.offsetHeight)+"px";
+  const sr=stage.getBoundingClientRect();
+  // IRRS categories: Uganda figures exist for a2 and a3i; three are recorded as zero; the rest have no data and fade
+  CATS.forEach(c=>{const r=R[c.id]; if(!r||UGA.has.includes(c.id)) return; const z=UGA.zero[c.id];
+    if(!z){r.el.style.transition=`opacity .45s ${EASE}`; r.el.style.opacity=".4"; return;}
+    const t=document.createElement("span"); t.className="ugchip"; t.textContent=z; t.style.cssText=`left:${r.x1-6}px;top:${(r.y0+r.y1)/2}px`; notesEl.appendChild(t);});
+  const lines=lineSvg(), notes=UGA.routes.filter(r=>r.h).map((r,k)=>{const l=ugaLink(r.k); if(!l) return null;
+    const P=l.el.getPointAtLength(l.el.getTotalLength()*0.84), col=tc(l.t), card=document.createElement("div");
+    card.className="note ug"; card.style.animationDelay=k*90+"ms"; card.style.setProperty("--tc",col);
+    card.innerHTML=`<div class="nh"><span class="nn">${r.nn}</span><b>${r.h}</b></div><p>${r.p}</p>`;
+    notesEl.appendChild(card); card.addEventListener("mouseenter",()=>paintLinks([l],true,false,false)); card.addEventListener("mouseleave",restore);
+    return {ax:P.x,ay:P.y,card,col};}).filter(Boolean);
+  placeNotes(notes,lines,"var(--strong)",{top:8+sum.offsetHeight+14,bot:SH-8-foot.offsetHeight-6});
 }
 // legend tour: expected, then types 1 to 5; each gets a line from its pill to one of its routes and a short definition in the lane
 const typeCard=(t,on)=>`<div class="tydef${on?" on":""}" data-tyd="${t}"><span class="ty" style="background:${TC[t]}">${TT[t]}</span><p>${TD[t]}</p></div>`;
