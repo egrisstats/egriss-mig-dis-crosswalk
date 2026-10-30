@@ -303,3 +303,11 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .ugkey i{font-style:normal;font-family:var(--f-mono);font-size:9.5px;font-weight:600;color:#fff;border-radius:9px;padding:1px 6px;min-width:10px;text-align:center}
 .ugkeyl{display:flex;flex-direction:column;gap:3px}.ugkeyl .ugkey{margin:0;font-size:11px;line-height:1.3;align-items:flex-start}.ugkeyl .ugkey i{margin-top:1px;flex-shrink:0}
 .ugrow{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+/* Uganda sources and protection key */
+.ugsrc{text-decoration:none;color:inherit;cursor:pointer}.ugsrc:hover{border-color:var(--imtm);color:var(--imtm)}
+.ugsrc sup{font-family:var(--f-mono);font-weight:700;margin-right:3px;font-size:9px;vertical-align:4px;color:var(--imtm)}
+.ugmap figure{position:relative}
+.ugmap .pf{font-family:var(--f-mono);font-size:10.5px;fill:var(--irrs-ink);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+.ugmap .ac{fill:none;stroke:var(--irrs-ink);stroke-opacity:.85;stroke-linecap:round}.ugmap .ac.hd{fill:var(--irrs-ink);stroke:none}
+.ugprot{position:absolute;left:8px;bottom:30px;display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:color-mix(in srgb,var(--bg) 92%,transparent);border:1px solid var(--line);border-radius:8px;max-width:330px}
+.ugprot .ugkey{margin:0;font-size:11.5px;color:var(--ink)}.ugprot .ugkey i{min-width:22px}
