@@ -344,3 +344,7 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .ugmsrc sup{font-family:var(--f-mono);font-weight:700;font-size:9px;color:var(--imtm);margin-right:2px}
 .ugmapbox{position:relative;flex:1 1 auto;min-height:0;display:flex}.ugmapbox svg{flex:1 1 auto}
 .ugmapbox .ugprot{bottom:8px}
+.ugmap figure{overflow:hidden}.ugmapbox{overflow:hidden}.ugmapbox svg{min-height:0;min-width:0;height:100%}
+.ugmsrc,.ugmap figcaption{flex:0 0 auto}
+.ugmap{grid-template-rows:minmax(0,1fr)}.ugp{min-height:0;overflow:hidden}
+@media (max-height:760px){.ugr small{display:none}.ugp{gap:6px}.ugmap figcaption{display:none}}
