@@ -47,49 +47,59 @@ const STEPS=[
    ["P8","P8","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.63"]]},
  {g:"B",cap:["P&amp;R · Last move and moves from abroad"],bridge:"Finally, the same return can be counted two ways.",h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.71-5.74"],
    ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.74, 5.76"]]},
- {g:"irrs",ugmap:1,build:"none",title:"Uganda, 2025 · who crossed, who was there, who was born there",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"Last, one real country.",h:"Uganda in 2025: most refugees did not cross that year",body:["Of 1.97 million refugees and asylum seekers in Uganda at the end of 2025, only 147,096 crossed that year. 1.62 million came earlier, and about 171,000 young children were born there."]},
- {g:"irrs",uga:"flow",title:"Uganda, 2025 flows · IRRS → IMTM",cap:["Example · UNHCR 2025, UN DESA 2024, Uganda Tourism 2024, DCIC 2022/23"],bridge:"The same year on the refugee graph.",h:"Uganda in 2025: who arrived, and how each count sees them",body:["About 1.55 million people entered Uganda in a year, nearly all visitors. IRRS counts the 165,517 who fled or claimed asylum at once; <b>IMTM counts them only after 12 months.</b>"]},
- {g:"irrs",uga:"stock",title:"Uganda, end 2025 · IRRS → IMTM",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"Add up the years: everyone in Uganda at the end of 2025.",h:"Uganda at the end of 2025: where 1.97 million refugees and asylum seekers sit",body:["Refugees and asylum seekers are 87% of Uganda's 2.06 million international migrants, so how they nest decides its migration figures. <b>At least one in six, about 340,000, are not on the expected route.</b>"]},
- {g:"irrs",uga:"y26",title:"Uganda from 2026 · IRRS → IMTM",cap:["Example · February 2026 directive, UNHCR 2025"],bridge:"Then the rules changed.",h:"From 2026: the same people, a different IRRS category",body:["In February 2026 Uganda ended prima facie recognition. If arrivals match 2025, 165,517 people would start as asylum seekers, not refugees. <b>IRRS moves them from a3i to a2; IMTM sees no change.</b>"]}
+ {g:"irrs",ugmap:1,build:"none",title:"Uganda, 2025 · who crossed, who was there, who was born there",cap:[1,2,3,6,7,8],bridge:"Last, one real country.",h:"Uganda in 2025: most refugees did not cross that year",body:["Of 1.97 million¹ refugees and asylum seekers in Uganda at the end of 2025, only 147,096¹ crossed that year. 1.62 million¹ came earlier, and about 171,000¹ young children were born there."]},
+ {g:"irrs",uga:"flow",title:"Uganda, 2025 flows · IRRS → IMTM",cap:[1,2,3,4,5,6,7],bridge:"The same year on the refugee graph.",h:"Uganda in 2025: who arrived, and how each count sees them",body:["About 1.55 million¹ ⁴ ⁵ people entered Uganda in a year, nearly all visitors. IRRS counts the 165,517¹ who fled or claimed asylum at once; <b>IMTM counts them only after 12 months.</b>"]},
+ {g:"irrs",uga:"stock",title:"Uganda, end 2025 · IRRS → IMTM",cap:[1,2,3,8],bridge:"Add up the years: everyone in Uganda at the end of 2025.",h:"Uganda at the end of 2025: where 1.97 million refugees and asylum seekers sit",body:["Refugees and asylum seekers are 87%¹ ² of Uganda's 2.06 million² international migrants, so how they nest decides its migration figures. <b>At least one in six, about 340,000¹, are not on the expected route.</b>"]},
+ {g:"irrs",uga:"y26",title:"Uganda from 2026 · IRRS → IMTM",cap:[1,6,7],bridge:"Then the rules changed.",h:"From 2026: the same people, a different IRRS category",body:["In February 2026⁷ Uganda ended prima facie recognition. If arrivals match 2025, 165,517¹ people would start as asylum seekers, not refugees. <b>IRRS moves them from a3i to a2; IMTM sees no change.</b>"]}
 ];
+// sources for the Uganda chapter: steps list them by number in cap, figures carry the matching superscript
+const SRCS={1:["UNHCR 2025","UNHCR Refugee Population Statistics, end 2025: population, arrivals, claims, decisions, returns, age and sex","https://www.unhcr.org/refugee-statistics/"],
+ 2:["UN DESA 2024","UN DESA International Migrant Stock 2024 (via World Bank SM.POP.TOTL)","https://www.un.org/development/desa/pd/content/international-migrant-stock"],
+ 3:["Fertility, World Bank","World Bank total fertility rate 2024 by origin country (UN World Population Prospects); births = refugee women 15 to 49 (UNHCR) × rate ÷ 35","https://data.worldbank.org/indicator/SP.DYN.TFRT.IN"],
+ 4:["Uganda Tourism 2024","Uganda Tourism Trends and Statistics Report: 1,371,895 international tourist arrivals in 2024","https://development.finance.go.ug/knowledge-centre-reports/uganda-tourism-trends-and-statistics-report-2024"],
+ 5:["DCIC 2022/23","Directorate of Citizenship and Immigration Control: 13,027 work permits issued in 2022/23","https://immigration.go.ug/sites/default/files/2024-10/DCIC%20OUTPUT%20INDICATOR%20META%20DATA.pdf"],
+ 6:["Refugees Act 2006","Uganda Refugees Act 2006: section 4 (individual status), section 25 (group recognition, mass influx, temporary protection)","https://judiciary.go.ug/files/downloads/Act%20No.%2021of%202006%20Refugees%20Act2006.pdf"],
+ 7:["2026 directive","Government directive of 5 February 2026 ending prima facie recognition, as reported by Nile Post","https://nilepost.co.ug/news/330610/funding-gaps-and-policy-shifts-raise-concerns-over-ugandas-refugee-response"],
+ 8:["Citizenship law","Constitution of Uganda 1995, article 10, and Parliament's 2021 rejection of citizenship for refugees' children","https://citizenshiprightsafrica.org/en/uganda-parliament-rejects-proposal-to-grant-refugees-children-citizenship/"]};
+const SUP="⁰¹²³⁴⁵⁶⁷⁸⁹";
 // Uganda views on the refugee graph. routes: people per route (line thickness); track: badge on an IRRS category (others fade unless kept);
 // mid: label on an IMTM box (inside the bottom edge when the flag is set); later: dashed routes with no data; sum and foot fill the lane
 const UGA={
  flow:{routes:[
-  {k:"a3i|TMP|TEMP|2",n:147096,nn:"147k",h:"Crossed fleeing in 2025",p:"Prima facie: DR Congo, South Sudan, Sudan. Temporary for IMTM."},
+  {k:"a3i|TMP|TEMP|2",n:147096,nn:"147k¹",h:"Crossed fleeing in 2025",p:"Prima facie⁶: DR Congo, South Sudan, Sudan. Temporary for IMTM."},
   {k:"a2|TMP|TEMP|2",n:18421},
-  {k:"a3i|IMM|FBFC|2",n:116435,nn:"116k",h:"Crossed in 2024",p:"IMTM counts them as immigrants in 2025, a year after they arrived."},
-  {k:"a3i|NON|NBFC|1",n:56000,nn:"~56k",h:"Born in Uganda",p:"Estimate; 34,000 registered. No citizenship at birth."}],
- key:[["PF","var(--irrs)","prima facie, s.25(1)"],["RSD","var(--irrs-ink)","individual, s.4: 18,421 claims"],["0","var(--muted)","no temporary or complementary protection used"],["?","var(--v-other)","came on a visa or permit, claim later: no data"]],
+  {k:"a3i|IMM|FBFC|2",n:116435,nn:"116k¹",h:"Crossed in 2024",p:"IMTM counts them as immigrants in 2025, a year after they arrived."},
+  {k:"a3i|NON|NBFC|1",n:56000,nn:"~56k³",h:"Born in Uganda",p:"Estimate; 34,000 registered¹. No citizenship at birth⁸."}],
+ key:[["PF","var(--irrs)","prima facie, s.25(1)⁶"],["RSD","var(--irrs-ink)","individual, s.4⁶: 18,421 claims¹"],["0","var(--muted)","not used or not in law⁶"],["?","var(--v-other)","visa or permit first: no data"]],
  later:["a1|IMM|FBFC|3","a2|IMM|FBFC|3","a3i|IMM|FBFC|3"],
  track:{a3i:["PF","var(--irrs)"],a2:["RSD","var(--irrs-ink)"],a1:["?","var(--v-other)"],a3ii:["0","var(--muted)"],a3iii:["0","var(--muted)"]},
- mid:{TMP:["2025 · 1.37m visitors, 166k refugees",0],IMM:["2025 · 116k refugees, ≤13k permits",0],NON:["2025 · ~56k births",1],RET:["2025 · 0 recorded",1]},
- bar:[["color-mix(in srgb,var(--muted) 35%,var(--bg))",1371895,"1.37m visitors"],["var(--imtm)",13027,"13k work permits"],["var(--irrs)",147096,"147k fleeing"],["var(--irrs-ink)",18421,"18k claims"]],
-  sum:()=>ugBar("All arrivals in a year · about 1.55m",UGA.flow.bar)+`<p class="ugone"><b>1 in 10</b> arrivals fled or claimed asylum; <b>87%</b> of migrants living in Uganda did.</p>`,
-  foot:()=>ugKey(UGA.flow.key)+`<p><b>From 2026</b> prima facie ends: new arrivals start as asylum seekers (a2).</p>`},
+ mid:{TMP:["2025 · 1.37m visitors⁴, 166k refugees¹",0],IMM:["2025 · 116k refugees¹, ≤13k permits⁵",0],NON:["2025 · ~56k births³",1],RET:["2025 · 0 recorded¹",1]},
+ bar:[["color-mix(in srgb,var(--muted) 35%,var(--bg))",1371895,"1.37m visitors⁴"],["var(--imtm)",13027,"13k work permits⁵"],["var(--irrs)",147096,"147k fleeing¹"],["var(--irrs-ink)",18421,"18k claims¹"]],
+  sum:()=>ugBar("All arrivals in a year · about 1.55m",UGA.flow.bar)+`<p class="ugone"><b>1 in 10</b> arrivals fled; <b>87%</b>¹ ² of resident migrants did.</p>`,
+  foot:()=>ugKey(UGA.flow.key)+`<p><b>From 2026</b>⁷ new arrivals start as a2.</p>`},
  stock:{
   routes:[
-   {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m",h:"Arrived before 2025",p:"Both counts agree: refugees and immigrants. Plus 16,828 asylum seekers waiting over a year."},
+   {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m¹",h:"Arrived before 2025",p:"Both counts agree: refugees and immigrants. Plus 16,828 asylum seekers waiting over a year."},
    {k:"a2|IMM|FBFC|e",n:16828},
-   {k:"a3i|NON|NBFC|1",n:171300,nn:"171k",h:"Born in Uganda, under 5",p:"About 56,000 born a year, 34,000 registered. No citizenship at birth."},
-   {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k",h:"Crossed or claimed in 2025",p:"147,096 prima facie arrivals and 18,421 claims: temporary population."},
+   {k:"a3i|NON|NBFC|1",n:171300,nn:"171k¹",h:"Born in Uganda, under 5",p:"About 56,000 born a year³, 34,000 registered¹. No citizenship at birth⁸."},
+   {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k¹",h:"Crossed or claimed in 2025",p:"147,096 prima facie arrivals and 18,421 claims: temporary population."},
    {k:"a2|TMP|TEMP|2",n:18421}],
   keep:["a2","a3i"], track:{b1:["0","var(--muted)"],b2:["0","var(--muted)"],c1:["0","var(--muted)"]},
-  sum:()=>`<span class="ugk">Refugees and asylum seekers · 1.97m</span><div class="ugbar"><i style="flex:1635151 1 0;background:${TC.e}"></i><i style="flex:171300 1 0;background:${TC[1]}"></i><i style="flex:165517 1 0;background:${TC[2]}"></i></div>
+  sum:()=>`<span class="ugk">Refugees and asylum seekers · 1.97m¹</span><div class="ugbar"><i style="flex:1635151 1 0;background:${TC.e}"></i><i style="flex:171300 1 0;background:${TC[1]}"></i><i style="flex:165517 1 0;background:${TC[2]}"></i></div>
    <div class="ugleg"><span><b style="color:${TC.e}">1.64m</b>expected · 83%</span><span><b>0.34m</b>not nested · 17%</span></div>`,
   foot:()=>`<p><b>A floor:</b> children 5 to 17 born in Uganda sit in the 1.62m. Faded: no data. 0: none recorded.</p>`},
  y26:{
   routes:[
-   {k:"a2|TMP|TEMP|2",n:165517,nn:"166k",h:"Arrive as asylum seekers",p:"All go through individual determination first. Same IMTM route as in 2025."},
-   {k:"a3i|IMM|FBFC|2",n:147096,nn:"147k",h:"Crossed in 2025",p:"Refugees already; IMTM counts them as immigrants in 2026."},
-   {k:"a3i|NON|NBFC|1",n:56000,nn:"~56k",h:"Born in Uganda",p:"Unchanged: no citizenship at birth."}],
+   {k:"a2|TMP|TEMP|2",n:165517,nn:"166k¹",h:"Arrive as asylum seekers",p:"All go through individual determination⁶ first. Same IMTM route as in 2025."},
+   {k:"a3i|IMM|FBFC|2",n:147096,nn:"147k¹",h:"Crossed in 2025",p:"Refugees already; IMTM counts them as immigrants in 2026."},
+   {k:"a3i|NON|NBFC|1",n:56000,nn:"~56k³",h:"Born in Uganda",p:"Unchanged: no citizenship at birth⁸."}],
   track:{a3i:["PF ended","var(--muted)"],a2:["RSD","var(--irrs-ink)"],a3ii:["0","var(--muted)"],a3iii:["0","var(--muted)"]},
   mid:{TMP:["2026 · 166k asylum seekers, not yet refugees",0]},
   sum:()=>`<span class="ugk">New arrivals by IRRS category</span>
    <div class="ugrow"><span>2025</span><div class="ugbar"><i style="flex:147096 1 0;background:var(--irrs)"></i><i style="flex:18421 1 0;background:var(--irrs-ink)"></i></div></div>
    <div class="ugrow"><span>2026</span><div class="ugbar"><i style="flex:1 1 0;background:var(--irrs-ink)"></i></div></div>
    <div class="ugkeys"><span><s style="background:var(--irrs)"></s>a3i refugees</span><span><s style="background:var(--irrs-ink)"></s>a2 asylum seekers</span></div>`,
-  foot:()=>`<p><b>A backlog in waiting:</b> Uganda decided 20,281 claims in 2025. Individual decisions for 165,517 arrivals would be eight times that.</p><p>Illustration: assumes 2026 arrivals match 2025.</p>`}
+  foot:()=>`<p><b>A backlog in waiting:</b> Uganda decided 20,281 claims¹ in 2025. Individual decisions for 165,517 arrivals would be eight times that.</p><p>Illustration: assumes 2026 arrivals match 2025.</p>`}
 };
 const ugBar=(t,bar)=>`<span class="ugk">${t}</span><div class="ugbar">${bar.map(([c,v])=>`<i style="flex:${v} 1 0;background:${c}"></i>`).join("")}</div><div class="ugkeys">${bar.map(([c,v,t])=>`<span><s style="background:${c}"></s>${t}</span>`).join("")}</div>`;
 const ugKey=key=>`<div class="ugkeyl">${key.map(([k,c,t])=>`<span class="ugkey"><i style="background:${c}">${k}</i>${t}</span>`).join("")}</div>`;
@@ -336,10 +346,10 @@ const linkRefs=h=>h.replace(/\b(IRRS|IMTM|IRIS|P&amp;R|P&R)( paras?)? (\d+(?:\.\
 function caption(s){
   const c=CH[chOf(s.i)];
   $("#eyebrow").textContent=c.label+" · "+String(s.i-c.start+1).padStart(2,"0")+" / "+String(c.count).padStart(2,"0");
-  $("#caps").innerHTML=s.cap.map(x=>`<span class="${srcCls(x)}">${x}</span>`).join("");
+  $("#caps").innerHTML=s.cap.map(x=>typeof x==="number"?`<a class="srcb srcb-plain ugsrc" href="${SRCS[x][2]}" target="_blank" rel="noopener" title="${SRCS[x][1]}"><sup>${x}</sup>${SRCS[x][0]}</a>`:`<span class="${srcCls(x)}">${x}</span>`).join("");
   const types=s.legend?["e","1","2","3","4","5"]:[...new Set(s.cases.map(c=>String(c.t)))];
   $("#types").innerHTML=s.uga?"":types.map(t=>`<span class="ty" data-ty="${t}" style="background:${TC[t]}">${TT[t]||t}</span>`).join("");
-  const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||""; $("#gtitle").textContent=s.title||TITLES[s.g];
+  const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||""; $("#gtitle").textContent=s.title||TITLES[s.g]; $("#gtitle").style.display=s.cap.some(x=>typeof x==="number")?"none":"";
   ld.innerHTML=s.body[0]?`<p>${linkRefs(s.body[0].replace(/<span>/g,'<span class="sadd">'))}</p>`:"";
   if(!RM){br.animate([{opacity:0},{opacity:1}],{duration:420,easing:EASE});
     hd.animate([{opacity:0,transform:"translateY(6px)"},{opacity:1,transform:"none"}],{duration:360,easing:EASE});
@@ -591,23 +601,30 @@ function ugaMap(){
     ${lab(P.ssd_c,"SOUTH SUDAN","cn")}${lab(P.cod_c,"DR CONGO","cn")}${lab(P.ken_c,"KENYA","cn")}${lab(P.bdi_c,"BURUNDI","cn","middle",14)}${lab([P.kampala[0]+40,P.kampala[1]+175],"TANZANIA","cn")}${lab([P.uga_c[0]+5,P.uga_c[1]-80],"UGANDA","un")}
     ${arrow([P.cod_c[0]+62,P.cod_c[1]-4],P.west,wIn(71810),"ar",-.2)}${arrow([P.ssd_c[0]+8,P.ssd_c[1]+34],P.westnile,wIn(47791),"ar",.1)}${arrow(P.sdn_edge,P.adjumani,wIn(27495),"ar",-.12)}
     ${arrow([P.westnile[0]+40,P.westnile[1]-6],[P.ssd_c[0]+70,P.ssd_c[1]+18],2.5,"rt",.25)}${arrow(P.southwest,[P.bdi_c[0]+18,P.bdi_c[1]-14],2.5,"rt",.25)}
-    ${lab([P.cod_c[0]+2,P.cod_c[1]+22],"71,810","nv")}${lab([P.ssd_c[0]-6,P.ssd_c[1]+22],"47,791","nv")}${lab([P.sdn_edge[0]+8,P.sdn_edge[1]+20],"Sudan · 27,495","nv","start")}
-    ${lab([P.ssd_c[0]+118,P.ssd_c[1]+48],"3,389 home","rv","start")}${lab([P.bdi_c[0]+52,P.bdi_c[1]-30],"1,149 home","rv","start")}
-    <circle class="st" cx="${c[0]}" cy="${c[1]}" r="${rS(1618323)}"/>${lab([c[0],c[1]+2],"1.62m","sv")}${lab([c[0],c[1]+18],"arrived before 2025","sl")}
-    <circle class="bn" cx="${born[0]}" cy="${born[1]}" r="${rS(171300)}"/>${lab([born[0]+26,born[1]],"171k born here, under 5","bl","start")}${lab([born[0]+26,born[1]+16],"about 56,000 in 2025","bs","start")}
+    ${lab([P.cod_c[0]+2,P.cod_c[1]+22],"71,810¹","nv")}${lab([P.cod_c[0]+2,P.cod_c[1]+38],"prima facie⁶","pf")}${lab([P.ssd_c[0]-6,P.ssd_c[1]+22],"47,791¹","nv")}${lab([P.ssd_c[0]-60,P.ssd_c[1]+22],"prima facie⁶","pf","end")}${lab([P.sdn_edge[0]+8,P.sdn_edge[1]+20],"Sudan · 27,495¹","nv","start")}${lab([P.sdn_edge[0]+8,P.sdn_edge[1]+36],"prima facie⁶","pf","start")}
+    ${lab([P.ssd_c[0]+118,P.ssd_c[1]+48],"3,389 home¹","rv","start")}${lab([P.bdi_c[0]+52,P.bdi_c[1]-30],"1,149 home¹","rv","start")}
+    ${arrow([M.w-6,P.kampala[1]-70],[P.kampala[0]+8,P.kampala[1]-6],wIn(18421),"ac",.12)}${lab([M.w-8,P.kampala[1]-96],"18,421 claims¹","nv","end")}${lab([M.w-8,P.kampala[1]-80],"individual RSD⁶","pf","end")}
+    <circle class="st" cx="${c[0]}" cy="${c[1]}" r="${rS(1618323)}"/>${lab([c[0],c[1]+2],"1.62m¹","sv")}${lab([c[0],c[1]+18],"arrived before 2025","sl")}
+    <circle class="bn" cx="${born[0]}" cy="${born[1]}" r="${rS(171300)}"/>${lab([born[0]+26,born[1]],"171k born here, under 5¹","bl","start")}${lab([born[0]+26,born[1]+16],"about 56,000 in 2025³ · no citizenship⁸","bs","start")}
   </svg>`;
   const row=(t,n,h,sub,route)=>`<div class="ugr"><span class="sw" style="background:${t?TC[t]:"var(--line-strong)"}"></span><div><div class="ugn"><b>${n}</b><span>${h}</span></div>${sub?`<small>${sub}</small>`:""}<span class="ugrt">${t?`<i style="background:${TC[t]}">${t==="e"?"Expected":"Type "+t}</i>`:""}${route}</span></div></div>`;
   const div=document.createElement("div"); div.className="ugmap";
-  div.innerHTML=`<figure>${svg}<figcaption>Arrows: refugees who crossed in 2025, by origin. Circles: people already in Uganda at the end of 2025. Map: Natural Earth.</figcaption></figure>
+  div.innerHTML=`<figure>${svg}<div class="ugprot"><span class="ugk">Protection in Uganda · Refugees Act 2006⁶</span>
+     <span class="ugkey"><i style="background:var(--irrs)">PF</i>prima facie, s.25(1): DR Congo, South Sudan, Sudan</span>
+     <span class="ugkey"><i style="background:var(--irrs-ink)">RSD</i>individual, s.4: everyone else</span>
+     <span class="ugkey"><i style="background:var(--muted)">0</i>temporary protection, s.25(3): in law, not used</span>
+     <span class="ugkey"><i style="background:var(--muted)">0</i>complementary protection: not in law</span>
+     <span class="ugkey"><i style="background:var(--v-never)">2026</i>prima facie ended in February⁷</span></div>
+    <figcaption>Arrows: refugees who crossed or claimed asylum in 2025. Circles: people already in Uganda at the end of 2025. Map: Natural Earth.</figcaption></figure>
    <div class="ugp">
-    <div class="ugmig"><span class="ugk">International migrants in Uganda · UN DESA 2024</span><div class="ugbar"><i style="flex:1796597 1 0;background:var(--irrs)"></i><i style="flex:261162 1 0;background:var(--line-strong)"></i></div>
-     <div class="ugleg"><span><b>2.06m</b>all international migrants</span><span><b>87%</b>refugees and asylum seekers</span></div></div>
-    ${row("2",f(147096),"crossed in 2025","DR Congo 71,810 · South Sudan 47,791 · Sudan 27,495","Temporary population until they pass 12 months")}
-    ${row("2",f(18421),"new asylum claims in 2025","DR Congo, Eritrea, Ethiopia, Burundi and others","Temporary population")}
-    ${row("e","1.62m","arrived before 2025","Already in the country, plus 16,828 asylum seekers waiting over a year","Immigrants · foreign-born foreign citizens")}
-    ${row("1","~56k","born in Uganda in 2025","430,000 women aged 15 to 49 × origin fertility. Only about 34,000 a year are registered. No citizenship at birth in Uganda","No migration · native-born foreign citizens")}
-    ${row("4",f(4538),"went home in 2025","South Sudan 3,389 · Burundi 1,149","Leave Uganda · returned migrants at home")}
-    ${row("","261k","other international migrants","Work, family or study: outside IRRS","IMTM immigrants only")}
+    <div class="ugmig"><span class="ugk">International migrants in Uganda · UN DESA 2024²</span><div class="ugbar"><i style="flex:1796597 1 0;background:var(--irrs)"></i><i style="flex:261162 1 0;background:var(--line-strong)"></i></div>
+     <div class="ugleg"><span><b>2.06m²</b>all international migrants</span><span><b>87%¹ ²</b>refugees and asylum seekers</span></div></div>
+    ${row("2",f(147096)+"¹","crossed in 2025","DR Congo 71,810 · South Sudan 47,791 · Sudan 27,495 · prima facie⁶","Temporary population until they pass 12 months")}
+    ${row("2",f(18421)+"¹","new asylum claims in 2025","DR Congo, Eritrea, Ethiopia, Burundi and others · individual RSD⁶","Temporary population")}
+    ${row("e","1.62m¹","arrived before 2025","Already in the country, plus 16,828 asylum seekers waiting over a year","Immigrants · foreign-born foreign citizens")}
+    ${row("1","~56k³","born in Uganda in 2025","430,000 women aged 15 to 49¹ × origin fertility³. Only about 34,000 a year are registered¹. No citizenship at birth⁸","No migration · native-born foreign citizens")}
+    ${row("4",f(4538)+"¹","went home in 2025","South Sudan 3,389 · Burundi 1,149","Leave Uganda · returned migrants at home")}
+    ${row("","261k¹ ²","other international migrants","UN DESA total minus UNHCR refugees and asylum seekers. Work, family or study: outside IRRS","IMTM immigrants only")}
    </div>`;
   notesEl.appendChild(div);
 }
