@@ -46,12 +46,57 @@ const STEPS=[
    ["P5","P5","3","IDP-related child moving home","A girl born in the displacement camp moves home with her parents at six: a lifetime internal migrant.","IRIS 78 · P&R 5.64"],
    ["P8","P8","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.63"]]},
  {g:"B",cap:["P&amp;R · Last move and moves from abroad"],bridge:"Finally, the same return can be counted two ways.",h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.71-5.74"],
-   ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.74, 5.76"]]}
+   ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.74, 5.76"]]},
+ {g:"irrs",ugmap:1,build:"none",title:"Uganda, 2025 · who crossed, who was there, who was born there",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"Last, one real country.",h:"Uganda in 2025: most refugees did not cross that year",body:["Of 1.97 million refugees and asylum seekers in Uganda at the end of 2025, only 147,096 crossed that year. 1.62 million came earlier, and about 171,000 young children were born there."]},
+ {g:"irrs",uga:"flow",title:"Uganda, 2025 flows · IRRS → IMTM",cap:["Example · UNHCR 2025, UN DESA 2024, Uganda Tourism 2024, DCIC 2022/23"],bridge:"The same year on the refugee graph.",h:"Uganda in 2025: who arrived, and how each count sees them",body:["About 1.55 million people entered Uganda in a year, nearly all visitors. IRRS counts the 165,517 who fled or claimed asylum at once; <b>IMTM counts them only after 12 months.</b>"]},
+ {g:"irrs",uga:"stock",title:"Uganda, end 2025 · IRRS → IMTM",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"Add up the years: everyone in Uganda at the end of 2025.",h:"Uganda at the end of 2025: where 1.97 million refugees and asylum seekers sit",body:["Refugees and asylum seekers are 87% of Uganda's 2.06 million international migrants, so how they nest decides its migration figures. <b>At least one in six, about 340,000, are not on the expected route.</b>"]},
+ {g:"irrs",uga:"y26",title:"Uganda from 2026 · IRRS → IMTM",cap:["Example · February 2026 directive, UNHCR 2025"],bridge:"Then the rules changed.",h:"From 2026: the same people, a different IRRS category",body:["In February 2026 Uganda ended prima facie recognition. If arrivals match 2025, 165,517 people would start as asylum seekers, not refugees. <b>IRRS moves them from a3i to a2; IMTM sees no change.</b>"]}
 ];
+// Uganda views on the refugee graph. routes: people per route (line thickness); track: badge on an IRRS category (others fade unless kept);
+// mid: label on an IMTM box (inside the bottom edge when the flag is set); later: dashed routes with no data; sum and foot fill the lane
+const UGA={
+ flow:{routes:[
+  {k:"a3i|TMP|TEMP|2",n:147096,nn:"147k",h:"Crossed fleeing in 2025",p:"Prima facie: DR Congo, South Sudan, Sudan. Temporary for IMTM."},
+  {k:"a2|TMP|TEMP|2",n:18421},
+  {k:"a3i|IMM|FBFC|2",n:116435,nn:"116k",h:"Crossed in 2024",p:"IMTM counts them as immigrants in 2025, a year after they arrived."},
+  {k:"a3i|NON|NBFC|1",n:56000,nn:"~56k",h:"Born in Uganda",p:"Estimate; 34,000 registered. No citizenship at birth."}],
+ key:[["PF","var(--irrs)","prima facie, s.25(1)"],["RSD","var(--irrs-ink)","individual, s.4: 18,421 claims"],["0","var(--muted)","no temporary or complementary protection used"],["?","var(--v-other)","came on a visa or permit, claim later: no data"]],
+ later:["a1|IMM|FBFC|3","a2|IMM|FBFC|3","a3i|IMM|FBFC|3"],
+ track:{a3i:["PF","var(--irrs)"],a2:["RSD","var(--irrs-ink)"],a1:["?","var(--v-other)"],a3ii:["0","var(--muted)"],a3iii:["0","var(--muted)"]},
+ mid:{TMP:["2025 · 1.37m visitors, 166k refugees",0],IMM:["2025 · 116k refugees, ≤13k permits",0],NON:["2025 · ~56k births",1],RET:["2025 · 0 recorded",1]},
+ bar:[["color-mix(in srgb,var(--muted) 35%,var(--bg))",1371895,"1.37m visitors"],["var(--imtm)",13027,"13k work permits"],["var(--irrs)",147096,"147k fleeing"],["var(--irrs-ink)",18421,"18k claims"]],
+  sum:()=>ugBar("All arrivals in a year · about 1.55m",UGA.flow.bar)+`<p class="ugone"><b>1 in 10</b> arrivals fled or claimed asylum; <b>87%</b> of migrants living in Uganda did.</p>`,
+  foot:()=>ugKey(UGA.flow.key)+`<p><b>From 2026</b> prima facie ends: new arrivals start as asylum seekers (a2).</p>`},
+ stock:{
+  routes:[
+   {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m",h:"Arrived before 2025",p:"Both counts agree: refugees and immigrants. Plus 16,828 asylum seekers waiting over a year."},
+   {k:"a2|IMM|FBFC|e",n:16828},
+   {k:"a3i|NON|NBFC|1",n:171300,nn:"171k",h:"Born in Uganda, under 5",p:"About 56,000 born a year, 34,000 registered. No citizenship at birth."},
+   {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k",h:"Crossed or claimed in 2025",p:"147,096 prima facie arrivals and 18,421 claims: temporary population."},
+   {k:"a2|TMP|TEMP|2",n:18421}],
+  keep:["a2","a3i"], track:{b1:["0","var(--muted)"],b2:["0","var(--muted)"],c1:["0","var(--muted)"]},
+  sum:()=>`<span class="ugk">Refugees and asylum seekers · 1.97m</span><div class="ugbar"><i style="flex:1635151 1 0;background:${TC.e}"></i><i style="flex:171300 1 0;background:${TC[1]}"></i><i style="flex:165517 1 0;background:${TC[2]}"></i></div>
+   <div class="ugleg"><span><b style="color:${TC.e}">1.64m</b>expected · 83%</span><span><b>0.34m</b>not nested · 17%</span></div>`,
+  foot:()=>`<p><b>A floor:</b> children 5 to 17 born in Uganda sit in the 1.62m. Faded: no data. 0: none recorded.</p>`},
+ y26:{
+  routes:[
+   {k:"a2|TMP|TEMP|2",n:165517,nn:"166k",h:"Arrive as asylum seekers",p:"All go through individual determination first. Same IMTM route as in 2025."},
+   {k:"a3i|IMM|FBFC|2",n:147096,nn:"147k",h:"Crossed in 2025",p:"Refugees already; IMTM counts them as immigrants in 2026."},
+   {k:"a3i|NON|NBFC|1",n:56000,nn:"~56k",h:"Born in Uganda",p:"Unchanged: no citizenship at birth."}],
+  track:{a3i:["PF ended","var(--muted)"],a2:["RSD","var(--irrs-ink)"],a3ii:["0","var(--muted)"],a3iii:["0","var(--muted)"]},
+  mid:{TMP:["2026 · 166k asylum seekers, not yet refugees",0]},
+  sum:()=>`<span class="ugk">New arrivals by IRRS category</span>
+   <div class="ugrow"><span>2025</span><div class="ugbar"><i style="flex:147096 1 0;background:var(--irrs)"></i><i style="flex:18421 1 0;background:var(--irrs-ink)"></i></div></div>
+   <div class="ugrow"><span>2026</span><div class="ugbar"><i style="flex:1 1 0;background:var(--irrs-ink)"></i></div></div>
+   <div class="ugkeys"><span><s style="background:var(--irrs)"></s>a3i refugees</span><span><s style="background:var(--irrs-ink)"></s>a2 asylum seekers</span></div>`,
+  foot:()=>`<p><b>A backlog in waiting:</b> Uganda decided 20,281 claims in 2025. Individual decisions for 165,517 arrivals would be eight times that.</p><p>Illustration: assumes 2026 arrivals match 2025.</p>`}
+};
+const ugBar=(t,bar)=>`<span class="ugk">${t}</span><div class="ugbar">${bar.map(([c,v])=>`<i style="flex:${v} 1 0;background:${c}"></i>`).join("")}</div><div class="ugkeys">${bar.map(([c,v,t])=>`<span><s style="background:${c}"></s>${t}</span>`).join("")}</div>`;
+const ugKey=key=>`<div class="ugkeyl">${key.map(([k,c,t])=>`<span class="ugkey"><i style="background:${c}">${k}</i>${t}</span>`).join("")}</div>`;
 
 // chapters: the first five steps introduce the graph, then one chapter per graph
-const CH=(()=>{const o=[["Introduction","The three columns of the graph"],["Refugees","IRRS → IMTM"],["IDPs abroad","IRIS → IMTM"],["IDPs at home","IRIS → census (P&R Rev. 4)"]].map(([label,sub])=>({label,sub,start:-1,count:0}));
-  STEPS.forEach((s,i)=>{const c=o[i<5?0:s.g==="irrs"?1:s.g==="A"?2:3]; if(c.start<0) c.start=i; c.count++;}); return o;})();
+const CH=(()=>{const o=[["Introduction","The three columns of the graph"],["Refugees","IRRS → IMTM"],["IDPs abroad","IRIS → IMTM"],["IDPs at home","IRIS → census (P&R Rev. 4)"],["Uganda","A real country on the graph"]].map(([label,sub])=>({label,sub,start:-1,count:0}));
+  STEPS.forEach((s,i)=>{const c=o[i<5?0:s.uga||s.ugmap?4:s.g==="irrs"?1:s.g==="A"?2:3]; if(c.start<0) c.start=i; c.count++;}); return o;})();
 const TITLES={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&R Rev. 4)"};
 const TT={e:"Expected route",1:"Type 1 · Never moved",2:"Type 2 · Temporary or not yet counted",3:"Type 3 · Migrant for a different reason",4:"Type 4 · Counted differently",5:"Type 5 · Misalignment"};
 // what each type means, shown beside the legend
@@ -129,7 +174,7 @@ const steps=STEPS.map((s,i)=>{const cases=s.exp?[{n:s.exp,id:s.exp,t:"e",h:"Expe
   const sp=v=>v?v.split(","):null;
   return {...s,i,el:stepsEl.querySelector(`[data-i="${i}"]`),build:sp(s.build),hide:sp(s.hide)||[],focus:sp(s.focus)||[],cases,ids:cases.map(c=>c.id)};});
 const chOf=i=>CH.findIndex(c=>i>=c.start&&i<c.start+c.count);
-$("#heroCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}"><span class="k"><span>0${k+1}</span><span>${c.count} steps</span></span><span class="t">${c.label}</span><span class="d">${c.sub}</span></button>`).join("");
+$("#heroCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}"><span class="k"><span>0${k+1}</span><span>${c.count} step${c.count>1?"s":""}</span></span><span class="t">${c.label}</span><span class="d">${c.sub}</span></button>`).join("");
 $("#navCh").innerHTML=CH.map((c,k)=>`<button type="button" data-go="${c.start}" title="${c.label}" style="flex:${c.count} 1 auto"><span class="l">0${k+1} · ${c.label}</span><span class="bar"><i></i></span></button>`).join("");
 const secs=[...stepsEl.children];
 const secOfStep=i=>{const k=chapAt(i); return secs.indexOf(k>0?stepsEl.querySelector(`[data-chap="${k}"]`):steps[i].el);};
@@ -140,7 +185,7 @@ function navUpdate(){
   [...$("#navCh").children].forEach((b,k)=>{const c=CH[k],done=cur>=c.start+c.count,on=cur>=c.start&&!done;
     b.classList.toggle("on",on); b.querySelector("i").style.width=(cur<c.start?0:done?100:(cur-c.start+1)/c.count*100)+"%";});
   $("#counter").textContent=String(cur+1).padStart(2,"0")+" / "+steps.length;
-  [...$("#navCh").children].forEach((b,k)=>b.querySelector("i").style.background=["var(--teal)","var(--irrs)","var(--iris)","var(--pr)"][k]);
+  [...$("#navCh").children].forEach((b,k)=>b.querySelector("i").style.background=["var(--teal)","var(--irrs)","var(--iris)","var(--pr)","var(--strong)"][k]);
 }
 // chapter card: a full-pane divider shown while its section is on screen; the graph behind is already the new one
 let curSec=-1;
@@ -293,8 +338,8 @@ function caption(s){
   $("#eyebrow").textContent=c.label+" · "+String(s.i-c.start+1).padStart(2,"0")+" / "+String(c.count).padStart(2,"0");
   $("#caps").innerHTML=s.cap.map(x=>`<span class="${srcCls(x)}">${x}</span>`).join("");
   const types=s.legend?["e","1","2","3","4","5"]:[...new Set(s.cases.map(c=>String(c.t)))];
-  $("#types").innerHTML=types.map(t=>`<span class="ty" data-ty="${t}" style="background:${TC[t]}">${TT[t]||t}</span>`).join("");
-  const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||"";
+  $("#types").innerHTML=s.uga?"":types.map(t=>`<span class="ty" data-ty="${t}" style="background:${TC[t]}">${TT[t]||t}</span>`).join("");
+  const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||""; $("#gtitle").textContent=s.title||TITLES[s.g];
   ld.innerHTML=s.body[0]?`<p>${linkRefs(s.body[0].replace(/<span>/g,'<span class="sadd">'))}</p>`:"";
   if(!RM){br.animate([{opacity:0},{opacity:1}],{duration:420,easing:EASE});
     hd.animate([{opacity:0,transform:"translateY(6px)"},{opacity:1,transform:"none"}],{duration:360,easing:EASE});
@@ -315,8 +360,8 @@ function paint(s,anim){
   colsEl.querySelectorAll("[data-cap]").forEach(e=>{e.style.visibility=hid.has(e.dataset.cap)?"hidden":"";});
   LK.forEach(l=>{l.hidden=hid.has(l.k)||hid.has(l.m)||hid.has(l.c);});
   if(s.exp) s.ids=[...new Set(LK.filter(l=>l.t==="e").flatMap(l=>l.cases))];
-  laneFill(s);
-  show(s.ids,anim);
+  laneFill(s); stage.classList.toggle("mapmode",!!s.ugmap);
+  if(s.uga) ugaPaint(anim); else show(s.ids,anim);
   focusOn(s.focus);
   clearTimeout(coT);
   coT=setTimeout(()=>{callouts(s); if(s.tour) legendTour(s);},RM?0:(anim?520:60));
@@ -344,7 +389,7 @@ function paintLinks(lit,any,showRare,anim){
   const set=new Set(lit), touched=new Set(); lit.forEach(l=>[l.k,l.m,l.c].forEach(n=>touched.add(n)));
   LK.forEach(l=>{const on=set.has(l), vis=!l.hidden&&(!l.rare||showRare);
     l.el.style.display=vis?"":"none"; l.hit.style.display=vis?"":"none"; l.pills.forEach(p=>{p.style.display=vis?"grid":"none";});
-    l.el.style.strokeOpacity=on?"0.95":any?"0.1":"0.38"; l.el.style.strokeWidth=(l.w+(on?1.6:0))+"px";
+    l.el.style.strokeOpacity=on?"0.95":any?"0.1":"0.38"; l.el.style.strokeWidth=(l.w+(on?1.6:0))+"px"; l.el.style.strokeDasharray="";
     if(on) l.el.parentNode.appendChild(l.el);});
   colsEl.querySelectorAll(".chips [data-li]").forEach(e=>{const l=LK.find(q=>q.i===+e.dataset.li);
     e.style.transition=`opacity .3s ${EASE}`; e.style.opacity=!sqOn?"0":any&&!(l&&set.has(l))?".22":"1";});
@@ -388,7 +433,7 @@ function placeTip(e){if(tip.style.display==="none") return; const sr=stage.getBo
   if(x+w>sr.width-8) x=e.clientX-sr.left-w-16; if(y+h>sr.height-8) y=Math.max(8,sr.height-8-h);
   tip.style.left=x+"px"; tip.style.top=y+"px";}
 function routeLeave(){tip.style.display="none"; restore();}
-function restore(){if(cur>=0&&steps[cur]&&LK) show(steps[cur].ids,false);}
+function restore(){if(cur>=0&&steps[cur]&&LK){if(steps[cur].uga) ugaPaint(false); else show(steps[cur].ids,false);}}
 function nodeHover(id,on){
   if(!LK) return;
   if(!on){hov.style.display="none"; restore(); return;}
@@ -435,19 +480,20 @@ function anchorOf(id){
 function lineSvg(){const s=document.createElementNS(NS,"svg"); s.setAttribute("style","position:absolute;inset:0;width:100%;height:100%;overflow:visible"); notesEl.appendChild(s); return s;}
 // notes sit in the lane on the right, so the cards of the graph stay readable; a leader line runs back to the route
 function laneBox(){const sr=stage.getBoundingClientRect(), l=$("#lane"); if(!l) return {x:stage.clientWidth-268,w:260}; const b=l.getBoundingClientRect(); return {x:b.left-sr.left,w:b.width};}
-function stack(notes,SH){
+// notes are kept between top and SH (the Uganda step reserves the top and bottom of the lane)
+function stack(notes,SH,top=10){
   const GAP=12; notes.sort((a,b)=>a.ay-b.ay);
-  notes.forEach((n,k)=>{n.y=Math.max(10,n.ay-n.h/2); if(k) n.y=Math.max(n.y,notes[k-1].y+notes[k-1].h+GAP);});
+  notes.forEach((n,k)=>{n.y=Math.max(top,n.ay-n.h/2); if(k) n.y=Math.max(n.y,notes[k-1].y+notes[k-1].h+GAP);});
   for(let k=notes.length-1;k>=0;k--){const lim=k===notes.length-1?SH-10:notes[k+1].y-GAP; if(notes[k].y+notes[k].h>lim) notes[k].y=lim-notes[k].h;}
-  for(let k=0;k<notes.length;k++){const lim=k===0?10:notes[k-1].y+notes[k-1].h+GAP; if(notes[k].y<lim) notes[k].y=lim;}
+  for(let k=0;k<notes.length;k++){const lim=k===0?top:notes[k-1].y+notes[k-1].h+GAP; if(notes[k].y<lim) notes[k].y=lim;}
 }
-function placeNotes(notes,lines,stroke){
-  const SH=stage.clientHeight, L=laneBox(), fits=()=>notes.reduce((t,n)=>t+n.h+12,0)<=SH-12;
+function placeNotes(notes,lines,stroke,box){
+  const top=box?box.top:10, SH=box?box.bot:stage.clientHeight, L=laneBox(), fits=()=>notes.reduce((t,n)=>t+n.h+12,0)<=SH-top-2;
   notes.forEach(n=>{n.card.style.width=L.w+"px"; n.h=n.card.offsetHeight;});
   if(!fits()){notes.forEach(n=>{n.card.classList.add("tight"); n.h=n.card.offsetHeight;});}
   // still too tall: a second column just left of the lane
   const cols=fits()?[notes]:[notes.filter((_,k)=>k%2===0),notes.filter((_,k)=>k%2===1)];
-  cols.forEach((arr,ci)=>{stack(arr,SH); arr.forEach(n=>{n.x=ci?L.x-L.w-12:L.x;});});
+  cols.forEach((arr,ci)=>{stack(arr,SH,top); arr.forEach(n=>{n.x=ci?L.x-L.w-12:L.x;});});
   notes.forEach((n,k)=>{
     n.card.style.left=n.x+"px"; n.card.style.top=n.y+"px";
     const cy=n.y+Math.min(22,n.h/2), cx=n.x, mx=(n.ax+cx)/2, ln=document.createElementNS(NS,"path");
@@ -461,6 +507,8 @@ function placeNotes(notes,lines,stroke){
 function outcome(id){const M=MS[gk], c=M.F&&M.F.cases[id]; return c&&c.b?`<span class="ob"><b>${gk==="A"?"IMTM":"Census"}</b> ${c.b}</span>`:"";}
 function callouts(s){
   notesEl.innerHTML=""; if(!LK) return;
+  if(s.uga){ugaNotes(); return;}
+  if(s.ugmap){ugaMap(); return;}
   const cases=s.cases; if(!cases.length) return;
   if(cases.length===1&&cases[0].exp){expNote(cases[0]); return;}
   const notes=[];
@@ -497,6 +545,71 @@ function expNote(c){
     return {ax:P.x,ay:P.y,card};
   });
   placeNotes(notes,lines,"var(--v-prot)");
+}
+// ---------- Uganda: line thickness is people, notes carry the figures, routes without data are marked ----------
+const ugaLink=key=>LK&&LK.find(l=>!l.hidden&&[l.k,l.m,l.c,l.t].join("|")===key);
+function ugaPaint(anim){
+  const U=UGA[steps[cur].uga], rs=U.routes.map(r=>({r,l:ugaLink(r.k)})).filter(o=>o.l), max=Math.max(...rs.map(o=>o.r.n));
+  paintLinks(rs.map(o=>o.l),true,false,anim);
+  rs.forEach(({r,l})=>{l.el.style.strokeWidth=(3+26*Math.sqrt(r.n/max)).toFixed(1)+"px";});
+  (U.later||[]).forEach(k=>{const l=ugaLink(k); if(l){l.el.style.strokeOpacity="0.7"; l.el.style.strokeWidth="2px"; l.el.style.strokeDasharray="4 5";}});
+  LK.forEach(l=>{l.pills.forEach(p=>{p.style.opacity=".14";}); if(l.pillLink) l.pillLink.style.opacity=".14";});
+}
+function ugaNotes(){
+  const U=UGA[steps[cur].uga], L=laneBox(), SH=stage.clientHeight;
+  const sum=document.createElement("div"); sum.className="ugsum"; sum.style.cssText=`left:${L.x+10}px;top:8px;width:${L.w-10}px`;
+  sum.innerHTML=U.sum(); notesEl.appendChild(sum);
+  const foot=document.createElement("div"); foot.className="ugfoot"; foot.style.cssText=`left:${L.x+10}px;width:${L.w-10}px`;
+  foot.innerHTML=U.foot(); notesEl.appendChild(foot); foot.style.top=(SH-8-foot.offsetHeight)+"px";
+  // IRRS categories: a badge for Uganda's protection track or a recorded zero; categories with no figure fade
+  CATS.forEach(c=>{const r=R[c.id]; if(!r) return; const t=U.track[c.id];
+    if(!t){if(!(U.keep||[]).includes(c.id)){r.el.style.transition=`opacity .45s ${EASE}`; r.el.style.opacity=".4";} return;}
+    const e=document.createElement("span"); e.className="ugchip"+(t[0]==="0"?"":" on"); e.textContent=t[0]; e.style.cssText=`left:${r.x1-6}px;top:${(r.y0+r.y1)/2}px;--cc:${t[1]}`; notesEl.appendChild(e);});
+  // IMTM type of stay: the year's totals on the box edge
+  Object.entries(U.mid||{}).forEach(([id,[txt,inside]])=>{const r=R[id]; if(!r) return; const e=document.createElement("span"); e.className="ugmid";
+    e.textContent=txt; e.style.cssText=`left:${(r.x0+r.x1)/2}px;top:${inside?r.y1-15:r.y0}px;max-width:${r.x1-r.x0+30}px`; notesEl.appendChild(e);});
+  const lines=lineSvg(), notes=U.routes.filter(r=>r.h).map((r,k)=>{const l=ugaLink(r.k); if(!l) return null;
+    const P=l.el.getPointAtLength(l.el.getTotalLength()*0.84), col=tc(l.t), card=document.createElement("div");
+    card.className="note ug"; card.style.animationDelay=k*90+"ms"; card.style.setProperty("--tc",col);
+    card.innerHTML=`<div class="nh"><span class="nn">${r.nn}</span><b>${r.h}</b></div><p>${r.p}</p>`;
+    notesEl.appendChild(card); card.addEventListener("mouseenter",()=>paintLinks([l],true,false,false)); card.addEventListener("mouseleave",restore);
+    return {ax:P.x,ay:P.y,card,col};}).filter(Boolean);
+  placeNotes(notes,lines,"var(--strong)",{top:8+sum.offsetHeight+14,bot:SH-8-foot.offsetHeight-6});
+}
+// Uganda map: 2025 arrivals by origin, returns, and the people already in the country; the panel says which route each group takes
+function ugaMap(){
+  const M=UGMAP, P=M.pt, f=n=>n.toLocaleString("en-US");
+  const curve=(a,b,bend)=>{const mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2, dx=b[0]-a[0], dy=b[1]-a[1]; return [mx-dy*bend, my+dx*bend];};
+  const arrow=(a,b,w,cls,bend=.18)=>{const q=curve(a,b,bend), L=Math.hypot(b[0]-q[0],b[1]-q[1]), ux=(b[0]-q[0])/L, uy=(b[1]-q[1])/L, hl=w*1.1+7, hw=w*.9+6;
+    const e=[b[0]-ux*hl, b[1]-uy*hl];
+    return `<path class="${cls}" d="M${a[0]},${a[1]} Q${q[0]},${q[1]} ${e[0]},${e[1]}" style="stroke-width:${w}px"/><path class="${cls} hd" d="M${b[0]},${b[1]} L${e[0]-uy*hw},${e[1]+ux*hw} L${e[0]+uy*hw},${e[1]-ux*hw}Z"/>`;};
+  const wIn=n=>(2+13*Math.sqrt(n/71810)).toFixed(1), rS=n=>(58*Math.sqrt(n/1618323)).toFixed(1);
+  const lab=(p,t,cls="",anchor="middle",dy=0)=>`<text class="${cls}" x="${p[0]}" y="${p[1]+dy}" text-anchor="${anchor}">${t}</text>`;
+  const c=P.uga_c, born=[c[0]+62,c[1]+70];
+  const svg=`<svg viewBox="0 0 ${M.w} ${M.h}" role="img" aria-label="Map of Uganda: 147,096 refugees arrived in 2025 from DR Congo, South Sudan and Sudan; 1.62 million arrived earlier; about 171,000 young children were born in Uganda; 4,538 went home">
+    ${Object.entries(M.land).filter(([k])=>k!=="UGA").map(([k,d])=>`<path class="ln" d="${d}"/>`).join("")}<path class="ug" d="${M.land.UGA}"/><path class="lk" d="${M.lakes}"/>
+    ${lab(P.ssd_c,"SOUTH SUDAN","cn")}${lab(P.cod_c,"DR CONGO","cn")}${lab(P.ken_c,"KENYA","cn")}${lab(P.bdi_c,"BURUNDI","cn","middle",14)}${lab([P.kampala[0]+40,P.kampala[1]+175],"TANZANIA","cn")}${lab([P.uga_c[0]+5,P.uga_c[1]-80],"UGANDA","un")}
+    ${arrow([P.cod_c[0]+62,P.cod_c[1]-4],P.west,wIn(71810),"ar",-.2)}${arrow([P.ssd_c[0]+8,P.ssd_c[1]+34],P.westnile,wIn(47791),"ar",.1)}${arrow(P.sdn_edge,P.adjumani,wIn(27495),"ar",-.12)}
+    ${arrow([P.westnile[0]+40,P.westnile[1]-6],[P.ssd_c[0]+70,P.ssd_c[1]+18],2.5,"rt",.25)}${arrow(P.southwest,[P.bdi_c[0]+18,P.bdi_c[1]-14],2.5,"rt",.25)}
+    ${lab([P.cod_c[0]+2,P.cod_c[1]+22],"71,810","nv")}${lab([P.ssd_c[0]-6,P.ssd_c[1]+22],"47,791","nv")}${lab([P.sdn_edge[0]+8,P.sdn_edge[1]+20],"Sudan · 27,495","nv","start")}
+    ${lab([P.ssd_c[0]+118,P.ssd_c[1]+48],"3,389 home","rv","start")}${lab([P.bdi_c[0]+52,P.bdi_c[1]-30],"1,149 home","rv","start")}
+    <circle class="st" cx="${c[0]}" cy="${c[1]}" r="${rS(1618323)}"/>${lab([c[0],c[1]+2],"1.62m","sv")}${lab([c[0],c[1]+18],"arrived before 2025","sl")}
+    <circle class="bn" cx="${born[0]}" cy="${born[1]}" r="${rS(171300)}"/>${lab([born[0]+26,born[1]],"171k born here, under 5","bl","start")}${lab([born[0]+26,born[1]+16],"about 56,000 in 2025","bs","start")}
+  </svg>`;
+  const row=(t,n,h,sub,route)=>`<div class="ugr"><span class="sw" style="background:${t?TC[t]:"var(--line-strong)"}"></span><div><div class="ugn"><b>${n}</b><span>${h}</span></div>${sub?`<small>${sub}</small>`:""}<span class="ugrt">${t?`<i style="background:${TC[t]}">${t==="e"?"Expected":"Type "+t}</i>`:""}${route}</span></div></div>`;
+  const div=document.createElement("div"); div.className="ugmap";
+  div.innerHTML=`<figure>${svg}<figcaption>Arrows: refugees who crossed in 2025, by origin. Circles: people already in Uganda at the end of 2025. Map: Natural Earth.</figcaption></figure>
+   <div class="ugp">
+    <div class="ugmig"><span class="ugk">International migrants in Uganda · UN DESA 2024</span><div class="ugbar"><i style="flex:1796597 1 0;background:var(--irrs)"></i><i style="flex:261162 1 0;background:var(--line-strong)"></i></div>
+     <div class="ugleg"><span><b>2.06m</b>all international migrants</span><span><b>87%</b>refugees and asylum seekers</span></div></div>
+    ${row("2",f(147096),"crossed in 2025","DR Congo 71,810 · South Sudan 47,791 · Sudan 27,495","Temporary population until they pass 12 months")}
+    ${row("2",f(18421),"new asylum claims in 2025","DR Congo, Eritrea, Ethiopia, Burundi and others","Temporary population")}
+    ${row("e","1.62m","arrived before 2025","Already in the country, plus 16,828 asylum seekers waiting over a year","Immigrants · foreign-born foreign citizens")}
+    ${row("1","~56k","born in Uganda in 2025","430,000 women aged 15 to 49 × origin fertility. Only about 34,000 a year are registered. No citizenship at birth in Uganda","No migration · native-born foreign citizens")}
+    ${row("4",f(4538),"went home in 2025","South Sudan 3,389 · Burundi 1,149","Leave Uganda · returned migrants at home")}
+    ${row("","261k","other international migrants","Work, family or study: outside IRRS","IMTM immigrants only")}
+   </div>`;
+  notesEl.appendChild(div);
 }
 // legend tour: expected, then types 1 to 5; each gets a line from its pill to one of its routes and a short definition in the lane
 const typeCard=(t,on)=>`<div class="tydef${on?" on":""}" data-tyd="${t}"><span class="ty" style="background:${TC[t]}">${TT[t]}</span><p>${TD[t]}</p></div>`;
