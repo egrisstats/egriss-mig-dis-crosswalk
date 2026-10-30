@@ -53,10 +53,10 @@ const STEPS=[
 // Uganda example: people on each route, end 2025 (UNHCR Refugee Population Statistics; births estimated from the under-5 count)
 const UGA={
  routes:[
-  {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m",h:"Arrived before 2025",p:"Already in Uganda: refugees and immigrants, both counts agree. Plus 16,828 asylum seekers waiting over a year."},
+  {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m",h:"Arrived before 2025",p:"Both counts agree: refugees and immigrants. Plus 16,828 asylum seekers waiting over a year."},
   {k:"a2|IMM|FBFC|e",n:16828},
-  {k:"a3i|NON|NBFC|1",n:171300,nn:"171k",h:"Born in Uganda, under 5",p:"About 34,000 a year. Never moved, yet in the immigrant stock. Assumes no citizenship at birth."},
-  {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k",h:"Crossed or claimed in 2025",p:"147,096 prima facie arrivals and 18,421 new claims: temporary population for IMTM."},
+  {k:"a3i|NON|NBFC|1",n:171300,nn:"171k",h:"Born in Uganda, under 5",p:"About 56,000 born a year, 34,000 registered. No citizenship at birth in Uganda."},
+  {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k",h:"Crossed or claimed in 2025",p:"147,096 prima facie arrivals and 18,421 claims: temporary population."},
   {k:"a2|TMP|TEMP|2",n:18421}],
  has:["a2","a3i"], zero:{b1:"0",b2:"0",c1:"0"},
  bar:[["e",1635151,"expected"],["1",171300,"born here"],["2",165517,"under 12 months"]]};
@@ -529,7 +529,7 @@ function ugaNotes(){
     <div class="ugleg"><span><b style="color:${TC.e}">1.64m</b>expected · ${pc(UGA.bar[0][1])}</span><span><b>0.34m</b>not nested · ${pc(tot-UGA.bar[0][1])}</span></div>`;
   notesEl.appendChild(sum);
   const foot=document.createElement("div"); foot.className="ugfoot"; foot.style.cssText=`left:${L.x+10}px;width:${L.w-10}px`;
-  foot.innerHTML=`<p><b>A floor.</b> Children 5 to 17 born in Uganda sit inside the 1.62m. Faded: no Uganda data. 0: none recorded (b2 assumed).</p><p><b>IDPs:</b> 31,452 displaced in 2025, with no record of district crossings, so none can be placed on the census graph.</p>`;
+  foot.innerHTML=`<p><b>A floor:</b> children 5 to 17 born in Uganda sit in the 1.62m. Faded: no data. 0: none recorded.</p><p><b>IDPs:</b> 31,452 displaced in 2025, with no data on district crossings.</p>`;
   notesEl.appendChild(foot); foot.style.top=(SH-8-foot.offsetHeight)+"px";
   const sr=stage.getBoundingClientRect();
   // IRRS categories: Uganda figures exist for a2 and a3i; three are recorded as zero; the rest have no data and fade
@@ -562,7 +562,7 @@ function ugaMap(){
     ${lab([P.cod_c[0]+2,P.cod_c[1]+22],"71,810","nv")}${lab([P.ssd_c[0]-6,P.ssd_c[1]+22],"47,791","nv")}${lab([P.sdn_edge[0]+8,P.sdn_edge[1]+20],"Sudan · 27,495","nv","start")}
     ${lab([P.ssd_c[0]+118,P.ssd_c[1]+48],"3,389 home","rv","start")}${lab([P.bdi_c[0]+52,P.bdi_c[1]-30],"1,149 home","rv","start")}
     <circle class="st" cx="${c[0]}" cy="${c[1]}" r="${rS(1618323)}"/>${lab([c[0],c[1]+2],"1.62m","sv")}${lab([c[0],c[1]+18],"arrived before 2025","sl")}
-    <circle class="bn" cx="${born[0]}" cy="${born[1]}" r="${rS(171300)}"/>${lab([born[0]+26,born[1]+4],"171k born here, under 5","bl","start")}
+    <circle class="bn" cx="${born[0]}" cy="${born[1]}" r="${rS(171300)}"/>${lab([born[0]+26,born[1]],"171k born here, under 5","bl","start")}${lab([born[0]+26,born[1]+16],"about 56,000 in 2025","bs","start")}
   </svg>`;
   const row=(t,n,h,sub,route)=>`<div class="ugr"><span class="sw" style="background:${t?TC[t]:"var(--line-strong)"}"></span><div><div class="ugn"><b>${n}</b><span>${h}</span></div>${sub?`<small>${sub}</small>`:""}<span class="ugrt">${t?`<i style="background:${TC[t]}">${t==="e"?"Expected":"Type "+t}</i>`:""}${route}</span></div></div>`;
   const div=document.createElement("div"); div.className="ugmap";
@@ -573,7 +573,7 @@ function ugaMap(){
     ${row("2",f(147096),"crossed in 2025","DR Congo 71,810 · South Sudan 47,791 · Sudan 27,495","Temporary population until they pass 12 months")}
     ${row("2",f(18421),"new asylum claims in 2025","DR Congo, Eritrea, Ethiopia, Burundi and others","Temporary population")}
     ${row("e","1.62m","arrived before 2025","Already in the country, plus 16,828 asylum seekers waiting over a year","Immigrants · foreign-born foreign citizens")}
-    ${row("1","171k","born in Uganda, under 5","About 34,000 a year. Assumes no citizenship at birth","No migration · native-born foreign citizens")}
+    ${row("1","~56k","born in Uganda in 2025","430,000 women aged 15 to 49 × origin fertility. Only about 34,000 a year are registered. No citizenship at birth in Uganda","No migration · native-born foreign citizens")}
     ${row("4",f(4538),"went home in 2025","South Sudan 3,389 · Burundi 1,149","Leave Uganda · returned migrants at home")}
     ${row("","261k","other international migrants","Work, family or study: outside IRRS","IMTM immigrants only")}
    </div>`;

@@ -278,6 +278,7 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .ugmap .st{fill:var(--v-prot);fill-opacity:.9}.ugmap .bn{fill:var(--v-never);fill-opacity:.92}
 .ugmap .sv{font-family:var(--f-mono);font-size:17px;font-weight:600;fill:#fff}
 .ugmap .sl{font-size:10.5px;fill:#fff}
+.ugmap .bs{font-size:11px;fill:var(--v-never);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
 .ugmap .bl{font-family:var(--f-mono);font-size:12px;font-weight:600;fill:var(--v-never);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
 .ugp{display:flex;flex-direction:column;gap:12px;min-width:0;align-self:center}
 .ugmig{display:flex;flex-direction:column;gap:7px;padding-bottom:12px;border-bottom:1px solid var(--line)}
