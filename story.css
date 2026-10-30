@@ -302,3 +302,4 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .ugkey{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);margin-right:12px}
 .ugkey i{font-style:normal;font-family:var(--f-mono);font-size:9.5px;font-weight:600;color:#fff;border-radius:9px;padding:1px 6px;min-width:10px;text-align:center}
 .ugkeyl{display:flex;flex-direction:column;gap:3px}.ugkeyl .ugkey{margin:0;font-size:11px;line-height:1.3;align-items:flex-start}.ugkeyl .ugkey i{margin-top:1px;flex-shrink:0}
+.ugrow{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
