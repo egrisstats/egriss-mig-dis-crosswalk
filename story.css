@@ -259,3 +259,35 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .ugfoot{position:absolute;display:flex;flex-direction:column;gap:6px;padding-top:9px;border-top:1px solid var(--line);font-size:11.5px;line-height:1.4;color:var(--muted);animation:fadein .4s var(--ease-s) .2s both}
 .ugfoot p{margin:0}.ugfoot b{color:var(--strong);font-weight:600}
 .ugchip{position:absolute;transform:translate(-100%,-50%);white-space:nowrap;font-family:var(--f-mono);font-size:10px;font-weight:600;color:var(--muted);background:var(--bg);border:1px dashed var(--line-strong);border-radius:9px;min-width:18px;text-align:center;box-sizing:border-box;padding:1px 5px;pointer-events:none;animation:fadein .4s var(--ease-s) .3s both}
+
+/* Uganda map step: the graph columns hide, a map and a route key take the stage */
+.stage.mapmode #cols *,.stage.mapmode #routes *,.stage.mapmode #pills *{pointer-events:none!important}
+.ugmap{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,400px);gap:28px;padding:6px 4px 4px;background:var(--bg);pointer-events:auto;animation:fadein .5s var(--ease-s) both}
+.ugmap figure{margin:0;min-width:0;min-height:0;display:flex;flex-direction:column;gap:6px}
+.ugmap svg{flex:1 1 auto;min-height:0;width:100%;height:100%}
+.ugmap figcaption{font-size:11.5px;color:var(--muted)}
+.ugmap .ln{fill:var(--surface);stroke:var(--line-strong);stroke-width:1}
+.ugmap .ug{fill:color-mix(in srgb,var(--irrs) 13%,var(--surface));stroke:var(--strong);stroke-width:1.6}
+.ugmap .lk{fill:color-mix(in srgb,var(--imtm) 20%,var(--bg));stroke:none}
+.ugmap .cn{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;fill:var(--muted)}
+.ugmap .un{font-family:var(--f-mono);font-size:13px;letter-spacing:.2em;fill:var(--strong);font-weight:600}
+.ugmap .ar{fill:none;stroke:var(--v-temp);stroke-opacity:.9;stroke-linecap:round}.ugmap .ar.hd{fill:var(--v-temp);stroke:none}
+.ugmap .rt{fill:none;stroke:var(--v-ret);stroke-dasharray:4 4}.ugmap .rt.hd{fill:var(--v-ret);stroke:none;stroke-dasharray:none}
+.ugmap .nv{font-family:var(--f-mono);font-size:13px;font-weight:600;fill:var(--strong);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+.ugmap .rv{font-family:var(--f-mono);font-size:11px;fill:var(--v-ret);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+.ugmap .st{fill:var(--v-prot);fill-opacity:.9}.ugmap .bn{fill:var(--v-never);fill-opacity:.92}
+.ugmap .sv{font-family:var(--f-mono);font-size:17px;font-weight:600;fill:#fff}
+.ugmap .sl{font-size:10.5px;fill:#fff}
+.ugmap .bl{font-family:var(--f-mono);font-size:12px;font-weight:600;fill:var(--v-never);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+.ugp{display:flex;flex-direction:column;gap:12px;min-width:0;align-self:center}
+.ugmig{display:flex;flex-direction:column;gap:7px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.ugr{display:grid;grid-template-columns:4px minmax(0,1fr);gap:12px}
+.ugr .sw{border-radius:2px}
+.ugn{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.ugn b{font-family:var(--f-mono);font-size:17px;font-weight:600;color:var(--strong);font-variant-numeric:tabular-nums}
+.ugn span{font-family:var(--f-display);font-weight:700;font-size:14px;color:var(--strong)}
+.ugr small{display:block;font-size:12px;line-height:1.35;color:var(--muted);margin-top:1px}
+.ugrt{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:12px;color:var(--ink)}
+.ugrt i{font-style:normal;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;border-radius:8px;padding:1px 7px;flex-shrink:0}
+@media (max-height:860px){.ugp{gap:7px}.ugmig{padding-bottom:7px;gap:4px}
+ .ugn b{font-size:15px}.ugn span{font-size:13px}.ugr small,.ugrt{font-size:11.5px}.ugrt{margin-top:2px}.ugmap figcaption{display:none}}

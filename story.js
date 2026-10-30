@@ -47,22 +47,23 @@ const STEPS=[
    ["P8","P8","3","IDPs who have overcome vulnerabilities","Locally integrated or settled elsewhere: no longer IDPs, still internal migrants.","IRIS 81 · P&R 5.63"]]},
  {g:"B",cap:["P&amp;R · Last move and moves from abroad"],bridge:"Finally, the same return can be counted two ways.",h:"Counted, but differently",body:["The same return looks like no move on the reference-date question and like an internal move on the last-move question. A short stay abroad can turn an IDP into an apparent international arrival."],cases:[["P3","P3","4","Return counted as an internal move","The returned family is counted as internal migrants into their home district, because their last move came from the camp.","IRIS 75 · P&R 5.71-5.74"],
    ["P4","P4","4","Short stay abroad recorded as from abroad","An IDP sheltered abroad for four months, then came back to another district: previous residence recorded as a foreign country.","IRIS 117 · P&R 5.74, 5.76"]]},
- {g:"irrs",uga:1,title:"Uganda, end 2025 · IRRS → IMTM",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"Last, one real country on the refugee graph.",h:"Uganda: where 1.97 million refugees and asylum seekers sit",body:["Refugees and asylum seekers are 87% of Uganda's 2.06 million international migrants, so how they nest decides its migration figures. <b>At least one in six, about 340,000, are not on the expected route.</b>"]}
+ {g:"irrs",ugmap:1,build:"none",title:"Uganda, 2025 · who crossed, who was there, who was born there",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"Last, one real country.",h:"Uganda in 2025: most refugees did not cross that year",body:["Of 1.97 million refugees and asylum seekers in Uganda at the end of 2025, only 147,096 crossed that year. 1.62 million came earlier, and about 171,000 young children were born there."]},
+ {g:"irrs",uga:1,title:"Uganda, end 2025 · IRRS → IMTM",cap:["Example · UNHCR 2025, UN DESA 2024"],bridge:"The same people on the refugee graph.",h:"Uganda: where 1.97 million refugees and asylum seekers sit",body:["Refugees and asylum seekers are 87% of Uganda's 2.06 million international migrants, so how they nest decides its migration figures. <b>At least one in six, about 340,000, are not on the expected route.</b>"]}
 ];
 // Uganda example: people on each route, end 2025 (UNHCR Refugee Population Statistics; births estimated from the under-5 count)
 const UGA={
  routes:[
-  {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m",h:"Stayed 12 months or more",p:"Refugees and immigrants: both counts agree. Plus 16,828 asylum seekers waiting over a year."},
+  {k:"a3i|IMM|FBFC|e",n:1618323,nn:"1.62m",h:"Arrived before 2025",p:"Already in Uganda: refugees and immigrants, both counts agree. Plus 16,828 asylum seekers waiting over a year."},
   {k:"a2|IMM|FBFC|e",n:16828},
   {k:"a3i|NON|NBFC|1",n:171300,nn:"171k",h:"Born in Uganda, under 5",p:"About 34,000 a year. Never moved, yet in the immigrant stock. Assumes no citizenship at birth."},
-  {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k",h:"Here under 12 months",p:"147,096 prima facie arrivals and 18,421 new claims: temporary population for IMTM."},
+  {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k",h:"Crossed or claimed in 2025",p:"147,096 prima facie arrivals and 18,421 new claims: temporary population for IMTM."},
   {k:"a2|TMP|TEMP|2",n:18421}],
  has:["a2","a3i"], zero:{b1:"0",b2:"0",c1:"0"},
  bar:[["e",1635151,"expected"],["1",171300,"born here"],["2",165517,"under 12 months"]]};
 
 // chapters: the first five steps introduce the graph, then one chapter per graph
 const CH=(()=>{const o=[["Introduction","The three columns of the graph"],["Refugees","IRRS → IMTM"],["IDPs abroad","IRIS → IMTM"],["IDPs at home","IRIS → census (P&R Rev. 4)"],["Uganda","A real country on the graph"]].map(([label,sub])=>({label,sub,start:-1,count:0}));
-  STEPS.forEach((s,i)=>{const c=o[i<5?0:s.uga?4:s.g==="irrs"?1:s.g==="A"?2:3]; if(c.start<0) c.start=i; c.count++;}); return o;})();
+  STEPS.forEach((s,i)=>{const c=o[i<5?0:s.uga||s.ugmap?4:s.g==="irrs"?1:s.g==="A"?2:3]; if(c.start<0) c.start=i; c.count++;}); return o;})();
 const TITLES={irrs:"Refugees · IRRS → IMTM",A:"IDPs crossing a border · IRIS → IMTM",B:"IDPs inside the country · IRIS → census (P&R Rev. 4)"};
 const TT={e:"Expected route",1:"Type 1 · Never moved",2:"Type 2 · Temporary or not yet counted",3:"Type 3 · Migrant for a different reason",4:"Type 4 · Counted differently",5:"Type 5 · Misalignment"};
 // what each type means, shown beside the legend
@@ -326,7 +327,7 @@ function paint(s,anim){
   colsEl.querySelectorAll("[data-cap]").forEach(e=>{e.style.visibility=hid.has(e.dataset.cap)?"hidden":"";});
   LK.forEach(l=>{l.hidden=hid.has(l.k)||hid.has(l.m)||hid.has(l.c);});
   if(s.exp) s.ids=[...new Set(LK.filter(l=>l.t==="e").flatMap(l=>l.cases))];
-  laneFill(s);
+  laneFill(s); stage.classList.toggle("mapmode",!!s.ugmap);
   if(s.uga) ugaPaint(anim); else show(s.ids,anim);
   focusOn(s.focus);
   clearTimeout(coT);
@@ -474,6 +475,7 @@ function outcome(id){const M=MS[gk], c=M.F&&M.F.cases[id]; return c&&c.b?`<span 
 function callouts(s){
   notesEl.innerHTML=""; if(!LK) return;
   if(s.uga){ugaNotes(); return;}
+  if(s.ugmap){ugaMap(); return;}
   const cases=s.cases; if(!cases.length) return;
   if(cases.length===1&&cases[0].exp){expNote(cases[0]); return;}
   const notes=[];
@@ -541,6 +543,41 @@ function ugaNotes(){
     notesEl.appendChild(card); card.addEventListener("mouseenter",()=>paintLinks([l],true,false,false)); card.addEventListener("mouseleave",restore);
     return {ax:P.x,ay:P.y,card,col};}).filter(Boolean);
   placeNotes(notes,lines,"var(--strong)",{top:8+sum.offsetHeight+14,bot:SH-8-foot.offsetHeight-6});
+}
+// Uganda map: 2025 arrivals by origin, returns, and the people already in the country; the panel says which route each group takes
+function ugaMap(){
+  const M=UGMAP, P=M.pt, f=n=>n.toLocaleString("en-US");
+  const curve=(a,b,bend)=>{const mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2, dx=b[0]-a[0], dy=b[1]-a[1]; return [mx-dy*bend, my+dx*bend];};
+  const arrow=(a,b,w,cls,bend=.18)=>{const q=curve(a,b,bend), L=Math.hypot(b[0]-q[0],b[1]-q[1]), ux=(b[0]-q[0])/L, uy=(b[1]-q[1])/L, hl=w*1.1+7, hw=w*.9+6;
+    const e=[b[0]-ux*hl, b[1]-uy*hl];
+    return `<path class="${cls}" d="M${a[0]},${a[1]} Q${q[0]},${q[1]} ${e[0]},${e[1]}" style="stroke-width:${w}px"/><path class="${cls} hd" d="M${b[0]},${b[1]} L${e[0]-uy*hw},${e[1]+ux*hw} L${e[0]+uy*hw},${e[1]-ux*hw}Z"/>`;};
+  const wIn=n=>(2+13*Math.sqrt(n/71810)).toFixed(1), rS=n=>(58*Math.sqrt(n/1618323)).toFixed(1);
+  const lab=(p,t,cls="",anchor="middle",dy=0)=>`<text class="${cls}" x="${p[0]}" y="${p[1]+dy}" text-anchor="${anchor}">${t}</text>`;
+  const c=P.uga_c, born=[c[0]+62,c[1]+70];
+  const svg=`<svg viewBox="0 0 ${M.w} ${M.h}" role="img" aria-label="Map of Uganda: 147,096 refugees arrived in 2025 from DR Congo, South Sudan and Sudan; 1.62 million arrived earlier; about 171,000 young children were born in Uganda; 4,538 went home">
+    ${Object.entries(M.land).filter(([k])=>k!=="UGA").map(([k,d])=>`<path class="ln" d="${d}"/>`).join("")}<path class="ug" d="${M.land.UGA}"/><path class="lk" d="${M.lakes}"/>
+    ${lab(P.ssd_c,"SOUTH SUDAN","cn")}${lab(P.cod_c,"DR CONGO","cn")}${lab(P.ken_c,"KENYA","cn")}${lab(P.bdi_c,"BURUNDI","cn","middle",14)}${lab([P.kampala[0]+40,P.kampala[1]+175],"TANZANIA","cn")}${lab([P.uga_c[0]+5,P.uga_c[1]-80],"UGANDA","un")}
+    ${arrow([P.cod_c[0]+62,P.cod_c[1]-4],P.west,wIn(71810),"ar",-.2)}${arrow([P.ssd_c[0]+8,P.ssd_c[1]+34],P.westnile,wIn(47791),"ar",.1)}${arrow(P.sdn_edge,P.adjumani,wIn(27495),"ar",-.12)}
+    ${arrow([P.westnile[0]+40,P.westnile[1]-6],[P.ssd_c[0]+70,P.ssd_c[1]+18],2.5,"rt",.25)}${arrow(P.southwest,[P.bdi_c[0]+18,P.bdi_c[1]-14],2.5,"rt",.25)}
+    ${lab([P.cod_c[0]+2,P.cod_c[1]+22],"71,810","nv")}${lab([P.ssd_c[0]-6,P.ssd_c[1]+22],"47,791","nv")}${lab([P.sdn_edge[0]+8,P.sdn_edge[1]+20],"Sudan · 27,495","nv","start")}
+    ${lab([P.ssd_c[0]+118,P.ssd_c[1]+48],"3,389 home","rv","start")}${lab([P.bdi_c[0]+52,P.bdi_c[1]-30],"1,149 home","rv","start")}
+    <circle class="st" cx="${c[0]}" cy="${c[1]}" r="${rS(1618323)}"/>${lab([c[0],c[1]+2],"1.62m","sv")}${lab([c[0],c[1]+18],"arrived before 2025","sl")}
+    <circle class="bn" cx="${born[0]}" cy="${born[1]}" r="${rS(171300)}"/>${lab([born[0]+26,born[1]+4],"171k born here, under 5","bl","start")}
+  </svg>`;
+  const row=(t,n,h,sub,route)=>`<div class="ugr"><span class="sw" style="background:${t?TC[t]:"var(--line-strong)"}"></span><div><div class="ugn"><b>${n}</b><span>${h}</span></div>${sub?`<small>${sub}</small>`:""}<span class="ugrt">${t?`<i style="background:${TC[t]}">${t==="e"?"Expected":"Type "+t}</i>`:""}${route}</span></div></div>`;
+  const div=document.createElement("div"); div.className="ugmap";
+  div.innerHTML=`<figure>${svg}<figcaption>Arrows: refugees who crossed in 2025, by origin. Circles: people already in Uganda at the end of 2025. Map: Natural Earth.</figcaption></figure>
+   <div class="ugp">
+    <div class="ugmig"><span class="ugk">International migrants in Uganda · UN DESA 2024</span><div class="ugbar"><i style="flex:1796597 1 0;background:var(--irrs)"></i><i style="flex:261162 1 0;background:var(--line-strong)"></i></div>
+     <div class="ugleg"><span><b>2.06m</b>all international migrants</span><span><b>87%</b>refugees and asylum seekers</span></div></div>
+    ${row("2",f(147096),"crossed in 2025","DR Congo 71,810 · South Sudan 47,791 · Sudan 27,495","Temporary population until they pass 12 months")}
+    ${row("2",f(18421),"new asylum claims in 2025","DR Congo, Eritrea, Ethiopia, Burundi and others","Temporary population")}
+    ${row("e","1.62m","arrived before 2025","Already in the country, plus 16,828 asylum seekers waiting over a year","Immigrants · foreign-born foreign citizens")}
+    ${row("1","171k","born in Uganda, under 5","About 34,000 a year. Assumes no citizenship at birth","No migration · native-born foreign citizens")}
+    ${row("4",f(4538),"went home in 2025","South Sudan 3,389 · Burundi 1,149","Leave Uganda · returned migrants at home")}
+    ${row("","261k","other international migrants","Work, family or study: outside IRRS","IMTM immigrants only")}
+   </div>`;
+  notesEl.appendChild(div);
 }
 // legend tour: expected, then types 1 to 5; each gets a line from its pill to one of its routes and a short definition in the lane
 const typeCard=(t,on)=>`<div class="tydef${on?" on":""}" data-tyd="${t}"><span class="ty" style="background:${TC[t]}">${TT[t]}</span><p>${TD[t]}</p></div>`;
