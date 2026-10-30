@@ -85,8 +85,10 @@ const UGA={
    {k:"a3i|TMP|TEMP|2",n:147096,nn:"166k¹",h:"Crossed or claimed in 2025",p:"147,096 prima facie arrivals and 18,421 claims: temporary population."},
    {k:"a2|TMP|TEMP|2",n:18421}],
   keep:["a2","a3i"], track:{b1:["0","var(--muted)"],b2:["0","var(--muted)"],c1:["0","var(--muted)"]},
+  mid:{IMM:["1.64m¹ here 12 months or more",0],NON:["171k¹ born in Uganda",1],TMP:["166k¹ arrived or claimed in 2025",0]},
   sum:()=>`<span class="ugk">Refugees and asylum seekers · 1.97m¹</span><div class="ugbar"><i style="flex:1635151 1 0;background:${TC.e}"></i><i style="flex:171300 1 0;background:${TC[1]}"></i><i style="flex:165517 1 0;background:${TC[2]}"></i></div>
-   <div class="ugleg"><span><b style="color:${TC.e}">1.64m</b>expected · 83%</span><span><b>0.34m</b>not nested · 17%</span></div>`,
+   <div class="ugleg"><span><b style="color:${TC.e}">1.64m</b>expected · 83%</span><span><b>0.34m</b>not nested · 17%</span></div>
+   <p class="ugone">IMTM counts all 1.97m among Uganda's <b>2.06m</b>² migrants, including the 171k who never moved.</p>`,
   foot:()=>`<p><b>A floor:</b> children 5 to 17 born in Uganda sit in the 1.62m. Faded: no data. 0: none recorded.</p>`},
  y26:{
   routes:[
@@ -94,11 +96,15 @@ const UGA={
    {k:"a3i|IMM|FBFC|2",n:147096,nn:"147k¹",h:"Crossed in 2025",p:"Refugees already; IMTM counts them as immigrants in 2026."},
    {k:"a3i|NON|NBFC|1",n:56000,nn:"~56k³",h:"Born in Uganda",p:"Unchanged: no citizenship at birth⁸."}],
   track:{a3i:["PF ended","var(--muted)"],a2:["RSD","var(--irrs-ink)"],a3ii:["0","var(--muted)"],a3iii:["0","var(--muted)"]},
-  mid:{TMP:["2026 · 166k asylum seekers, not yet refugees",0]},
+  mid:{TMP:["2026 · 166k asylum seekers, not yet refugees",0],IMM:["2026 · 147k¹ from 2025 pass 12 months",0]},
+  ghost:["a3i|TMP|TEMP|2"], shift:["a3i","a2","165,517¹"],
   sum:()=>`<span class="ugk">New arrivals by IRRS category</span>
    <div class="ugrow"><span>2025</span><div class="ugbar"><i style="flex:147096 1 0;background:var(--irrs)"></i><i style="flex:18421 1 0;background:var(--irrs-ink)"></i></div></div>
    <div class="ugrow"><span>2026</span><div class="ugbar"><i style="flex:1 1 0;background:var(--irrs-ink)"></i></div></div>
-   <div class="ugkeys"><span><s style="background:var(--irrs)"></s>a3i refugees</span><span><s style="background:var(--irrs-ink)"></s>a2 asylum seekers</span></div>`,
+   <div class="ugkeys"><span><s style="background:var(--irrs)"></s>a3i refugees</span><span><s style="background:var(--irrs-ink)"></s>a2 asylum seekers</span></div>
+   <span class="ugk" style="margin-top:6px">IMTM, both years</span>
+   <div class="ugrow"><span>same</span><div class="ugbar"><i style="flex:1 1 0;background:${TC[2]}"></i></div></div>
+   <div class="ugkeys"><span><s style="background:${TC[2]}"></s>temporary population until 12 months</span></div>`,
   foot:()=>`<p><b>A backlog in waiting:</b> Uganda decided 20,281 claims¹ in 2025. Individual decisions for 165,517 arrivals would be eight times that.</p><p>Illustration: assumes 2026 arrivals match 2025.</p>`}
 };
 const ugBar=(t,bar)=>`<span class="ugk">${t}</span><div class="ugbar">${bar.map(([c,v])=>`<i style="flex:${v} 1 0;background:${c}"></i>`).join("")}</div><div class="ugkeys">${bar.map(([c,v,t])=>`<span><s style="background:${c}"></s>${t}</span>`).join("")}</div>`;
@@ -203,7 +209,7 @@ function showChap(k){
   const c=CH[k], [cov,txt]=CHAP[k], el=$("#chap");
   el.innerHTML=`<div class="chap-in"><div class="chap-t"><span class="chap-n">0${k+1}</span><span class="chap-k">Chapter ${k+1} of ${CH.length} · ${c.count} steps</span><h2>${c.label}</h2><span class="chap-s">${c.sub}</span><p>${txt}</p><span class="chap-go">Scroll or press ↓ to begin</span></div>
     <figure class="chap-c"><img src="covers/${cov}.jpg" alt=""></figure></div>`;
-  el.classList.add("on");
+  el.style.setProperty("--cc",["var(--teal)","var(--irrs)","var(--iris)","var(--pr)","var(--strong)"][k]); el.classList.add("on");
 }
 const hideChap=()=>$("#chap").classList.remove("on");
 
@@ -346,7 +352,7 @@ const linkRefs=h=>h.replace(/\b(IRRS|IMTM|IRIS|P&amp;R|P&R)( paras?)? (\d+(?:\.\
 function caption(s){
   const c=CH[chOf(s.i)];
   $("#eyebrow").textContent=c.label+" · "+String(s.i-c.start+1).padStart(2,"0")+" / "+String(c.count).padStart(2,"0");
-  $("#caps").innerHTML=s.cap.map(x=>typeof x==="number"?`<a class="srcb srcb-plain ugsrc" href="${SRCS[x][2]}" target="_blank" rel="noopener" title="${SRCS[x][1]}"><sup>${x}</sup>${SRCS[x][0]}</a>`:`<span class="${srcCls(x)}">${x}</span>`).join("");
+  $("#caps").innerHTML=s.cap.map(x=>typeof x==="number"?`<a class="srcb srcb-plain ugsrc" href="${SRCS[x][2]}" target="_blank" rel="noopener" title="${SRCS[x][1]}"><sup>${x}</sup>${SRCS[x][0]}</a>`:`<span class="${srcCls(x)}">${x}</span>`).join("")+(s.cap.some(x=>typeof x==="number")?`<a class="srcb srcb-plain ugsrc ugall" href="#ugsrc">All sources ↓</a>`:"");
   const types=s.legend?["e","1","2","3","4","5"]:[...new Set(s.cases.map(c=>String(c.t)))];
   $("#types").innerHTML=s.uga?"":types.map(t=>`<span class="ty" data-ty="${t}" style="background:${TC[t]}">${TT[t]||t}</span>`).join("");
   const hd=$("#head"), ld=$("#lead"), br=$("#bridge"); hd.textContent=s.h; br.textContent=s.bridge||""; $("#gtitle").textContent=s.title||TITLES[s.g]; $("#gtitle").style.display=s.cap.some(x=>typeof x==="number")?"none":"";
@@ -562,6 +568,7 @@ function ugaPaint(anim){
   const U=UGA[steps[cur].uga], rs=U.routes.map(r=>({r,l:ugaLink(r.k)})).filter(o=>o.l), max=Math.max(...rs.map(o=>o.r.n));
   paintLinks(rs.map(o=>o.l),true,false,anim);
   rs.forEach(({r,l})=>{l.el.style.strokeWidth=(3+26*Math.sqrt(r.n/max)).toFixed(1)+"px";});
+  (U.ghost||[]).forEach(k=>{const l=ugaLink(k); if(l){l.el.style.strokeOpacity="0.35"; l.el.style.strokeWidth="3px"; l.el.style.strokeDasharray="2 6";}});
   (U.later||[]).forEach(k=>{const l=ugaLink(k); if(l){l.el.style.strokeOpacity="0.7"; l.el.style.strokeWidth="2px"; l.el.style.strokeDasharray="4 5";}});
   LK.forEach(l=>{l.pills.forEach(p=>{p.style.opacity=".14";}); if(l.pillLink) l.pillLink.style.opacity=".14";});
 }
@@ -578,7 +585,13 @@ function ugaNotes(){
   // IMTM type of stay: the year's totals on the box edge
   Object.entries(U.mid||{}).forEach(([id,[txt,inside]])=>{const r=R[id]; if(!r) return; const e=document.createElement("span"); e.className="ugmid";
     e.textContent=txt; e.style.cssText=`left:${(r.x0+r.x1)/2}px;top:${inside?r.y1-15:r.y0}px;max-width:${r.x1-r.x0+30}px`; notesEl.appendChild(e);});
-  const lines=lineSvg(), notes=U.routes.filter(r=>r.h).map((r,k)=>{const l=ugaLink(r.k); if(!l) return null;
+  const lines=lineSvg();
+  // a category shift: a dashed arc beside the IRRS cards, from one category to the other
+  if(U.shift){const [fa,fb,lab]=U.shift, A=R[fa], B=R[fb]; if(A&&B){const x=Math.max(A.x1,B.x1)+6, ya=(A.y0+A.y1)/2+8, yb=(B.y0+B.y1)/2+6, bx=x+30;
+    const pth=document.createElementNS(NS,"path"); pth.setAttribute("d",`M${A.x1-2},${ya} C${bx},${ya} ${bx},${yb} ${B.x1+8},${yb}`); pth.setAttribute("class","ugshift"); lines.appendChild(pth);
+    const hd=document.createElementNS(NS,"path"); hd.setAttribute("d",`M${B.x1+2},${yb} l9,-5 l0,10z`); hd.setAttribute("class","ugshift hd"); lines.appendChild(hd);
+    const t=document.createElement("span"); t.className="ugshiftlab"; t.textContent=lab+" move"; t.style.cssText=`left:${bx+2}px;top:${(ya+yb)/2}px`; notesEl.appendChild(t);}}
+  const notes=U.routes.filter(r=>r.h).map((r,k)=>{const l=ugaLink(r.k); if(!l) return null;
     const P=l.el.getPointAtLength(l.el.getTotalLength()*0.84), col=tc(l.t), card=document.createElement("div");
     card.className="note ug"; card.style.animationDelay=k*90+"ms"; card.style.setProperty("--tc",col);
     card.innerHTML=`<div class="nh"><span class="nn">${r.nn}</span><b>${r.h}</b></div><p>${r.p}</p>`;
@@ -661,6 +674,9 @@ function laneFill(s){
   else if(s.lane==="types"||s.tour) laneTypes(null);
   else l.innerHTML="";
 }
+
+// ---------- sources for the Uganda example, listed in full after the summary ----------
+(()=>{const el=$("#ugsrcl"); if(el) el.innerHTML=Object.entries(SRCS).map(([n,[t,full,url]])=>`<li><sup>${n}</sup><div><b>${t}</b><span>${full}</span><a href="${url}" target="_blank" rel="noopener">${url.replace(/^https?:\/\//,"").replace(/\/$/,"")}</a></div></li>`).join("");})();
 
 // ---------- summary: every case by type, each linking back to its step ----------
 (()=>{
