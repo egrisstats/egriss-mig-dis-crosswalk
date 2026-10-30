@@ -622,13 +622,14 @@ function ugaMap(){
   </svg>`;
   const row=(t,n,h,sub,route)=>`<div class="ugr"><span class="sw" style="background:${t?TC[t]:"var(--line-strong)"}"></span><div><div class="ugn"><b>${n}</b><span>${h}</span></div>${sub?`<small>${sub}</small>`:""}<span class="ugrt">${t?`<i style="background:${TC[t]}">${t==="e"?"Expected":"Type "+t}</i>`:""}${route}</span></div></div>`;
   const div=document.createElement("div"); div.className="ugmap";
-  div.innerHTML=`<figure>${svg}<div class="ugprot"><span class="ugk">Protection in Uganda · Refugees Act 2006⁶</span>
+  div.innerHTML=`<figure><div class="ugmapbox">${svg}<div class="ugprot"><span class="ugk">Protection in Uganda · Refugees Act 2006⁶</span>
      <span class="ugkey"><i style="background:var(--irrs)">PF</i>prima facie, s.25(1): DR Congo, South Sudan, Sudan</span>
      <span class="ugkey"><i style="background:var(--irrs-ink)">RSD</i>individual, s.4: everyone else</span>
      <span class="ugkey"><i style="background:var(--muted)">0</i>temporary protection, s.25(3): in law, not used</span>
      <span class="ugkey"><i style="background:var(--muted)">0</i>complementary protection: not in law</span>
-     <span class="ugkey"><i style="background:var(--v-never)">2026</i>prima facie ended in February⁷</span></div>
-    <figcaption>Arrows: refugees who crossed or claimed asylum in 2025. Circles: people already in Uganda at the end of 2025. Map: Natural Earth.</figcaption></figure>
+     <span class="ugkey"><i style="background:var(--v-never)">2026</i>prima facie ended in February⁷</span></div></div>
+    <figcaption>Arrows: refugees who crossed or claimed asylum in 2025. Circles: people already in Uganda at the end of 2025.</figcaption>
+    <p class="ugmsrc"><b>Sources</b> ${[1,2,3,6,7,8].map(n=>`<a href="${SRCS[n][2]}" target="_blank" rel="noopener" title="${SRCS[n][1]}"><sup>${n}</sup>${SRCS[n][0]}</a>`).join(" · ")} · <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Map: Natural Earth 1:50m</a></p></figure>
    <div class="ugp">
     <div class="ugmig"><span class="ugk">International migrants in Uganda · UN DESA 2024²</span><div class="ugbar"><i style="flex:1796597 1 0;background:var(--irrs)"></i><i style="flex:261162 1 0;background:var(--line-strong)"></i></div>
      <div class="ugleg"><span><b>2.06m²</b>all international migrants</span><span><b>87%¹ ²</b>refugees and asylum seekers</span></div></div>
