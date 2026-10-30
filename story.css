@@ -338,3 +338,9 @@ body.story{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:
 .ugshift{fill:none;stroke:var(--irrs-ink);stroke-width:2;stroke-dasharray:4 4}.ugshift.hd{fill:var(--irrs-ink);stroke:none}
 .ugshiftlab{position:absolute;transform:translateY(-50%);font-family:var(--f-mono);font-size:10px;font-weight:600;color:var(--irrs-ink);background:var(--bg);border:1px solid var(--irrs-ink);border-radius:8px;padding:1px 6px;white-space:nowrap;pointer-events:none}
 @media (max-width:820px){.srclist{grid-template-columns:1fr}}
+.ugmsrc{margin:0;font-size:11px;line-height:1.45;color:var(--muted)}
+.ugmsrc b{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--strong);margin-right:4px}
+.ugmsrc a{color:var(--ink);text-decoration:none}.ugmsrc a:hover{color:var(--imtm);text-decoration:underline}
+.ugmsrc sup{font-family:var(--f-mono);font-weight:700;font-size:9px;color:var(--imtm);margin-right:2px}
+.ugmapbox{position:relative;flex:1 1 auto;min-height:0;display:flex}.ugmapbox svg{flex:1 1 auto}
+.ugmapbox .ugprot{bottom:8px}
